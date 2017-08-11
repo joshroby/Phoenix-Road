@@ -1,0 +1,108 @@
+body {
+	font-family: sans-serif;
+	padding-top: 5vw;
+	}
+
+#mainMenuDiv {
+	background-color: indigo;
+	color: white;
+	height: 3vw;
+	text-align: center;
+	padding-top: 1vw;
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	}
+
+#titleHead {
+	display: inline;
+	padding-right: 15vw;
+	}
+
+#detailsUnitDiv {
+	float: left;
+	width: 22vw;
+	}
+	
+#mapDiv {
+	width: 50vw;
+	float: left;
+	}
+
+#detailsSiteDiv {
+	width: 20vw;
+	float: left;
+	padding-left: 2vw;
+	}
+
+.commoditiesTable {
+	font-size: 0.5em;
+	clear: both;
+	width: 100%;
+	}
+	
+.commoditiesTable button {
+	font-size: 0.5em;
+	}
+	
+.commoditiesTable caption {
+	font-size: 1em;
+	font-weight: bold;
+	text-align: left;
+	}
+
+.commoditiesTable td {
+	width: 30%;
+	}
+
+.addBtn {
+	}
+
+.subBtn {
+	}
+
+.siteNeedDiv {
+	float: left;
+	font-size: 0.3em;
+	width: 4vw;
+	text-align: center;
+	margin-right: 0.5vw;
+	border: 0.5px solid grey;
+	}
+
+#tradeDiv {
+	clear:both;
+	margin-top: 5vh;
+	display: none;
+	margin-left: 25vw;
+	width: 50vw;
+	}
+
+#unitStuffDiv {
+	float: left;
+	width: 20vw;
+	}
+
+#tradeControlsDiv {
+	float: left;
+	width: 9vw;
+	}
+
+#siteStuffDiv {
+	float: left;
+	width: 20vw;
+	}
+
+#balanceDiv {
+	text-size: 3em;
+	text-align: center;
+	}
+
+.balancePositive {
+	color: green;
+	}
+
+.balanceNegative {
+	color: red;
+	}

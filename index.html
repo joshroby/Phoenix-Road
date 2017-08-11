@@ -1,0 +1,54 @@
+<html>
+
+	<head>
+		<title>Explorators</title>
+		<link rel="stylesheet" href="style.css">
+		<script src="data.js"></script>
+		<script src="handlers.js"></script>
+		<script src="model.js"></script>
+		<script src="view.js"></script>
+	</head>
+
+	<body>
+		
+		<div id='mainMenuDiv'>
+		
+			<h4 id='titleHead'>Explorator</h4>
+		
+			<button onclick = 'handlers.newGame()'>New Game</button>
+			<button id = 'saveButton' disabled onclick = 'handlers.saveGame()'>Save Game</button>
+			<button id = 'loadGameButton' disabled onclick = 'view.switchToIntroMode()'>Load Game</button>
+			<button onclick='handlers.toggleOptions()' >Options</button>
+		
+		</div>
+					
+		<div id='detailsUnitDiv'>
+			&nbsp;
+		</div>
+		
+		<div id='mapDiv'>
+		
+			<svg id='mapSVG'>
+		
+			</svg>
+		
+		</div>
+			
+		<div id='detailsSiteDiv'>
+			&nbsp;
+		</div>
+		
+		<div id='tradeDiv'>
+			<div id='unitStuffDiv'></div>
+			<div id='tradeControlsDiv'>
+				<div id='balanceDiv'>
+				</div>
+				<button id='tradeBtn' onclick='handlers.makeTrade()' disabled>Trade</button>
+				<button onclick='handlers.clearTrade()'>Clear</button>
+			</div>
+			<div id='siteStuffDiv'></div>
+		</div>
+	
+	</body>
+
+</html>
