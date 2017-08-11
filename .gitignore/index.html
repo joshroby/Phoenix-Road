@@ -1,0 +1,38 @@
+<html>
+
+	<head>
+		<title>Network Explore</title>
+		<link rel="stylesheet" href="style.css">
+		<script src="handlers.js"></script>
+		<script src="model.js"></script>
+		<script src="view.js"></script>
+	</head>
+
+	<body>
+		
+		<div id='mainMenuDiv'>
+		
+			<h4 id='titleHead'>Needs a Name</h4>
+		
+			<button onclick = 'handlers.newGame()'>New Game</button>
+			<button id = 'saveButton' disabled onclick = 'handlers.saveGame()'>Save Game</button>
+			<button id = 'loadGameButton' disabled onclick = 'view.switchToIntroMode()'>Load Game</button>
+			<button onclick='handlers.toggleOptions()' >Options</button>
+		
+		</div>
+		
+		<div id='mapDiv'>
+		
+			<svg id='mapSVG'>
+		
+			</svg>
+		
+		</div>
+		
+		<div id='detailsDiv'>
+		
+		</div>
+	
+	</body>
+
+</html>

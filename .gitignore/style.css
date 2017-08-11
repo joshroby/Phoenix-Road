@@ -1,0 +1,33 @@
+body {
+	font-family: sans-serif;
+	padding-top: 5vw;
+	}
+
+#mainMenuDiv {
+	background-color: indigo;
+	color: white;
+	height: 3vw;
+	text-align: center;
+	padding-top: 1vw;
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	}
+
+#titleHead {
+	display: inline;
+	padding-right: 15vw;
+	}
+	
+#mapDiv {
+	width: 50vw;
+	margin-left: 24vw;
+	float: left;
+	}
+
+#detailsDiv {
+	width: 20vw;
+	float: left;
+	padding-left: 2vw;
+	}
