@@ -99,10 +99,10 @@ body {
 	text-align: center;
 	}
 
-.balancePositive {
+.positive {
 	color: green;
 	}
 
-.balanceNegative {
+.negative {
 	color: red;
 	}

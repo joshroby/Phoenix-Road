@@ -19,6 +19,7 @@ var model = {
 			};
 		};
 		startUnit.location.reputation.p1 = 100;
+		view.focus.unit = startUnit;
 		
 		view.displayMap();
 	},
@@ -178,38 +179,57 @@ function Unit(owner,startLoc,type) {
 	
 	this.type = type;
 	
-	this.commodities = {
-		food: 100,
-		water: 100,
-	};
+	this.commodities = [
+		{commodity:'food',qty:100},
+		{commodity:'water',qty:100}
+	];
 	
 	this.currentTrade = {
 		unitStuff: [],
 		siteStuff: [],
+		balance: 0,
 	};
 	
 	this.move = function(site) {
-		site = sites[site];
+		console.log('check provisions');
 		if (this.location.neighbors.indexOf(site) !== -1) {
+		
+			// calculate distance, food and water needs
+			var distance = Math.pow(Math.pow(this.location.x - site.x,2) + Math.pow(this.location.y - site.y,2),.5);
+			var foodEaten = distance / this.type.speed * this.type.crew * 0.1;
+			var waterDrank = distance / this.type.speed * this.type.crew * 0.1;
+			for (i in this.commodities) {
+				if (this.commodities[i].commodity == 'food') {
+					var temp = this.commodities[i].qty;
+					this.commodities[i].qty = Math.round(Math.max(this.commodities[i].qty - foodEaten,0),0);
+					foodEaten = Math.max(foodEaten - temp,0);
+				} else if (this.commodities[i].commodity == 'water') {
+					var temp = this.commodities[i].qty;
+					this.commodities[i].qty = Math.round(Math.max(this.commodities[i].qty - waterDrank,0),0);
+					waterDrank = Math.max(waterDrank - temp,0);
+				}
+			};
+
 			this.location = site;
 			for (i in sites) {
 				if (Math.pow(Math.pow(sites[i].x - this.location.x,2) + Math.pow(sites[i].y - this.location.y,2),.5) < this.owner.vision && this.owner.knownSites.indexOf(sites[i]) == -1) {
 					this.owner.knownSites.push(sites[i]);
 				};
 			};
-			view.displaySiteDetails(sites.indexOf(site));
+			view.displaySiteDetails(site);
 			view.displayMap();
 		} else {
 			console.log('cannot move to',site);
 		};
+		view.displayUnit(this);
 	};
 	
 	this.addFromSite = function(commodity) {
 		this.currentTrade.siteStuff.push({commodity:commodity,qty:100});
 	};
 	
-	this.addFromUnit = function(commodity) {
-		this.currentTrade.unitStuff.push({commodity:commodity,qty:100});
+	this.addFromUnit = function(index) {
+		this.currentTrade.unitStuff.push(this.commodities[index]);
 	};
 	
 	this.clearTrade = function(commodity) {
@@ -218,16 +238,21 @@ function Unit(owner,startLoc,type) {
 	};
 	
 	this.makeTrade = function() {
-		console.log(this.currentTrade);
 		
-		console.log('move goods');
+		// Move Goods, Adjust Site Values
+		for (i in this.currentTrade.unitStuff) {
+			this.commodities.splice(this.commodities.indexOf(this.currentTrade.unitStuff[i]),1);
+			this.location.commodities[this.currentTrade.unitStuff[i].commodity] *= 0.9;
+		};
+		for (i in this.currentTrade.siteStuff) {
+			this.commodities.push(this.currentTrade.siteStuff[i]);
+			this.location.commodities[this.currentTrade.siteStuff[i].commodity] *= 1;
+		};
 		
-		console.log('adjust site values');
-		
-		console.log('convert tradebalance into reputation');
+		this.location.reputation.p1 += this.currentTrade.balance;
 				
-		view.displayUnit(units.indexOf(view.focus.unit));
-		view.displaySite(sites.indexOf(view.focus.unit.location));
+		view.displayUnit(view.focus.unit);
+		view.displaySiteDetails(view.focus.unit.location);
 	};
 	
 	units.push(this);

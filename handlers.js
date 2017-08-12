@@ -5,16 +5,18 @@ var handlers = {
 		model.newGame();
 	},
 	
-	displaySiteDetails: function(site) {
+	displaySiteDetails: function(siteIndex) {
+		site = sites[siteIndex];
 		view.displaySiteDetails(site);
 	},
 	
-	selectUnit: function(unit) {
-		view.displayUnit(unit);
-		view.focus.unit = units[unit];
+	selectUnit: function(unitIndex) {
+		view.focus.unit = units[unitIndex];
+		view.displayUnit(view.focus.unit);
 	},
 	
-	selectSite: function(site) {
+	selectSite: function(siteIndex) {
+		site = sites[siteIndex];
 		if (view.focus.unit !== undefined) {
 			view.focus.unit.move(site);
 		};

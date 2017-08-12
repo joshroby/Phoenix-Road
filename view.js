@@ -71,7 +71,6 @@ var view = {
 	},
 	
 	displaySiteDetails: function(site) {
-		site = sites[site];
 		var detailsSiteDiv = document.getElementById('detailsSiteDiv');
 		detailsSiteDiv.innerHTML = '';
 		var siteHead = document.createElement('h3');
@@ -124,12 +123,22 @@ var view = {
 				siteCommoditiesItem.appendChild(siteCommoditiesTradeCell);
 			};
 		};
+		var siteReputationP = document.createElement('p');
+		if (site.reputation.p1 > 0) {
+			siteReputationP.innerHTML += 'You have a positive reputation here. (' + Math.round(site.reputation.p1,0) + ')';
+			siteReputationP.className = 'positive';
+		} else if (site.reputation.p1 < 0) {
+			siteReputationP.innerHTML += 'You have a negative reputation here. (' + Math.round(site.reputation.p1,0) + ')';
+			siteReputationP.className = 'negative';
+		} else {
+			siteReputationP.innerHTML += 'You have no reputation here. (' + Math.round(site.reputation.p1,0) + ')';
+			siteReputationP.className = '';
+		};
+		detailsSiteDiv.appendChild(siteReputationP);
 		view.displayMap();
 	},
 	
 	displayUnit: function(unit) {
-		unit = units[unit];
-		view.displaySiteDetails(sites.indexOf(unit.location));
 		var detailsUnitDiv = document.getElementById('detailsUnitDiv');
 		detailsUnitDiv.innerHTML = '';
 		var unitHead = document.createElement('h3');
@@ -148,10 +157,13 @@ var view = {
 			var unitCommoditiesItem = document.createElement('tr');
 			unitCommoditiesTable.appendChild(unitCommoditiesItem);
 			var unitCommoditiesNameCell = document.createElement('td');
-			unitCommoditiesNameCell.innerHTML = data.commodities[c].name;
+			unitCommoditiesNameCell.innerHTML = data.commodities[unit.commodities[c].commodity].name;
+			if (unit.commodities[c].commodity == 'food' || unit.commodities[c].commodity == 'water') {
+				unitCommoditiesNameCell.innerHTML += ' (' + unit.commodities[c].qty + '%)';
+			};
 			unitCommoditiesItem.appendChild(unitCommoditiesNameCell);
 			var unitCommoditiesValueCell = document.createElement('td');
-			unitCommoditiesValueCell.innerHTML = Math.round(100 * unit.location.commodities[c],0);
+			unitCommoditiesValueCell.innerHTML = Math.round(100 * unit.location.commodities[unit.commodities[c].commodity],0);
 			unitCommoditiesItem.appendChild(unitCommoditiesValueCell);
 			var unitCommoditiesTradeCell = document.createElement('td');
 			var unitCommoditiesTradeBtn = document.createElement('button');
@@ -160,7 +172,8 @@ var view = {
 			unitCommoditiesTradeCell.appendChild(unitCommoditiesTradeBtn);
 			unitCommoditiesItem.appendChild(unitCommoditiesTradeCell);
 		};
-		console.log('update trade view');
+		view.displaySiteDetails(unit.location);
+		view.updateTradeDiv();
 	},
 	
 	updateTradeDiv: function() {
@@ -168,7 +181,7 @@ var view = {
 		
 		document.getElementById('tradeDiv').style.display = 'block';
 		
-		var tradeBalance = 0;
+		currentTrade.balance = 0;
 		
 		var unitStuffDiv = document.getElementById('unitStuffDiv');
 		unitStuffDiv.innerHTML = '';
@@ -178,7 +191,7 @@ var view = {
 			var unitStuffItem = document.createElement('li');
 			unitStuffItem.innerHTML = data.commodities[currentTrade.unitStuff[i].commodity].name;
 			unitStuffList.appendChild(unitStuffItem);
-			tradeBalance += currentTrade.unitStuff[i].qty * view.focus.unit.location.commodities[currentTrade.unitStuff[i].commodity] / 100;
+			currentTrade.balance += currentTrade.unitStuff[i].qty * view.focus.unit.location.commodities[currentTrade.unitStuff[i].commodity];
 		};
 		
 		var siteStuffDiv = document.getElementById('siteStuffDiv');
@@ -189,18 +202,18 @@ var view = {
 			var siteStuffItem = document.createElement('li');
 			siteStuffItem.innerHTML = data.commodities[currentTrade.siteStuff[i].commodity].name;
 			siteStuffList.appendChild(siteStuffItem);
-			tradeBalance -= currentTrade.siteStuff[i].qty * view.focus.unit.location.commodities[currentTrade.siteStuff[i].commodity] / 100;
+			currentTrade.balance -= currentTrade.siteStuff[i].qty * view.focus.unit.location.commodities[currentTrade.siteStuff[i].commodity];
 		};
 		
 		var balanceDiv = document.getElementById('balanceDiv');
-		balanceDiv.innerHTML = Math.round(tradeBalance * 100 , 0);
-		if (tradeBalance >=  -1 * view.focus.unit.location.reputation.p1) {
+		balanceDiv.innerHTML = Math.round(currentTrade.balance , 0);
+		if (currentTrade.balance >=  -1 * view.focus.unit.location.reputation.p1) {
 			balanceDiv.className = 'balancePositive';
 		} else {
 			balanceDiv.className = 'balanceNegative';
 		};
 		
-		if (tradeBalance >= -1 * view.focus.unit.location.reputation.p1 && Object.keys(view.focus.unit.commodities).length - currentTrade.unitStuff.length + currentTrade.siteStuff.length) {
+		if (currentTrade.balance >= -1 * view.focus.unit.location.reputation.p1 && Object.keys(view.focus.unit.commodities).length - currentTrade.unitStuff.length + currentTrade.siteStuff.length) {
 			document.getElementById('tradeBtn').disabled = false;
 		} else {
 			document.getElementById('tradeBtn').disabled = true;
