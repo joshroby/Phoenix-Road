@@ -76,18 +76,21 @@ var view = {
 		var siteHead = document.createElement('h3');
 		siteHead.innerHTML = site.name;
 		detailsSiteDiv.appendChild(siteHead);
-		var siteCoords = document.createElement('p');
-		siteCoords.innerHTML = "( " + site.x + " , " + site.y + " )";
-		detailsSiteDiv.appendChild(siteCoords);
+// 		var siteCoords = document.createElement('p');
+// 		siteCoords.innerHTML = "( " + site.x + " , " + site.y + " )";
+// 		detailsSiteDiv.appendChild(siteCoords);
 		var sitePopulationP = document.createElement('p');
 		sitePopulationP.innerHTML = site.population + " souls";
 		detailsSiteDiv.appendChild(sitePopulationP);
+		var siteNeedsDiv = document.createElement('div');
+		siteNeedsDiv.id = 'siteNeedsDiv';
+		detailsSiteDiv.appendChild(siteNeedsDiv);
 		var siteNeeds = site.needs();
 		for (i in siteNeeds) {
 			var siteNeedDiv = document.createElement('div');
 			siteNeedDiv.className = 'siteNeedDiv';
 			siteNeedDiv.innerHTML = siteNeeds[i];
-			detailsSiteDiv.appendChild(siteNeedDiv);
+			siteNeedsDiv.appendChild(siteNeedDiv);
 		};
 		var siteCommoditiesTable = document.createElement('table');
 		siteCommoditiesTable.className = 'commoditiesTable';
@@ -151,8 +154,8 @@ var view = {
 		unitCommoditiesTable.className = 'commoditiesTable';
 		detailsUnitDiv.appendChild(unitCommoditiesTable);
 		var unitCommoditiesTableTitle = document.createElement('caption');
-		unitCommoditiesTableTitle.innerHTML = 'Cargo ' + Object.keys(unit.commodities).length + "/" + unit.type.cargo;
 		unitCommoditiesTable.appendChild(unitCommoditiesTableTitle);
+		var cargo = 0;
 		for (c in unit.commodities) {
 			var unitCommoditiesItem = document.createElement('tr');
 			unitCommoditiesTable.appendChild(unitCommoditiesItem);
@@ -169,8 +172,16 @@ var view = {
 			var unitCommoditiesTradeBtn = document.createElement('button');
 			unitCommoditiesTradeBtn.innerHTML = "+";
 			unitCommoditiesTradeBtn.setAttribute('onclick','handlers.addFromUnit("'+c+'")');
+			unitCommoditiesTradeBtn.id = 'unitAddBtn_' + c;
 			unitCommoditiesTradeCell.appendChild(unitCommoditiesTradeBtn);
 			unitCommoditiesItem.appendChild(unitCommoditiesTradeCell);
+			if (data.commodities[unit.commodities[c].commodity].cargo) {
+				cargo++;
+			};
+		};
+		unitCommoditiesTableTitle.innerHTML = 'Cargo ' + cargo + "/" + unit.type.cargo;
+		if (cargo > unit.type.cargo) {
+			unitCommoditiesTableTitle.innerHTML += ' <span class="negative">Overburdened</span>';
 		};
 		view.displaySiteDetails(unit.location);
 		view.updateTradeDiv();
@@ -222,6 +233,16 @@ var view = {
 	
 	hideTradeDiv: function() {
 		document.getElementById('tradeDiv').style.display = 'hidden';
+	},
+	
+	disableUnitAddBtn: function(index) {
+		document.getElementById('unitAddBtn_' + index).disabled = true;
+	},
+	
+	enableUnitAddBtns: function() {
+		for (i in view.focus.unit.commodities) {
+			document.getElementById('unitAddBtn_' + i).disabled = false;
+		};
 	},
 
 };

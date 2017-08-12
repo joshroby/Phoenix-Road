@@ -230,6 +230,7 @@ function Unit(owner,startLoc,type) {
 	
 	this.addFromUnit = function(index) {
 		this.currentTrade.unitStuff.push(this.commodities[index]);
+		view.disableUnitAddBtn(index);
 	};
 	
 	this.clearTrade = function(commodity) {

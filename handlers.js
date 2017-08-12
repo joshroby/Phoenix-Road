@@ -27,8 +27,8 @@ var handlers = {
 		view.updateTradeDiv();
 	},
 	
-	addFromUnit: function(commodity) {
-		view.focus.unit.addFromUnit(commodity);
+	addFromUnit: function(commodityIndex) {
+		view.focus.unit.addFromUnit(commodityIndex);
 		view.updateTradeDiv();
 	},
 	
@@ -39,6 +39,7 @@ var handlers = {
 	
 	clearTrade: function() {
 		view.focus.unit.clearTrade();
+		view.enableUnitAddBtns();
 		view.hideTradeDiv();
 	},
 

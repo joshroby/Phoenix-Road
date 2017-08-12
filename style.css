@@ -36,6 +36,10 @@ body {
 	padding-left: 2vw;
 	}
 
+#siteNeedsDiv {
+	height: 2vh;
+	}
+
 .commoditiesTable {
 	font-size: 0.5em;
 	clear: both;
