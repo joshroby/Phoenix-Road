@@ -190,14 +190,27 @@ function Unit(owner,startLoc,type) {
 		balance: 0,
 	};
 	
-	this.move = function(site) {
-		console.log('check provisions');
-		if (this.location.neighbors.indexOf(site) !== -1) {
+	this.move = function(site) {		
+		var distance = Math.pow(Math.pow(this.location.x - site.x,2) + Math.pow(this.location.y - site.y,2),.5);
+		var foodEaten = distance / this.type.speed * this.type.crew * 0.1;
+		var waterDrank = distance / this.type.speed * this.type.crew * 0.1;
+		var foodStore = 0;
+		var waterStore = 0;
+		var cargo = 0;
+		for (i in this.commodities) {
+			if (this.commodities[i].commodity == 'food') {
+				foodStore += this.commodities[i].qty;
+			} else if (this.commodities[i].commodity == 'water') {
+				waterStore += this.commodities[i].qty;
+			};
+			if (data.commodities[this.commodities[i].commodity].cargo) {
+				cargo++;
+			};
+		};
+				
+		if (this.location.neighbors.indexOf(site) !== -1 && waterStore >= waterDrank && foodStore >= foodEaten && cargo <= this.type.cargo) {
 		
 			// calculate distance, food and water needs
-			var distance = Math.pow(Math.pow(this.location.x - site.x,2) + Math.pow(this.location.y - site.y,2),.5);
-			var foodEaten = distance / this.type.speed * this.type.crew * 0.1;
-			var waterDrank = distance / this.type.speed * this.type.crew * 0.1;
 			for (i in this.commodities) {
 				if (this.commodities[i].commodity == 'food') {
 					var temp = this.commodities[i].qty;
@@ -218,8 +231,14 @@ function Unit(owner,startLoc,type) {
 			};
 			view.displaySiteDetails(site);
 			view.displayMap();
-		} else {
-			console.log('cannot move to',site);
+		} else if (this.location.neighbors.indexOf(site) == -1) {
+			view.displayError('no path to ',site);
+		} else if (waterStore < waterDrank) {
+			view.displayError('not enough water');
+		} else if (foodStore < foodEaten) {
+			view.displayError('not enough food');
+		} else if (cargo > this.type.cargo) {
+			view.displayError('overburdened!');
 		};
 		view.displayUnit(this);
 	};

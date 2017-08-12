@@ -5,9 +5,10 @@ var view = {
 	displayMap: function() {
 		var svg = document.createElementNS('http://www.w3.org/2000/svg','svg');
 		svg.setAttribute('viewBox','0 0 1000 1000');
+		svg.id = 'mapSVG';
 		
 		var background = document.createElementNS('http://www.w3.org/2000/svg','rect');
-		background.setAttribute('fill','green');
+		background.setAttribute('fill','#FF9900');
 		background.setAttribute('x','0');
 		background.setAttribute('y','0');
 		background.setAttribute('width','100%');
@@ -174,6 +175,11 @@ var view = {
 			unitCommoditiesTradeBtn.setAttribute('onclick','handlers.addFromUnit("'+c+'")');
 			unitCommoditiesTradeBtn.id = 'unitAddBtn_' + c;
 			unitCommoditiesTradeCell.appendChild(unitCommoditiesTradeBtn);
+			if (unit.commodities[c].commodity == 'food' || unit.commodities[c].commodity == 'water') {
+				var resupplyBtn = document.createElement('button');
+				resupplyBtn.innerHTML = 'R';
+				unitCommoditiesTradeCell.appendChild(resupplyBtn);
+			};
 			unitCommoditiesItem.appendChild(unitCommoditiesTradeCell);
 			if (data.commodities[unit.commodities[c].commodity].cargo) {
 				cargo++;
@@ -181,7 +187,7 @@ var view = {
 		};
 		unitCommoditiesTableTitle.innerHTML = 'Cargo ' + cargo + "/" + unit.type.cargo;
 		if (cargo > unit.type.cargo) {
-			unitCommoditiesTableTitle.innerHTML += ' <span class="negative">Overburdened</span>';
+			unitCommoditiesTableTitle.innerHTML += ' <span class="negative">Overburdened!</span>';
 		};
 		view.displaySiteDetails(unit.location);
 		view.updateTradeDiv();
@@ -243,6 +249,10 @@ var view = {
 		for (i in view.focus.unit.commodities) {
 			document.getElementById('unitAddBtn_' + i).disabled = false;
 		};
+	},
+	
+	displayError: function(message) {
+		console.log(message);		
 	},
 
 };
