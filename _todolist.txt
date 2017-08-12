@@ -1,17 +1,12 @@
 Wasteland Resupply Company To Do List
 
 
-- check provisions on move, won't go if can't eat/drink
-- overburdened can't move
-
 
 EASY PICKINGS
-- site label onmouseout that returns site details to the focus unit's location
-- if you eat through all your food or water, remove it from unit inventory
 - make vision checks a function & include all outgoing links from current location
 - renaming units
-- resupply button (performs a partial-food-and-water for full-food-and-water trade)
 - better auto-naming
+- site label onmouseout that returns site details to the focus unit's location
 
 NEAR FUTURE
 - error reporting

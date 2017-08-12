@@ -6,7 +6,12 @@ var handlers = {
 	},
 	
 	displaySiteDetails: function(siteIndex) {
-		site = sites[siteIndex];
+		console.log(siteIndex);
+		if (siteIndex == -1) {
+			site = view.focus.unit.location;
+		} else {
+			site = sites[siteIndex];
+		};
 		view.displaySiteDetails(site);
 	},
 	
@@ -41,6 +46,10 @@ var handlers = {
 		view.focus.unit.clearTrade();
 		view.enableUnitAddBtns();
 		view.hideTradeDiv();
+	},
+	
+	resupply: function(commodityIndex) {
+		view.focus.unit.resupply(commodityIndex);
 	},
 
 };

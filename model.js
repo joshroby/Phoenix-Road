@@ -216,10 +216,16 @@ function Unit(owner,startLoc,type) {
 					var temp = this.commodities[i].qty;
 					this.commodities[i].qty = Math.round(Math.max(this.commodities[i].qty - foodEaten,0),0);
 					foodEaten = Math.max(foodEaten - temp,0);
+					if (this.commodities[i].qty == 0) {
+						this.commodities.splice(i,1);
+					};
 				} else if (this.commodities[i].commodity == 'water') {
 					var temp = this.commodities[i].qty;
 					this.commodities[i].qty = Math.round(Math.max(this.commodities[i].qty - waterDrank,0),0);
 					waterDrank = Math.max(waterDrank - temp,0);
+					if (this.commodities[i].qty == 0) {
+						this.commodities.splice(i,1);
+					};
 				}
 			};
 
@@ -228,7 +234,7 @@ function Unit(owner,startLoc,type) {
 				if (Math.pow(Math.pow(sites[i].x - this.location.x,2) + Math.pow(sites[i].y - this.location.y,2),.5) < this.owner.vision && this.owner.knownSites.indexOf(sites[i]) == -1) {
 					this.owner.knownSites.push(sites[i]);
 				};
-			};
+			};			
 			view.displaySiteDetails(site);
 			view.displayMap();
 		} else if (this.location.neighbors.indexOf(site) == -1) {
@@ -273,6 +279,15 @@ function Unit(owner,startLoc,type) {
 				
 		view.displayUnit(view.focus.unit);
 		view.displaySiteDetails(view.focus.unit.location);
+	};
+	
+	this.resupply = function(commodityIndex) {
+	
+		this.location.reputation.p1 -= (100 - this.commodities[commodityIndex].qty) * this.location.commodities[this.commodities[commodityIndex].commodity];
+		this.commodities[commodityIndex].qty = 100;
+		view.displayUnit(this);
+		view.displaySiteDetails(view.focus.unit.location);
+	
 	};
 	
 	units.push(this);

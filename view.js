@@ -41,6 +41,9 @@ var view = {
 			siteLabel.setAttribute('x',p1.knownSites[i].x + 10);
 			siteLabel.setAttribute('y',p1.knownSites[i].y + 5);
 			siteLabel.setAttribute('onmouseover','handlers.displaySiteDetails('+siteIndex+')');
+			siteLabel.setAttribute('onmouseout','handlers.displaySiteDetails(-1)');
+// 			siteLabel.addEventListener('mouseenter',handlers.displaySiteDetails.bind(this,siteIndex),false);
+// 			siteLabel.addEventListener('mouseleave',handlers.displaySiteDetails.bind(this,-1),false);
 			siteLabel.innerHTML = p1.knownSites[i].name;
 			svg.appendChild(siteLabel);
 			
@@ -178,6 +181,13 @@ var view = {
 			if (unit.commodities[c].commodity == 'food' || unit.commodities[c].commodity == 'water') {
 				var resupplyBtn = document.createElement('button');
 				resupplyBtn.innerHTML = 'R';
+				resupplyBtn.setAttribute('onclick','handlers.resupply('+c+')');
+				var resupplyCost = (100 - unit.commodities[c].qty ) * unit.location.commodities[unit.commodities[c].commodity];
+				if (unit.commodities[c].qty == 100 || resupplyCost > unit.location.reputation.p1) {
+					resupplyBtn.disabled = true;
+				} else {
+					resupplyBtn.disabled = false;
+				};
 				unitCommoditiesTradeCell.appendChild(resupplyBtn);
 			};
 			unitCommoditiesItem.appendChild(unitCommoditiesTradeCell);
