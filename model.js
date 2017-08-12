@@ -9,15 +9,11 @@ var model = {
 		units = [];
 		p1 = {};
 		
-		p1.vision = 200;
+		p1.vision = 100;
 		p1.knownSites = [];
 		
 		var startUnit = new Unit(p1,undefined,data.units.wagon);
-		for (i in sites) {
-			if (Math.pow(Math.pow(startUnit.location.x - sites[i].x,2) + Math.pow(startUnit.location.y - sites[i].y,2),.5) < p1.vision) {
-				p1.knownSites.push(sites[i]);
-			};
-		};
+		startUnit.look();
 		startUnit.location.reputation.p1 = 100;
 		view.focus.unit = startUnit;
 		
@@ -230,11 +226,12 @@ function Unit(owner,startLoc,type) {
 			};
 
 			this.location = site;
-			for (i in sites) {
-				if (Math.pow(Math.pow(sites[i].x - this.location.x,2) + Math.pow(sites[i].y - this.location.y,2),.5) < this.owner.vision && this.owner.knownSites.indexOf(sites[i]) == -1) {
-					this.owner.knownSites.push(sites[i]);
-				};
-			};			
+			this.look();
+// 			for (i in sites) {
+// 				if (Math.pow(Math.pow(sites[i].x - this.location.x,2) + Math.pow(sites[i].y - this.location.y,2),.5) < this.owner.vision && this.owner.knownSites.indexOf(sites[i]) == -1) {
+// 					this.owner.knownSites.push(sites[i]);
+// 				};
+// 			};			
 			view.displaySiteDetails(site);
 			view.displayMap();
 		} else if (this.location.neighbors.indexOf(site) == -1) {
@@ -248,6 +245,15 @@ function Unit(owner,startLoc,type) {
 		};
 		view.displayUnit(this);
 	};
+
+	this.look = function() {
+		for (i in sites) {
+			if ((this.location.neighbors.indexOf(sites[i]) !== -1 || Math.pow(Math.pow(sites[i].x - this.location.x,2) + Math.pow(sites[i].y - this.location.y,2),.5) < this.owner.vision ) && this.owner.knownSites.indexOf(sites[i]) == -1) {
+				this.owner.knownSites.push(sites[i]);
+			};
+		};
+	};
+
 	
 	this.addFromSite = function(commodity) {
 		this.currentTrade.siteStuff.push({commodity:commodity,qty:100});
