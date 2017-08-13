@@ -149,8 +149,24 @@ var view = {
 		var detailsUnitDiv = document.getElementById('detailsUnitDiv');
 		detailsUnitDiv.innerHTML = '';
 		var unitHead = document.createElement('h3');
+		unitHead.id = 'unitHead';
 		unitHead.innerHTML = unit.name;
+		unitHead.setAttribute('onclick','handlers.revealRename()');
 		detailsUnitDiv.appendChild(unitHead);
+		
+		var unitRenameDiv = document.createElement('div');
+		unitRenameDiv.id = 'unitRenameDiv';
+		unitRenameDiv.style.display = 'none';
+		detailsUnitDiv.appendChild(unitRenameDiv);
+		var unitRenameInput = document.createElement('input');
+		unitRenameInput.setAttribute('type','text');
+		unitRenameInput.id = 'unitRenameInput';
+		unitRenameDiv.appendChild(unitRenameInput);
+		var unitRenameBtn = document.createElement('button');
+		unitRenameBtn.innerHTML = 'Rename';
+		unitRenameBtn.setAttribute('onclick','handlers.renameUnit()');
+		unitRenameDiv.appendChild(unitRenameBtn);
+		
 		var unitModelP = document.createElement('p');
 		unitModelP.innerHTML = unit.type.crew + " Crew, Speed " + unit.type.speed;
 		detailsUnitDiv.appendChild(unitModelP);
@@ -201,6 +217,11 @@ var view = {
 		};
 		view.displaySiteDetails(unit.location);
 		view.updateTradeDiv();
+	},
+	
+	revealRename: function() {
+		document.getElementById('unitRenameDiv').style.display = 'block';
+		document.getElementById('unitHead').style.display = 'none';
 	},
 	
 	updateTradeDiv: function() {

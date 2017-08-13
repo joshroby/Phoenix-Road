@@ -115,7 +115,8 @@ var model = {
 	siteName: function() {
 		var consonants = ['b','c','d','f','g','h','j','k','l','m','n','p','q','r','s','t','v','w','x','y','z'];
 		var vowels = ['a','e','i','o','u'];
-		var syllables = 1 + Math.random() * 4 << 0;
+		var syllables = 2 + Math.random() * Math.random() * 4 << 0;
+		if (syllables == 5) { syllables = 1 }
 		var string = '';
 		for (s=0;s<syllables;s++) {
 			if (Math.random() > 0.2) {
@@ -184,6 +185,11 @@ function Unit(owner,startLoc,type) {
 		unitStuff: [],
 		siteStuff: [],
 		balance: 0,
+	};
+	
+	this.rename = function(newName) {
+		this.name = newName;
+		view.displayUnit(this);
 	};
 	
 	this.move = function(site) {		

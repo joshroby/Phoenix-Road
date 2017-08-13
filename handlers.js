@@ -51,5 +51,14 @@ var handlers = {
 	resupply: function(commodityIndex) {
 		view.focus.unit.resupply(commodityIndex);
 	},
+	
+	revealRename: function() {
+		view.revealRename();
+	},
+	
+	renameUnit: function() {
+		var newName = document.getElementById('unitRenameInput').value;
+		view.focus.unit.rename(newName);
+	},
 
 };

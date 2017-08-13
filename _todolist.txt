@@ -1,10 +1,10 @@
 Wasteland Resupply Company To Do List
 
 
+- renaming units
+
 
 EASY PICKINGS
-- make vision checks a function & include all outgoing links from current location
-- renaming units
 - better auto-naming
 - site label onmouseout that returns site details to the focus unit's location
 
