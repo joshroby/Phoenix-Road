@@ -137,20 +137,96 @@ function Site() {
 	this.y = 25 + Math.random() * 950 << 0;
 	this.name = model.siteName();
 	
+	this.hasVisited = {};
+	
 	this.population = Math.random() * Math.random() * 1000 << 0;
 	this.wages = Math.random() * Math.random();
-	
-	this.reputation = {p1:0};
-	
-	this.infrastructure = [];
 	
 	this.commodities = {};
 	for (c in data.commodities) {
 		this.commodities[c] = Math.random() * Math.random() * data.commodities[c].rarity;
 	};
 	
+	this.reputation = {p1:0};
+	
+	this.infrastructure = [];
+	
+	if (this.commodities.stone < 0.5) {
+		this.infrastructure.push(data.infrastructure.bunker);
+	};
+	if (this.commodities.stone < 0.3) {
+		this.infrastructure.push(data.infrastructure.stoneWall);
+	};
+	if (this.commodities.stone < 0.2) {
+		this.infrastructure.push(data.infrastructure.fortress);
+	};
+	if (this.commodities.lumber < 0.4 && this.commodities.stone >= 0.3) {
+		this.infrastructure.push(data.infrastructure.woodenPallisade);
+	};
+	if (this.commodities.lumber + this.commodities.stone < 0.2) {
+		this.infrastructure.push(data.infrastructure.tenements);
+	} else if (this.commodities.lumber + this.commodities.stone < 0.4) {
+		this.infrastructure.push(data.infrastructure.barracks);
+	} else if (this.commodities.lumber + this.commodities.stone < 0.6) {
+		this.infrastructure.push(data.infrastructure.manorHouse);
+	};
+	
+	var foodInfrastructure = 0;
+	if (this.commodities.food < 0.1) {
+		foodInfrastructure = 3;
+	} else if (this.commodities.food < 0.3) {
+		foodInfrastructure = 2;
+	} else if (this.commodities.food < 0.5) {
+		foodInfrastructure = 1;
+	};
+	var foodList = ['pens','fields','arbors'];
+	for (f=0;f<foodInfrastructure;f++) {
+		var num = Math.random() * foodList.length << 0;
+		this.infrastructure.push(data.infrastructure[foodList[num]]);
+		foodList.splice(num,1);
+	};
+	if (this.commodities.fiber < 0.4 && this.infrastructure.indexOf(data.infrastructure.fields) == -1) {
+		this.infrastructure.push(data.infrastructure.fields);
+	};
+	if (this.commodities.stone < 0.4) {
+		this.infrastructure.push(data.infrastructure.quarry);
+	};
+	if (this.commodities.ore < 0.4) {
+		this.infrastructure.push(data.infrastructure.mine);
+	};
+	
 	this.needs = function() {
-		return ['hungry','cold','parched','bored'];
+		var housing = 0;
+		var defense = 0;
+		for (i in this.infrastructure) {
+			if (this.infrastructure[i].housing > 0) {
+				housing += this.infrastructure[i].housing;
+			};
+			if (this.infrastructure[i].defense > 0) {
+				defense += this.infrastructure[i].defense;
+			};
+		};
+
+		var array = [];
+		if (this.wages < this.commodities.food + this.commodities.water) {
+			array.push({label:'hungry',color:'salmon'});
+		} else {
+			array.push({label:'well-fed',color:'springgreen'});
+		};
+		if (housing < this.population / 5) {
+			array.push({label:'cold',color:'salmon'});
+		} else if (housing < this.population / 3) {
+			array.push({label:'crowded',color:'yellow'});
+		} else {
+			array.push({label:'comfy',color:'springgreen'});
+		};
+		if (defense < 20) {
+			array.push({label:'scared',color:'salmon'});
+		} else {
+			array.push({label:'bold',color:'springgreen'});
+		};
+		array.push({label:'bored',color:'salmon'});
+		return array;
 	};
 	
 	sites.push(this);
@@ -258,6 +334,7 @@ function Unit(owner,startLoc,type) {
 				this.owner.knownSites.push(sites[i]);
 			};
 		};
+		this.location.hasVisited.p1 = true;
 	};
 
 	

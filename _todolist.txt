@@ -1,16 +1,14 @@
 Wasteland Resupply Company To Do List
 
 
-- renaming units
+- toggle 'hasVisited' on sites and only display commodity prices for places you've been
 
 
-EASY PICKINGS
-- better auto-naming
+PERNICIOUS PROBLEMS
 - site label onmouseout that returns site details to the focus unit's location
 
 NEAR FUTURE
 - error reporting
-- toggle 'hasVisited' on sites and only display commodity prices for places you've been
 - offroading
 - population conditions / wages vs costs
 - multiple units, especially on same sites

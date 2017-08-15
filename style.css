@@ -23,6 +23,7 @@ body {
 #detailsUnitDiv {
 	float: left;
 	width: 22vw;
+	padding-left: 2vw;
 	}
 	
 #mapDiv {
@@ -40,10 +41,17 @@ body {
 	height: 2vh;
 	}
 
+#siteInfrastructureList {
+	font-size: 0.8em;
+	}
+
 .commoditiesTable {
-	font-size: 0.5em;
 	clear: both;
 	width: 100%;
+	}
+
+.commoditiesTable td {
+	font-size: 0.5em;
 	}
 	
 .commoditiesTable button {
@@ -51,7 +59,7 @@ body {
 	}
 	
 .commoditiesTable caption {
-	font-size: 1em;
+	font-size: 0.9em;
 	font-weight: bold;
 	text-align: left;
 	}

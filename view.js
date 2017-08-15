@@ -83,9 +83,6 @@ var view = {
 // 		var siteCoords = document.createElement('p');
 // 		siteCoords.innerHTML = "( " + site.x + " , " + site.y + " )";
 // 		detailsSiteDiv.appendChild(siteCoords);
-		var sitePopulationP = document.createElement('p');
-		sitePopulationP.innerHTML = site.population + " souls";
-		detailsSiteDiv.appendChild(sitePopulationP);
 		var siteNeedsDiv = document.createElement('div');
 		siteNeedsDiv.id = 'siteNeedsDiv';
 		detailsSiteDiv.appendChild(siteNeedsDiv);
@@ -93,43 +90,61 @@ var view = {
 		for (i in siteNeeds) {
 			var siteNeedDiv = document.createElement('div');
 			siteNeedDiv.className = 'siteNeedDiv';
-			siteNeedDiv.innerHTML = siteNeeds[i];
+			siteNeedDiv.innerHTML = siteNeeds[i].label;
+			siteNeedDiv.style.backgroundColor = siteNeeds[i].color;
 			siteNeedsDiv.appendChild(siteNeedDiv);
 		};
-		var siteCommoditiesTable = document.createElement('table');
-		siteCommoditiesTable.className = 'commoditiesTable';
-		detailsSiteDiv.appendChild(siteCommoditiesTable);
-		var siteCommoditiesTableTitle = document.createElement('caption');
-		siteCommoditiesTableTitle.innerHTML = 'Commodity Values';
-		siteCommoditiesTable.appendChild(siteCommoditiesTableTitle);
-		for (c in site.commodities) {
-			var siteCommoditiesItem = document.createElement('tr');
-			siteCommoditiesTable.appendChild(siteCommoditiesItem);
-			var siteCommoditiesNameCell = document.createElement('td');
-			siteCommoditiesNameCell.innerHTML = data.commodities[c].name;
-			siteCommoditiesItem.appendChild(siteCommoditiesNameCell);
-			var siteCommoditiesValueCell = document.createElement('td');
-			siteCommoditiesValueCell.innerHTML = Math.round(100 * site.commodities[c],0);
-			siteCommoditiesItem.appendChild(siteCommoditiesValueCell);
-			var unitPresent = false;
-			for (u in units) {
-				if (units[u].location == site) {
-					unitPresent = true;
-				};
-			};
-			if (unitPresent) {
-				var siteCommoditiesTradeCell = document.createElement('td');
-				var siteCommoditiesTradeBtn = document.createElement('button');
-				siteCommoditiesTradeBtn.innerHTML = "+";
-				siteCommoditiesTradeBtn.setAttribute('onclick','handlers.addFromSite("'+c+'")');
-				siteCommoditiesTradeCell.appendChild(siteCommoditiesTradeBtn);
-				siteCommoditiesItem.appendChild(siteCommoditiesTradeCell);
-			} else {
-				var siteCommoditiesTradeCell = document.createElement('td');
-				siteCommoditiesTradeCell.innerHTML += "&nbsp;";
-				siteCommoditiesItem.appendChild(siteCommoditiesTradeCell);
+		var sitePopulationP = document.createElement('p');
+		sitePopulationP.innerHTML = site.population + " souls";
+		detailsSiteDiv.appendChild(sitePopulationP);
+		var siteInfrastructureList = document.createElement('ul');
+		siteInfrastructureList.id = 'siteInfrastructureList';
+		detailsSiteDiv.appendChild(siteInfrastructureList);
+		for (i in site.infrastructure) {
+			if (site.infrastructure[i].visible || site.hasVisited.p1) {
+				var siteInfrastructureItem = document.createElement('li');
+				siteInfrastructureItem.innerHTML = site.infrastructure[i].name;
+				siteInfrastructureList.appendChild(siteInfrastructureItem);
 			};
 		};
+		
+		if (site.hasVisited.p1) {
+			var siteCommoditiesTable = document.createElement('table');
+			siteCommoditiesTable.className = 'commoditiesTable';
+			detailsSiteDiv.appendChild(siteCommoditiesTable);
+			var siteCommoditiesTableTitle = document.createElement('caption');
+			siteCommoditiesTableTitle.innerHTML = 'Commodity Values';
+			siteCommoditiesTable.appendChild(siteCommoditiesTableTitle);
+			for (c in site.commodities) {
+				var siteCommoditiesItem = document.createElement('tr');
+				siteCommoditiesTable.appendChild(siteCommoditiesItem);
+				var siteCommoditiesNameCell = document.createElement('td');
+				siteCommoditiesNameCell.innerHTML = data.commodities[c].name;
+				siteCommoditiesItem.appendChild(siteCommoditiesNameCell);
+				var siteCommoditiesValueCell = document.createElement('td');
+				siteCommoditiesValueCell.innerHTML = Math.round(100 * site.commodities[c],0);
+				siteCommoditiesItem.appendChild(siteCommoditiesValueCell);
+				var unitPresent = false;
+				for (u in units) {
+					if (units[u].location == site) {
+						unitPresent = true;
+					};
+				};
+				if (unitPresent) {
+					var siteCommoditiesTradeCell = document.createElement('td');
+					var siteCommoditiesTradeBtn = document.createElement('button');
+					siteCommoditiesTradeBtn.innerHTML = "+";
+					siteCommoditiesTradeBtn.setAttribute('onclick','handlers.addFromSite("'+c+'")');
+					siteCommoditiesTradeCell.appendChild(siteCommoditiesTradeBtn);
+					siteCommoditiesItem.appendChild(siteCommoditiesTradeCell);
+				} else {
+					var siteCommoditiesTradeCell = document.createElement('td');
+					siteCommoditiesTradeCell.innerHTML += "&nbsp;";
+					siteCommoditiesItem.appendChild(siteCommoditiesTradeCell);
+				};
+			};
+		};
+		
 		var siteReputationP = document.createElement('p');
 		if (site.reputation.p1 > 0) {
 			siteReputationP.innerHTML += 'You have a positive reputation here. (' + Math.round(site.reputation.p1,0) + ')';
@@ -138,7 +153,7 @@ var view = {
 			siteReputationP.innerHTML += 'You have a negative reputation here. (' + Math.round(site.reputation.p1,0) + ')';
 			siteReputationP.className = 'negative';
 		} else {
-			siteReputationP.innerHTML += 'You have no reputation here. (' + Math.round(site.reputation.p1,0) + ')';
+			siteReputationP.innerHTML += 'You have no reputation here.';
 			siteReputationP.className = '';
 		};
 		detailsSiteDiv.appendChild(siteReputationP);

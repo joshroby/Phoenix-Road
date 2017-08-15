@@ -6,7 +6,6 @@ var handlers = {
 	},
 	
 	displaySiteDetails: function(siteIndex) {
-		console.log(siteIndex);
 		if (siteIndex == -1) {
 			site = view.focus.unit.location;
 		} else {
