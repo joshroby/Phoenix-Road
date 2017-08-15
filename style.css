@@ -31,6 +31,14 @@ body {
 	float: left;
 	}
 
+#clockDiv {
+	text-align: right;
+	}
+
+#clockSpan {
+	margin-right: 2vw;
+	}
+
 #detailsSiteDiv {
 	width: 20vw;
 	float: left;

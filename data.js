@@ -163,7 +163,7 @@ var data = {
 			name: 'Wagon',
 			cargo: 5,
 			crew: 2,
-			speed: 1,
+			speed: 10,
 			offroadSpeed: 0.25,
 		},
 		

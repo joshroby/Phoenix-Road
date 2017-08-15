@@ -1,22 +1,29 @@
 Wasteland Resupply Company To Do List
 
 
-- toggle 'hasVisited' on sites and only display commodity prices for places you've been
+- clock
+- clock controls
+- units move over time
+- display 'en route to' for units
+- display provisions
+- cancel route
 
 
 PERNICIOUS PROBLEMS
 - site label onmouseout that returns site details to the focus unit's location
 
 NEAR FUTURE
+- natural resources
+- fix displayTrade() to display=none when there's no currentTrade
+- multiple units, especially on same sites
 - error reporting
 - offroading
-- population conditions / wages vs costs
-- multiple units, especially on same sites
+- zoom in / out (just changes viewbox?)
 
 IMMEDIATE FUTURE
 - building infrastructure (displaying infrastructure)
 - cartwright / building new units
-- clock / movement timers / animation/transition
+- movement animation/transition
 - give sites inventory/qty for commodities?
 - rejigger site labels for legibility… somehow
 

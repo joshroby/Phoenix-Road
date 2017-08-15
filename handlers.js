@@ -5,6 +5,35 @@ var handlers = {
 		model.newGame();
 	},
 	
+	clockPause: function() {
+		if (model.options.paused) {
+			model.options.paused = false;
+			document.getElementById('clockPauseBtn').innerHTML = '||';
+			model.advanceClock();
+		} else {
+			model.options.paused = true;
+			document.getElementById('clockPauseBtn').innerHTML = '>';
+		};
+	},
+	
+	clockSpeedUp: function() {
+		model.options.dayLength = Math.max(model.options.dayLength / 2,250);
+		if (model.options.paused) {
+			model.options.paused = false;
+			document.getElementById('clockPauseBtn').innerHTML = '||';
+			model.advanceClock();
+		};
+	},
+	
+	clockSlowDown: function() {
+		model.options.dayLength = Math.min(model.options.dayLength * 2,2500);
+		if (model.options.paused) {
+			model.options.paused = false;
+			document.getElementById('clockPauseBtn').innerHTML = '||';
+			model.advanceClock();
+		};
+	},
+	
 	displaySiteDetails: function(siteIndex) {
 		if (siteIndex == -1) {
 			site = view.focus.unit.location;
@@ -58,6 +87,10 @@ var handlers = {
 	renameUnit: function() {
 		var newName = document.getElementById('unitRenameInput').value;
 		view.focus.unit.rename(newName);
+	},
+	
+	cancelRoute: function() {
+		view.focus.unit.cancelRoute();
 	},
 
 };

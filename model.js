@@ -4,7 +4,13 @@ var p1 = {};
 
 var model = {
 
+	options: {
+		dayLength: 1000,
+		paused: true,
+	},
+
 	newGame: function() {
+		model.currentDay = 1;
 		model.newMap();
 		units = [];
 		p1 = {};
@@ -129,6 +135,23 @@ var model = {
 		};
 		return string.charAt(0).toUpperCase() + string.slice(1);
 	},
+	
+	advanceClock: function() {
+		model.currentDay++;
+		
+		for (i in units) {
+			if (units[i].inTransit) {
+				units[i].moveStep();
+			};
+		};
+		
+		view.displayUnit(view.focus.unit);
+		view.displayMap();
+		
+		if (!model.options.paused) {
+			var timedEvent = setTimeout(model.advanceClock,model.options.dayLength);
+		};
+	},
 
 };
 
@@ -247,6 +270,8 @@ function Unit(owner,startLoc,type) {
 		type = data.units.wagon;
 	};
 	
+	var inTransit = false;
+	
 	var num = units.length + 1;
 	this.name = type.name + " #" + num;
 	
@@ -270,8 +295,8 @@ function Unit(owner,startLoc,type) {
 	
 	this.move = function(site) {		
 		var distance = Math.pow(Math.pow(this.location.x - site.x,2) + Math.pow(this.location.y - site.y,2),.5);
-		var foodEaten = distance / this.type.speed * this.type.crew * 0.1;
-		var waterDrank = distance / this.type.speed * this.type.crew * 0.1;
+		var foodEaten = distance / this.type.speed * this.type.crew;
+		var waterDrank = distance / this.type.speed * this.type.crew;
 		var foodStore = 0;
 		var waterStore = 0;
 		var cargo = 0;
@@ -287,8 +312,37 @@ function Unit(owner,startLoc,type) {
 		};
 				
 		if (this.location.neighbors.indexOf(site) !== -1 && waterStore >= waterDrank && foodStore >= foodEaten && cargo <= this.type.cargo) {
-		
-			// calculate distance, food and water needs
+			var diffX = site.x - this.location.x;
+			var diffY = site.y - this.location.y;
+			var steps = distance / this.type.speed;
+			this.route = [];
+			this.inTransit = true;
+			this.departed = false;
+			for (s=0;s<steps;s++) {
+				this.route.push({x:this.location.x + s*diffX/steps,y:this.location.y + s*diffY/steps});
+			};
+			this.route.push(site);
+		} else if (this.location.neighbors.indexOf(site) == -1) {
+			view.displayError('no path to ',site);
+		} else if (waterStore < waterDrank) {
+			view.displayError('not enough water');
+		} else if (foodStore < foodEaten) {
+			view.displayError('not enough food');
+		} else if (cargo > this.type.cargo) {
+			view.displayError('overburdened!');
+		};
+		view.displayUnit(this);
+	};
+	
+	this.moveStep = function() {
+		var currentStep = this.route.shift();
+		this.departed = true;
+		if (currentStep.name == undefined) {
+			// move a step
+
+			// consume food and water
+			var foodEaten = this.type.crew;
+			var waterDrank = this.type.crew;
 			for (i in this.commodities) {
 				if (this.commodities[i].commodity == 'food') {
 					var temp = this.commodities[i].qty;
@@ -304,39 +358,45 @@ function Unit(owner,startLoc,type) {
 					if (this.commodities[i].qty == 0) {
 						this.commodities.splice(i,1);
 					};
-				}
+				};
 			};
-
-			this.location = site;
 			this.look();
-// 			for (i in sites) {
-// 				if (Math.pow(Math.pow(sites[i].x - this.location.x,2) + Math.pow(sites[i].y - this.location.y,2),.5) < this.owner.vision && this.owner.knownSites.indexOf(sites[i]) == -1) {
-// 					this.owner.knownSites.push(sites[i]);
-// 				};
-// 			};			
-			view.displaySiteDetails(site);
-			view.displayMap();
-		} else if (this.location.neighbors.indexOf(site) == -1) {
-			view.displayError('no path to ',site);
-		} else if (waterStore < waterDrank) {
-			view.displayError('not enough water');
-		} else if (foodStore < foodEaten) {
-			view.displayError('not enough food');
-		} else if (cargo > this.type.cargo) {
-			view.displayError('overburdened!');
+
+		} else {
+			// arrived
+			this.location = currentStep;
+			this.route = [];
+			this.inTransit = false;
+			this.departed = false;
+			this.look();
+			model.options.paused = true;
+			document.getElementById('clockPauseBtn').innerHTML = '>';
 		};
-		view.displayUnit(this);
+		view.displayMap();
+		
 	};
 
 	this.look = function() {
+		if (this.inTransit) {
+			unitX = this.route[0].x;
+			unitY = this.route[0].y;
+		} else {
+			unitX = this.location.x;
+			unitY = this.location.y;
+		};
 		for (i in sites) {
-			if ((this.location.neighbors.indexOf(sites[i]) !== -1 || Math.pow(Math.pow(sites[i].x - this.location.x,2) + Math.pow(sites[i].y - this.location.y,2),.5) < this.owner.vision ) && this.owner.knownSites.indexOf(sites[i]) == -1) {
+			if ((this.location.neighbors.indexOf(sites[i]) !== -1 || Math.pow(Math.pow(sites[i].x - unitX,2) + Math.pow(sites[i].y - unitY,2),.5) < this.owner.vision ) && this.owner.knownSites.indexOf(sites[i]) == -1) {
 				this.owner.knownSites.push(sites[i]);
 			};
 		};
 		this.location.hasVisited.p1 = true;
 	};
 
+	this.cancelRoute = function() {
+		this.route = [];
+		this.inTransit = false;
+		view.displayUnit(this);
+	};
 	
 	this.addFromSite = function(commodity) {
 		this.currentTrade.siteStuff.push({commodity:commodity,qty:100});

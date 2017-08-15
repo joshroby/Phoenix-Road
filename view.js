@@ -3,6 +3,35 @@ var view = {
 	focus: {},
 
 	displayMap: function() {
+		
+		var mapDiv = document.getElementById('mapDiv');
+		mapDiv.innerHTML = '';
+		
+		var clockDiv = document.createElement('div');
+		clockDiv.id = 'clockDiv';
+		var clockSpan = document.createElement('span');
+		clockSpan.id = 'clockSpan';
+		clockSpan.innerHTML = 'Day ' + model.currentDay;
+		clockDiv.appendChild(clockSpan);
+		var clockSlowDownBtn = document.createElement('button');
+		clockSlowDownBtn.innerHTML = '<<';
+		clockSlowDownBtn.setAttribute('onclick','handlers.clockSlowDown()');
+		clockDiv.appendChild(clockSlowDownBtn);
+		var clockPauseBtn = document.createElement('button');
+		clockPauseBtn.id = 'clockPauseBtn';
+		if (model.options.paused) {
+			clockPauseBtn.innerHTML = '>';
+		} else {
+			clockPauseBtn.innerHTML = '||';
+		};
+		clockPauseBtn.setAttribute('onclick','handlers.clockPause()');
+		clockDiv.appendChild(clockPauseBtn);
+		var clockSpeedUpBtn = document.createElement('button');
+		clockSpeedUpBtn.innerHTML = '>>';
+		clockSpeedUpBtn.setAttribute('onclick','handlers.clockSpeedUp()');
+		clockDiv.appendChild(clockSpeedUpBtn);
+		mapDiv.appendChild(clockDiv);
+		
 		var svg = document.createElementNS('http://www.w3.org/2000/svg','svg');
 		svg.setAttribute('viewBox','0 0 1000 1000');
 		svg.id = 'mapSVG';
@@ -59,18 +88,22 @@ var view = {
 		};
 		
 		for (i in units) {
+			if (units[i].inTransit) {
+				unitX = units[i].route[0].x;
+				unitY = units[i].route[0].y;
+			} else {
+				unitX = units[i].location.x;
+				unitY = units[i].location.y;
+			};
 			var newUnit = document.createElementNS('http://www.w3.org/2000/svg','rect');
 			newUnit.setAttribute('fill','red');
-			newUnit.setAttribute('x',units[i].location.x - 10);
-			newUnit.setAttribute('y',units[i].location.y - 10);
+			newUnit.setAttribute('x',unitX - 10);
+			newUnit.setAttribute('y',unitY - 10);
 			newUnit.setAttribute('width',20);
 			newUnit.setAttribute('height',20);
 			newUnit.setAttribute('onclick','handlers.selectUnit('+i+')');
 			svg.appendChild(newUnit);
 		};
-		
-		var mapDiv = document.getElementById('mapDiv');
-		mapDiv.innerHTML = '';
 		mapDiv.appendChild(svg);
 	},
 	
@@ -185,6 +218,21 @@ var view = {
 		var unitModelP = document.createElement('p');
 		unitModelP.innerHTML = unit.type.crew + " Crew, Speed " + unit.type.speed;
 		detailsUnitDiv.appendChild(unitModelP);
+		
+		var unitProvisionsP = document.createElement('p');
+		detailsUnitDiv.appendChild(unitProvisionsP);
+		var provisionsFood = 0;
+		var provisionsWater = 0;
+		for (c in unit.commodities) {
+			if (unit.commodities[c].commodity == 'food') {
+				provisionsFood += unit.commodities[c].qty;
+			} else if (unit.commodities[c].commodity == 'water') {
+				provisionsWater += unit.commodities[c].qty;
+			};
+		};
+		var provisions = Math.min(provisionsFood/unit.type.crew,provisionsWater/unit.type.crew);
+		unitProvisionsP.innerHTML = provisions + " days provisions";
+		
 		var unitCommoditiesTable = document.createElement('table');
 		unitCommoditiesTable.className = 'commoditiesTable';
 		detailsUnitDiv.appendChild(unitCommoditiesTable);
@@ -230,6 +278,19 @@ var view = {
 		if (cargo > unit.type.cargo) {
 			unitCommoditiesTableTitle.innerHTML += ' <span class="negative">Overburdened!</span>';
 		};
+		
+		if (unit.inTransit) {
+			var enRouteP = document.createElement('p');
+			enRouteP.innerHTML = 'En route to ' + unit.route[unit.route.length-1].name + " (" + unit.route.length + " days)";
+			detailsUnitDiv.appendChild(enRouteP);
+			if (!unit.departed) {
+				var cancelRouteBtn = document.createElement('button');
+				cancelRouteBtn.innerHTML = 'cancel';
+				cancelRouteBtn.setAttribute('onclick','handlers.cancelRoute()');
+				detailsUnitDiv.appendChild(cancelRouteBtn);
+			};
+		};
+		
 		view.displaySiteDetails(unit.location);
 		view.updateTradeDiv();
 	},
