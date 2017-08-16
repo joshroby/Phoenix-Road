@@ -65,6 +65,16 @@ var handlers = {
 		view.updateTradeDiv();
 	},
 	
+	removeUnitStuff: function(tradeIndex) {
+		view.focus.unit.removeUnitStuff(tradeIndex);
+		view.updateTradeDiv();
+	},
+	
+	removeSiteStuff: function(tradeIndex) {
+		view.focus.unit.removeSiteStuff(tradeIndex);
+		view.updateTradeDiv();
+	},
+	
 	makeTrade: function() {
 		view.focus.unit.makeTrade();
 		handlers.clearTrade();

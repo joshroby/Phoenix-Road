@@ -1,14 +1,12 @@
 Wasteland Resupply Company To Do List
 
 
-- fix displayTrade() to display=none when there's no currentTrade
-- natural resources
+- remove items from trade window
 
 PERNICIOUS PROBLEMS
 - site label onmouseout that returns site details to the focus unit's location
 
 NEAR FUTURE
-- remove items from trade window
 - multiple units
 	- when two are at same site
 	- transfer cargo

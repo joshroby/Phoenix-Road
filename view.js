@@ -349,7 +349,11 @@ var view = {
 			unitStuffDiv.appendChild(unitStuffList);
 			for (i in currentTrade.unitStuff) {
 				var unitStuffItem = document.createElement('li');
-				unitStuffItem.innerHTML = data.commodities[currentTrade.unitStuff[i].commodity].name;
+				unitStuffItem.innerHTML = data.commodities[currentTrade.unitStuff[i].commodity].name + ' ';
+				var unitStuffRemoveBtn = document.createElement('button');
+				unitStuffRemoveBtn.innerHTML = '-';
+				unitStuffRemoveBtn.setAttribute('onclick','handlers.removeUnitStuff('+i+')');
+				unitStuffItem.appendChild(unitStuffRemoveBtn);
 				unitStuffList.appendChild(unitStuffItem);
 				currentTrade.balance += currentTrade.unitStuff[i].qty * view.focus.unit.location.commodities[currentTrade.unitStuff[i].commodity];
 			};
@@ -387,6 +391,10 @@ var view = {
 	
 	disableUnitAddBtn: function(index) {
 		document.getElementById('unitAddBtn_' + index).disabled = true;
+	},
+	
+	enableUnitAddBtn: function(index) {
+		document.getElementById('unitAddBtn_' + index).disabled = false;
 	},
 	
 	enableUnitAddBtns: function() {

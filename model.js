@@ -19,6 +19,7 @@ var model = {
 		p1.knownSites = [];
 		
 		var startUnit = new Unit(p1,undefined,data.units.wagon);
+		var startUnit = new Unit(p1,startUnit.location,data.units.wagon);
 		startUnit.look();
 		startUnit.location.reputation.p1 = 100;
 		view.focus.unit = startUnit;
@@ -419,6 +420,16 @@ function Unit(owner,startLoc,type) {
 	this.clearTrade = function(commodity) {
 		this.currentTrade = {unitStuff: [], siteStuff: []};
 		view.updateTradeDiv();
+	};
+	
+	this.removeUnitStuff = function(tradeIndex) {
+		var commodityIndex = this.commodities.indexOf(this.currentTrade.unitStuff[tradeIndex]);
+		view.enableUnitAddBtn(commodityIndex);
+		this.currentTrade.unitStuff.splice(tradeIndex,1);
+	};
+	
+	this.removeSiteStuff = function(tradeIndex) {
+		this.currentTrade.siteStuff.splice(tradeIndex,1);
 	};
 	
 	this.makeTrade = function() {
