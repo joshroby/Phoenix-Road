@@ -172,8 +172,17 @@ function Site() {
 	
 	this.reputation = {p1:0};
 	
-	this.infrastructure = [];
+	this.resources = [];
+	var resourcesNum = 1 + Math.random() * Math.random() * 5 << 0;
+	for (r=0;r<resourcesNum;r++) {
+		var resources = Object.keys(data.resources);
+		var newResource = data.resources[resources[Math.random() * resources.length << 0]];
+		if (this.resources.indexOf(newResource) == -1) {
+			this.resources.push(newResource)
+		};
+	};
 	
+	this.infrastructure = [];
 	if (this.commodities.stone < 0.5) {
 		this.infrastructure.push(data.infrastructure.bunker);
 	};

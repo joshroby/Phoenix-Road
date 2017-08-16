@@ -1,7 +1,7 @@
 var handlers = {
 
 	newGame: function() {
-		console.log('---');
+		view.clearDetailsDivs();
 		model.newGame();
 	},
 	

@@ -1,31 +1,27 @@
 Wasteland Resupply Company To Do List
 
 
-- clock
-- clock controls
-- units move over time
-- display 'en route to' for units
-- display provisions
-- cancel route
-
+- fix displayTrade() to display=none when there's no currentTrade
 
 PERNICIOUS PROBLEMS
 - site label onmouseout that returns site details to the focus unit's location
 
 NEAR FUTURE
 - natural resources
-- fix displayTrade() to display=none when there's no currentTrade
+- remove items from trade window
 - multiple units, especially on same sites
 - error reporting
 - offroading
 - zoom in / out (just changes viewbox?)
 
 IMMEDIATE FUTURE
-- building infrastructure (displaying infrastructure)
-- cartwright / building new units
+- building infrastructure
+	- cartwright builds new units
+	- counting house enables trade in coin
+	- production buildings lower value of output commodities & increase value of inputs
 - movement animation/transition
-- give sites inventory/qty for commodities?
 - rejigger site labels for legibility… somehow
+- surveyer unit (sees hidden natural resources)
 
 FAR FUTURE
 - boats? terrain?

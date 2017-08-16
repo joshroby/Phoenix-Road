@@ -1,6 +1,11 @@
 var view = {
 
 	focus: {},
+	
+	clearDetailsDivs: function() {
+		document.getElementById('detailsUnitDiv').innerHTML = '&nbsp;';
+		document.getElementById('detailsSiteDiv').innerHTML = '&nbsp;';
+	},
 
 	displayMap: function() {
 		
@@ -130,15 +135,29 @@ var view = {
 		var sitePopulationP = document.createElement('p');
 		sitePopulationP.innerHTML = site.population + " souls";
 		detailsSiteDiv.appendChild(sitePopulationP);
-		var siteInfrastructureList = document.createElement('ul');
-		siteInfrastructureList.id = 'siteInfrastructureList';
-		detailsSiteDiv.appendChild(siteInfrastructureList);
+		var siteFeatureList = document.createElement('ul');
+		siteFeatureList.id = 'siteFeatureList';
+		detailsSiteDiv.appendChild(siteFeatureList);
+		var list = [];
+		for (i in site.resources) {
+			if (site.resources[i].visible || site.hasVisited.p1) {
+				list.push(site.resources[i]);
+			};
+		};
 		for (i in site.infrastructure) {
 			if (site.infrastructure[i].visible || site.hasVisited.p1) {
-				var siteInfrastructureItem = document.createElement('li');
-				siteInfrastructureItem.innerHTML = site.infrastructure[i].name;
-				siteInfrastructureList.appendChild(siteInfrastructureItem);
+				list.push(site.infrastructure[i]);
 			};
+		};
+		list.sort(function(a,b){
+			if(a.name < b.name) return -1;
+			if(a.name > b.name) return 1;
+			return 0;
+		});
+		for (i in list) {
+			var siteFeatureItem = document.createElement('li');
+			siteFeatureItem.innerHTML = list[i].name;
+			siteFeatureList.appendChild(siteFeatureItem);
 		};
 		
 		if (site.hasVisited.p1) {
@@ -303,44 +322,48 @@ var view = {
 	updateTradeDiv: function() {
 		var currentTrade = view.focus.unit.currentTrade;
 		
-		document.getElementById('tradeDiv').style.display = 'block';
-		
-		currentTrade.balance = 0;
-		
-		var unitStuffDiv = document.getElementById('unitStuffDiv');
-		unitStuffDiv.innerHTML = '';
-		var unitStuffList = document.createElement('ul');
-		unitStuffDiv.appendChild(unitStuffList);
-		for (i in currentTrade.unitStuff) {
-			var unitStuffItem = document.createElement('li');
-			unitStuffItem.innerHTML = data.commodities[currentTrade.unitStuff[i].commodity].name;
-			unitStuffList.appendChild(unitStuffItem);
-			currentTrade.balance += currentTrade.unitStuff[i].qty * view.focus.unit.location.commodities[currentTrade.unitStuff[i].commodity];
-		};
-		
-		var siteStuffDiv = document.getElementById('siteStuffDiv');
-		siteStuffDiv.innerHTML = '';
-		var siteStuffList = document.createElement('ul');
-		siteStuffDiv.appendChild(siteStuffList);
-		for (i in currentTrade.siteStuff) {
-			var siteStuffItem = document.createElement('li');
-			siteStuffItem.innerHTML = data.commodities[currentTrade.siteStuff[i].commodity].name;
-			siteStuffList.appendChild(siteStuffItem);
-			currentTrade.balance -= currentTrade.siteStuff[i].qty * view.focus.unit.location.commodities[currentTrade.siteStuff[i].commodity];
-		};
-		
-		var balanceDiv = document.getElementById('balanceDiv');
-		balanceDiv.innerHTML = Math.round(currentTrade.balance , 0);
-		if (currentTrade.balance >=  -1 * view.focus.unit.location.reputation.p1) {
-			balanceDiv.className = 'balancePositive';
+		if (currentTrade.unitStuff.length + currentTrade.siteStuff.length == 0) {
+			document.getElementById('tradeDiv').style.display = 'none';
 		} else {
-			balanceDiv.className = 'balanceNegative';
-		};
+			document.getElementById('tradeDiv').style.display = 'block';
 		
-		if (currentTrade.balance >= -1 * view.focus.unit.location.reputation.p1 && Object.keys(view.focus.unit.commodities).length - currentTrade.unitStuff.length + currentTrade.siteStuff.length) {
-			document.getElementById('tradeBtn').disabled = false;
-		} else {
-			document.getElementById('tradeBtn').disabled = true;
+			currentTrade.balance = 0;
+		
+			var unitStuffDiv = document.getElementById('unitStuffDiv');
+			unitStuffDiv.innerHTML = '';
+			var unitStuffList = document.createElement('ul');
+			unitStuffDiv.appendChild(unitStuffList);
+			for (i in currentTrade.unitStuff) {
+				var unitStuffItem = document.createElement('li');
+				unitStuffItem.innerHTML = data.commodities[currentTrade.unitStuff[i].commodity].name;
+				unitStuffList.appendChild(unitStuffItem);
+				currentTrade.balance += currentTrade.unitStuff[i].qty * view.focus.unit.location.commodities[currentTrade.unitStuff[i].commodity];
+			};
+		
+			var siteStuffDiv = document.getElementById('siteStuffDiv');
+			siteStuffDiv.innerHTML = '';
+			var siteStuffList = document.createElement('ul');
+			siteStuffDiv.appendChild(siteStuffList);
+			for (i in currentTrade.siteStuff) {
+				var siteStuffItem = document.createElement('li');
+				siteStuffItem.innerHTML = data.commodities[currentTrade.siteStuff[i].commodity].name;
+				siteStuffList.appendChild(siteStuffItem);
+				currentTrade.balance -= currentTrade.siteStuff[i].qty * view.focus.unit.location.commodities[currentTrade.siteStuff[i].commodity];
+			};
+		
+			var balanceDiv = document.getElementById('balanceDiv');
+			balanceDiv.innerHTML = Math.round(currentTrade.balance , 0);
+			if (currentTrade.balance >=  -1 * view.focus.unit.location.reputation.p1) {
+				balanceDiv.className = 'balancePositive';
+			} else {
+				balanceDiv.className = 'balanceNegative';
+			};
+		
+			if (currentTrade.balance >= -1 * view.focus.unit.location.reputation.p1 && Object.keys(view.focus.unit.commodities).length - currentTrade.unitStuff.length + currentTrade.siteStuff.length) {
+				document.getElementById('tradeBtn').disabled = false;
+			} else {
+				document.getElementById('tradeBtn').disabled = true;
+			};
 		};
 	},
 	
