@@ -1,7 +1,6 @@
 Wasteland Resupply Company To Do List
 
 
-- remove items from trade window
 
 PERNICIOUS PROBLEMS
 - site label onmouseout that returns site details to the focus unit's location
@@ -22,6 +21,7 @@ IMMEDIATE FUTURE
 - movement animation/transition
 - rejigger site labels for legibility… somehow
 - surveyer unit (sees hidden natural resources)
+- increasing vision ?
 
 FAR FUTURE
 - boats? terrain?

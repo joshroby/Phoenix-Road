@@ -412,9 +412,8 @@ function Unit(owner,startLoc,type) {
 		this.currentTrade.siteStuff.push({commodity:commodity,qty:100});
 	};
 	
-	this.addFromUnit = function(index) {
-		this.currentTrade.unitStuff.push(this.commodities[index]);
-		view.disableUnitAddBtn(index);
+	this.addFromUnit = function(commodityIndex) {
+		this.currentTrade.unitStuff.push(this.commodities[commodityIndex]);
 	};
 	
 	this.clearTrade = function(commodity) {

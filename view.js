@@ -1,6 +1,8 @@
 var view = {
 
-	focus: {},
+	focus: {
+		unitPane: 0,
+	},
 	
 	clearDetailsDivs: function() {
 		document.getElementById('detailsUnitDiv').innerHTML = '&nbsp;';
@@ -227,110 +229,157 @@ var view = {
 	},
 	
 	displayUnit: function(unit) {
+		var selectedUnit = unit;
 		var detailsUnitDiv = document.getElementById('detailsUnitDiv');
 		detailsUnitDiv.innerHTML = '';
-		var unitHead = document.createElement('h3');
-		unitHead.id = 'unitHead';
-		unitHead.innerHTML = unit.name;
-		unitHead.setAttribute('onclick','handlers.revealRename()');
-		detailsUnitDiv.appendChild(unitHead);
 		
-		var unitRenameDiv = document.createElement('div');
-		unitRenameDiv.id = 'unitRenameDiv';
-		unitRenameDiv.style.display = 'none';
-		detailsUnitDiv.appendChild(unitRenameDiv);
-		var unitRenameInput = document.createElement('input');
-		unitRenameInput.setAttribute('type','text');
-		unitRenameInput.id = 'unitRenameInput';
-		unitRenameDiv.appendChild(unitRenameInput);
-		var unitRenameBtn = document.createElement('button');
-		unitRenameBtn.innerHTML = 'Rename';
-		unitRenameBtn.setAttribute('onclick','handlers.renameUnit()');
-		unitRenameDiv.appendChild(unitRenameBtn);
-		
-		var unitModelP = document.createElement('p');
-		unitModelP.innerHTML = unit.type.crew + " Crew, Speed " + unit.type.speed;
-		detailsUnitDiv.appendChild(unitModelP);
-		
-		var unitProvisionsP = document.createElement('p');
-		detailsUnitDiv.appendChild(unitProvisionsP);
-		var provisionsFood = 0;
-		var provisionsWater = 0;
-		for (c in unit.commodities) {
-			if (unit.commodities[c].commodity == 'food') {
-				provisionsFood += unit.commodities[c].qty;
-			} else if (unit.commodities[c].commodity == 'water') {
-				provisionsWater += unit.commodities[c].qty;
+		var unitsAtSite = [];
+		for (i in units) {
+			if (units[i].location == unit.location && !units[i].departed) {
+				unitsAtSite.push(units[i]);
+			} else if (units[i] == unit) {
+				unitsAtSite.push(units[i]);
 			};
 		};
-		var provisions = Math.min(provisionsFood/unit.type.crew,provisionsWater/unit.type.crew);
-		unitProvisionsP.innerHTML = provisions + " days provisions";
+	
+		for (u in unitsAtSite) {
+			unit = unitsAtSite[u];
+			unitIndex = units.indexOf(unit);
+			var unitPane = document.createElement('div');
+			unitPane.id = 'unitPane_' + u;
+			unitPane.className = 'unitPane';
+			unitPane.style.display = 'none';
+			detailsUnitDiv.appendChild(unitPane);
+			
+			var unitHead = document.createElement('h3');
+			unitHead.id = 'unitHead_'+u;
+			unitHead.innerHTML = unit.name;
+			unitHead.setAttribute('onclick','handlers.revealRename()');
+			unitPane.appendChild(unitHead);
 		
-		var unitCommoditiesTable = document.createElement('table');
-		unitCommoditiesTable.className = 'commoditiesTable';
-		detailsUnitDiv.appendChild(unitCommoditiesTable);
-		var unitCommoditiesTableTitle = document.createElement('caption');
-		unitCommoditiesTable.appendChild(unitCommoditiesTableTitle);
-		var cargo = 0;
-		for (c in unit.commodities) {
-			var unitCommoditiesItem = document.createElement('tr');
-			unitCommoditiesTable.appendChild(unitCommoditiesItem);
-			var unitCommoditiesNameCell = document.createElement('td');
-			unitCommoditiesNameCell.innerHTML = data.commodities[unit.commodities[c].commodity].name;
-			if (unit.commodities[c].commodity == 'food' || unit.commodities[c].commodity == 'water') {
-				unitCommoditiesNameCell.innerHTML += ' (' + unit.commodities[c].qty + '%)';
-			};
-			unitCommoditiesItem.appendChild(unitCommoditiesNameCell);
-			var unitCommoditiesValueCell = document.createElement('td');
-			unitCommoditiesValueCell.innerHTML = Math.round(100 * unit.location.commodities[unit.commodities[c].commodity],0);
-			unitCommoditiesItem.appendChild(unitCommoditiesValueCell);
-			var unitCommoditiesTradeCell = document.createElement('td');
-			var unitCommoditiesTradeBtn = document.createElement('button');
-			unitCommoditiesTradeBtn.innerHTML = "+";
-			unitCommoditiesTradeBtn.setAttribute('onclick','handlers.addFromUnit("'+c+'")');
-			unitCommoditiesTradeBtn.id = 'unitAddBtn_' + c;
-			unitCommoditiesTradeCell.appendChild(unitCommoditiesTradeBtn);
-			if (unit.commodities[c].commodity == 'food' || unit.commodities[c].commodity == 'water') {
-				var resupplyBtn = document.createElement('button');
-				resupplyBtn.innerHTML = 'R';
-				resupplyBtn.setAttribute('onclick','handlers.resupply('+c+')');
-				var resupplyCost = (100 - unit.commodities[c].qty ) * unit.location.commodities[unit.commodities[c].commodity];
-				if (unit.commodities[c].qty == 100 || resupplyCost > unit.location.reputation.p1) {
-					resupplyBtn.disabled = true;
-				} else {
-					resupplyBtn.disabled = false;
+			var unitRenameDiv = document.createElement('div');
+			unitRenameDiv.id = 'unitRenameDiv_'+u;
+			unitRenameDiv.style.display = 'none';
+			unitPane.appendChild(unitRenameDiv);
+			var unitRenameInput = document.createElement('input');
+			unitRenameInput.setAttribute('type','text');
+			unitRenameInput.id = 'unitRenameInput_' + u;
+			unitRenameDiv.appendChild(unitRenameInput);
+			var unitRenameBtn = document.createElement('button');
+			unitRenameBtn.innerHTML = 'Rename';
+			unitRenameBtn.setAttribute('onclick','handlers.renameUnit()');
+			unitRenameDiv.appendChild(unitRenameBtn);
+		
+			var unitModelP = document.createElement('p');
+			unitModelP.innerHTML = unit.type.crew + " Crew, Speed " + unit.type.speed;
+			unitPane.appendChild(unitModelP);
+		
+			var unitProvisionsP = document.createElement('p');
+			unitPane.appendChild(unitProvisionsP);
+			var provisionsFood = 0;
+			var provisionsWater = 0;
+			for (c in unit.commodities) {
+				if (unit.commodities[c].commodity == 'food') {
+					provisionsFood += unit.commodities[c].qty;
+				} else if (unit.commodities[c].commodity == 'water') {
+					provisionsWater += unit.commodities[c].qty;
 				};
-				unitCommoditiesTradeCell.appendChild(resupplyBtn);
 			};
-			unitCommoditiesItem.appendChild(unitCommoditiesTradeCell);
-			if (data.commodities[unit.commodities[c].commodity].cargo) {
-				cargo++;
+			var provisions = Math.min(provisionsFood/unit.type.crew,provisionsWater/unit.type.crew);
+			unitProvisionsP.innerHTML = provisions + " days provisions";
+		
+			var unitCommoditiesTable = document.createElement('table');
+			unitCommoditiesTable.className = 'commoditiesTable';
+			unitPane.appendChild(unitCommoditiesTable);
+			var unitCommoditiesTableTitle = document.createElement('caption');
+			unitCommoditiesTable.appendChild(unitCommoditiesTableTitle);
+			var cargo = 0;
+			for (c in unit.commodities) {
+				var unitCommoditiesItem = document.createElement('tr');
+				unitCommoditiesTable.appendChild(unitCommoditiesItem);
+				var unitCommoditiesNameCell = document.createElement('td');
+				unitCommoditiesNameCell.innerHTML = data.commodities[unit.commodities[c].commodity].name;
+				if (unit.commodities[c].commodity == 'food' || unit.commodities[c].commodity == 'water') {
+					unitCommoditiesNameCell.innerHTML += ' (' + unit.commodities[c].qty + '%)';
+				};
+				unitCommoditiesItem.appendChild(unitCommoditiesNameCell);
+				var unitCommoditiesValueCell = document.createElement('td');
+				unitCommoditiesValueCell.innerHTML = Math.round(100 * unit.location.commodities[unit.commodities[c].commodity],0);
+				unitCommoditiesItem.appendChild(unitCommoditiesValueCell);
+				var unitCommoditiesTradeCell = document.createElement('td');
+				var unitCommoditiesTradeBtn = document.createElement('button');
+				unitCommoditiesTradeBtn.innerHTML = "+";
+				unitCommoditiesTradeBtn.setAttribute('onclick','handlers.addFromUnit('+u+',"'+c+'")');
+				unitCommoditiesTradeBtn.id = 'unitAddBtn_' + u + '_' + c;
+				unitCommoditiesTradeCell.appendChild(unitCommoditiesTradeBtn);
+				if (unit.commodities[c].commodity == 'food' || unit.commodities[c].commodity == 'water') {
+					var resupplyBtn = document.createElement('button');
+					resupplyBtn.innerHTML = 'R';
+					resupplyBtn.setAttribute('onclick','handlers.resupply('+c+')');
+					var resupplyCost = (100 - unit.commodities[c].qty ) * unit.location.commodities[unit.commodities[c].commodity];
+					if (unit.commodities[c].qty == 100 || resupplyCost > unit.location.reputation.p1) {
+						resupplyBtn.disabled = true;
+					} else {
+						resupplyBtn.disabled = false;
+					};
+					unitCommoditiesTradeCell.appendChild(resupplyBtn);
+				};
+				unitCommoditiesItem.appendChild(unitCommoditiesTradeCell);
+				if (data.commodities[unit.commodities[c].commodity].cargo) {
+					cargo++;
+				};
 			};
-		};
-		unitCommoditiesTableTitle.innerHTML = 'Cargo ' + cargo + "/" + unit.type.cargo;
-		if (cargo > unit.type.cargo) {
-			unitCommoditiesTableTitle.innerHTML += ' <span class="negative">Overburdened!</span>';
+			unitCommoditiesTableTitle.innerHTML = 'Cargo ' + cargo + "/" + unit.type.cargo;
+			if (cargo > unit.type.cargo) {
+				unitCommoditiesTableTitle.innerHTML += ' <span class="negative">Overburdened!</span>';
+			};
+		
+			if (unit.inTransit) {
+				var enRouteP = document.createElement('p');
+				enRouteP.innerHTML = 'En route to ' + unit.route[unit.route.length-1].name + " (" + unit.route.length + " days)";
+				unitPane.appendChild(enRouteP);
+				if (!unit.departed) {
+					var cancelRouteBtn = document.createElement('button');
+					cancelRouteBtn.innerHTML = 'cancel';
+					cancelRouteBtn.setAttribute('onclick','handlers.cancelRoute('+unitIndex+')');
+					unitPane.appendChild(cancelRouteBtn);
+				};
+			};
+		
+			view.displaySiteDetails(unit.location);
+			view.updateTradeDiv();
 		};
 		
-		if (unit.inTransit) {
-			var enRouteP = document.createElement('p');
-			enRouteP.innerHTML = 'En route to ' + unit.route[unit.route.length-1].name + " (" + unit.route.length + " days)";
-			detailsUnitDiv.appendChild(enRouteP);
-			if (!unit.departed) {
-				var cancelRouteBtn = document.createElement('button');
-				cancelRouteBtn.innerHTML = 'cancel';
-				cancelRouteBtn.setAttribute('onclick','handlers.cancelRoute()');
-				detailsUnitDiv.appendChild(cancelRouteBtn);
+		if (unitsAtSite.length > 1) {
+			var unitTabsDiv = document.createElement('div');
+			unitTabsDiv.id = 'unitTabsDiv';
+			detailsUnitDiv.appendChild(unitTabsDiv);
+			for ( u in unitsAtSite ) {
+				var unitTab = document.createElement('span');
+				unitTab.className = 'unitTab';
+				unitTab.innerHTML = unitsAtSite[u].name;
+				unitTab.setAttribute('onclick','handlers.switchUnitPane('+units.indexOf(unitsAtSite[u])+','+u+')');
+				unitTabsDiv.appendChild(unitTab);
 			};
 		};
 		
-		view.displaySiteDetails(unit.location);
-		view.updateTradeDiv();
+		view.focus.unitPane = unitsAtSite.indexOf(selectedUnit);
+		document.getElementById('unitPane_' + view.focus.unitPane ).style.display = 'block';
+	},
+	
+	switchUnitPane: function(paneIndex,unitIndex) {
+		var panes = document.getElementById('detailsUnitDiv').children;
+		for (i=0;i<panes.length-1;i++) {
+			panes[i].style.display = 'none';
+		};
+		document.getElementById('unitPane_'+paneIndex).style.display = 'block';
+		view.focus.unit = units[unitIndex];
+		view.focus.unitPane = paneIndex;
 	},
 	
 	revealRename: function() {
-		document.getElementById('unitRenameDiv').style.display = 'block';
-		document.getElementById('unitHead').style.display = 'none';
+		document.getElementById('unitRenameDiv_'+view.focus.unitPane).style.display = 'block';
+		document.getElementById('unitHead_'+view.focus.unitPane).style.display = 'none';
 	},
 	
 	updateTradeDiv: function() {
@@ -393,17 +442,18 @@ var view = {
 		document.getElementById('tradeDiv').style.display = 'hidden';
 	},
 	
-	disableUnitAddBtn: function(index) {
-		document.getElementById('unitAddBtn_' + index).disabled = true;
+	disableUnitAddBtn: function(paneIndex,commodityIndex) {
+		document.getElementById('unitAddBtn_' + paneIndex + '_' + commodityIndex).disabled = true;
 	},
 	
-	enableUnitAddBtn: function(index) {
-		document.getElementById('unitAddBtn_' + index).disabled = false;
+	enableUnitAddBtn: function(commodityIndex) {
+		console.log('unitAddBtn_' + view.focus.unitPane + '_' + commodityIndex);
+		document.getElementById('unitAddBtn_' + view.focus.unitPane + '_' + commodityIndex).disabled = false;
 	},
 	
 	enableUnitAddBtns: function() {
 		for (i in view.focus.unit.commodities) {
-			document.getElementById('unitAddBtn_' + i).disabled = false;
+			document.getElementById('unitAddBtn_' + view.focus.unitPane + '_' + i).disabled = false;
 		};
 	},
 	

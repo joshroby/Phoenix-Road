@@ -48,6 +48,12 @@ var handlers = {
 		view.displayUnit(view.focus.unit);
 	},
 	
+	switchUnitPane: function(unitIndex,paneIndex) {
+		view.switchUnitPane(paneIndex);
+		view.focus.unit = units[unitIndex];
+		view.updateTradeDiv();
+	},
+	
 	selectSite: function(siteIndex) {
 		site = sites[siteIndex];
 		if (view.focus.unit !== undefined) {
@@ -60,8 +66,9 @@ var handlers = {
 		view.updateTradeDiv();
 	},
 	
-	addFromUnit: function(commodityIndex) {
+	addFromUnit: function(paneIndex,commodityIndex) {
 		view.focus.unit.addFromUnit(commodityIndex);
+		view.disableUnitAddBtn(paneIndex,commodityIndex);
 		view.updateTradeDiv();
 	},
 	
@@ -91,11 +98,11 @@ var handlers = {
 	},
 	
 	revealRename: function() {
-		view.revealRename();
+		view.revealRename(view.focus.unitPane);
 	},
 	
 	renameUnit: function() {
-		var newName = document.getElementById('unitRenameInput').value;
+		var newName = document.getElementById('unitRenameInput_'+view.focus.unitPane).value;
 		view.focus.unit.rename(newName);
 	},
 	

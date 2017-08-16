@@ -27,6 +27,25 @@ body {
 	height: 60vw;
 	overflow-y: auto;
 	}
+
+.unitPane {
+	height: 40vw;
+	min-height: 40vw;
+	overflow-y: auto;
+	}
+
+#unitTabsDiv {
+	margin-top: 5vh;
+	height: 10vh;
+	}
+
+.unitTab {
+	font-size: 0.5em;
+	background-color: lightgrey;
+	padding: 0.5vw;
+	margin: 1vw;
+	border: 0.5px solid darkgrey;
+	}
 	
 #mapDiv {
 	width: 50vw;
