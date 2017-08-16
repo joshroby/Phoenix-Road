@@ -71,7 +71,11 @@ var view = {
 			var siteIndex = sites.indexOf(p1.knownSites[i]);
 			
 			var siteLabel = document.createElementNS('http://www.w3.org/2000/svg','text');
-			siteLabel.setAttribute('stroke','black');
+			if (p1.knownSites[i].hasVisited.p1) {
+				siteLabel.setAttribute('stroke','black');
+			} else {
+				siteLabel.setAttribute('stroke','dimgray');
+			};
 			siteLabel.setAttribute('x',p1.knownSites[i].x + 10);
 			siteLabel.setAttribute('y',p1.knownSites[i].y + 5);
 			siteLabel.setAttribute('onmouseover','handlers.displaySiteDetails('+siteIndex+')');
@@ -83,11 +87,21 @@ var view = {
 			
 			var newSite = document.createElementNS('http://www.w3.org/2000/svg','circle');
 			newSite.id = 'site_' + i;
-			newSite.setAttribute('fill','black');
-			newSite.setAttribute('stroke','white');
+			if (p1.knownSites[i].hasVisited.p1) {
+				newSite.setAttribute('fill','black');
+			} else {
+				newSite.setAttribute('fill','dimgray');
+			};
+			newSite.setAttribute('stroke','yellow');
 			newSite.setAttribute('cx',p1.knownSites[i].x);
 			newSite.setAttribute('cy',p1.knownSites[i].y);
-			newSite.setAttribute('r',5);
+			if (p1.knownSites[i].population < 100) {
+				newSite.setAttribute('r',4);
+			} else if (p1.knownSites[i].population < 400) {
+				newSite.setAttribute('r',5);
+			} else {
+				newSite.setAttribute('r',6);
+			};
 			newSite.setAttribute('onclick','handlers.selectSite('+siteIndex+')');
 			svg.appendChild(newSite);
 		};
