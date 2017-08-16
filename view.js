@@ -364,7 +364,11 @@ var view = {
 			siteStuffDiv.appendChild(siteStuffList);
 			for (i in currentTrade.siteStuff) {
 				var siteStuffItem = document.createElement('li');
-				siteStuffItem.innerHTML = data.commodities[currentTrade.siteStuff[i].commodity].name;
+				siteStuffItem.innerHTML = data.commodities[currentTrade.siteStuff[i].commodity].name + ' ';
+				var siteStuffRemoveBtn = document.createElement('button');
+				siteStuffRemoveBtn.innerHTML = '-';
+				siteStuffRemoveBtn.setAttribute('onclick','handlers.removeSiteStuff('+i+')');
+				siteStuffItem.appendChild(siteStuffRemoveBtn);
 				siteStuffList.appendChild(siteStuffItem);
 				currentTrade.balance -= currentTrade.siteStuff[i].qty * view.focus.unit.location.commodities[currentTrade.siteStuff[i].commodity];
 			};

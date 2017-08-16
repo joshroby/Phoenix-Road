@@ -24,6 +24,8 @@ body {
 	float: left;
 	width: 22vw;
 	padding-left: 2vw;
+	height: 60vw;
+	overflow-y: auto;
 	}
 	
 #mapDiv {
@@ -43,6 +45,8 @@ body {
 	width: 20vw;
 	float: left;
 	padding-left: 2vw;
+	height: 60vw;
+	overflow-y: auto;
 	}
 
 #siteNeedsDiv {
