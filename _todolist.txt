@@ -6,9 +6,8 @@ PERNICIOUS PROBLEMS
 - site label onmouseout that returns site details to the focus unit's location
 
 NEAR FUTURE
-- multiple units
-	- when two are at same site
-	- transfer cargo
+- when unit makes first MoveStep, remove location
+	- and then fix all the bits that assume all units have locations
 - error reporting
 - offroading
 - zoom in / out (just changes viewbox?)
@@ -16,8 +15,12 @@ NEAR FUTURE
 IMMEDIATE FUTURE
 - building infrastructure
 	- cartwright builds new units
-	- counting house enables trade in coin
+	- counting house enables trade in scrip
 	- production buildings lower value of output commodities & increase value of inputs
+	- housing increases housing
+	- defenses increase defense
+- draw functions for units
+- cartwright
 - movement animation/transition
 - rejigger site labels for legibility… somehow
 - surveyer unit (sees hidden natural resources)
@@ -29,3 +32,8 @@ FAR FUTURE
 - moving people
 - smooth out values towards reason
 - fucking events
+- transfer cargo (besides selling and buying)
+
+
+EVENTS
+- plague event which slowly increases values and kills population, can deliver medicine commodities to cure them

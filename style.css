@@ -114,6 +114,28 @@ body {
 	border: 0.5px solid grey;
 	}
 
+.infrastructureDiv {
+	width: 20vw;
+	}
+
+.infrastructureHead {
+	margin-bottom:0;
+	}
+
+.buildSelect {
+	width: 15vw;
+	}
+
+.buildInfoTable {
+	font-size: 0.6em;
+	margin-left: 2vw;
+	}
+
+.buildInfoStatCell {
+	text-align: right;
+	vertical-align: top;
+	}
+
 #tradeDiv {
 	clear:both;
 	margin-top: 5vh;

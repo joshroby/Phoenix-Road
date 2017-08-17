@@ -82,6 +82,16 @@ var handlers = {
 		view.updateTradeDiv();
 	},
 	
+	displayBuildUnit: function(index) {
+		var buildUnit = document.getElementById('buildSelect_' + index).value;
+		view.displayBuildUnit(index,buildUnit);
+	},
+	
+	buildUnit: function(index) {
+		var buildUnit = document.getElementById('buildSelect_' + index).value;
+		model.buildUnit(index,buildUnit);
+	},
+	
 	makeTrade: function() {
 		view.focus.unit.makeTrade();
 		handlers.clearTrade();

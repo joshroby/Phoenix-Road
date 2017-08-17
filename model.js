@@ -18,12 +18,17 @@ var model = {
 		p1.vision = 100;
 		p1.knownSites = [];
 		
-		var startUnit = new Unit(p1,undefined,data.units.wagon);
-		var startUnit = new Unit(p1,startUnit.location,data.units.wagon);
+		var startUnit = new Unit(p1,undefined,data.units.donkeyCart);
 		startUnit.look();
 		startUnit.location.reputation.p1 = 100;
-		view.focus.unit = startUnit;
 		
+		var location = startUnit.location;
+		for (i=0;i<5;i++) {
+			location = location.neighbors[Math.random() * location.neighbors.length << 0];
+		};
+		location.infrastructure.push(data.infrastructure.cartwright);
+		
+		view.focus.unit = startUnit;
 		view.displayMap();
 	},
 
@@ -153,6 +158,44 @@ var model = {
 			var timedEvent = setTimeout(model.advanceClock,model.options.dayLength);
 		};
 	},
+	
+	buildUnit: function(index,unitType) {
+		console.log('check');
+		unitType = data.units[unitType];
+		var unitsHere = [];
+		for (i in units) {
+			if (units[i].location == view.focus.unit.location) {
+				unitsHere.push(units[i]);
+			};
+		};
+		console.log(unitsHere);
+		
+		var buildCost = [];
+		for (i in unitType.buildCost) {
+			for (q=0;q<unitType.buildCost[i];q++) {
+				buildCost.push(i);
+			};
+		};
+		for (i in buildCost) {
+			var unpaid = true;
+			for (u in unitsHere) {
+				for (c in unitsHere[u].commodities) {
+					if (unitsHere[u].commodities[c].commodity == buildCost[i] && unitsHere[u].commodities[c].qty == 100 && unpaid) {
+						unitsHere[u].commodities.splice(c,1);
+					};
+				};
+			};
+			if (unpaid) {
+				view.focus.unit.location.reputation.p1 -= 100 * view.focus.unit.location.commodities[buildCost[i]];
+			};
+		};
+		console.log(buildCost);
+		
+		// spawning the unit
+		var newUnit = new Unit(p1,view.focus.unit.location,unitType);
+		view.focus.unit = newUnit;
+		view.displayUnit(newUnit);
+	},
 
 };
 
@@ -227,6 +270,9 @@ function Site() {
 	if (this.commodities.ore < 0.4) {
 		this.infrastructure.push(data.infrastructure.mine);
 	};
+	if (Math.random() < 0.02) {
+		this.infrastructure.push(data.infrastructure.cartwright);
+	};
 	
 	this.needs = function() {
 		var housing = 0;
@@ -266,6 +312,7 @@ function Site() {
 };
 
 function Unit(owner,startLoc,type) {
+	console.log(type);
 	if (owner !== undefined) {
 		this.owner = owner;
 	} else {
@@ -277,7 +324,7 @@ function Unit(owner,startLoc,type) {
 		this.location = sites[Math.random() * sites.length << 0];
 	};
 	if (type == undefined) {
-		type = data.units.wagon;
+		type = data.units.donkeyCart;
 	};
 	
 	var inTransit = false;
@@ -347,6 +394,7 @@ function Unit(owner,startLoc,type) {
 	this.moveStep = function() {
 		var currentStep = this.route.shift();
 		this.departed = true;
+		this.location = undefined;
 		if (currentStep.name == undefined) {
 			// move a step
 
@@ -395,11 +443,13 @@ function Unit(owner,startLoc,type) {
 			unitY = this.location.y;
 		};
 		for (i in sites) {
-			if ((this.location.neighbors.indexOf(sites[i]) !== -1 || Math.pow(Math.pow(sites[i].x - unitX,2) + Math.pow(sites[i].y - unitY,2),.5) < this.owner.vision ) && this.owner.knownSites.indexOf(sites[i]) == -1) {
+			if (( (this.location !== undefined && this.location.neighbors.indexOf(sites[i]) !== -1) || Math.pow(Math.pow(sites[i].x - unitX,2) + Math.pow(sites[i].y - unitY,2),.5) < this.owner.vision ) && this.owner.knownSites.indexOf(sites[i]) == -1) {
 				this.owner.knownSites.push(sites[i]);
 			};
 		};
-		this.location.hasVisited.p1 = true;
+		if (this.location !== undefined) {
+			this.location.hasVisited.p1 = true;
+		};
 	};
 
 	this.cancelRoute = function() {

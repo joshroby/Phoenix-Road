@@ -131,12 +131,9 @@ var view = {
 	displaySiteDetails: function(site) {
 		var detailsSiteDiv = document.getElementById('detailsSiteDiv');
 		detailsSiteDiv.innerHTML = '';
-		var siteHead = document.createElement('h3');
+		var siteHead = document.createElement('h2');
 		siteHead.innerHTML = site.name;
 		detailsSiteDiv.appendChild(siteHead);
-// 		var siteCoords = document.createElement('p');
-// 		siteCoords.innerHTML = "( " + site.x + " , " + site.y + " )";
-// 		detailsSiteDiv.appendChild(siteCoords);
 		var siteNeedsDiv = document.createElement('div');
 		siteNeedsDiv.id = 'siteNeedsDiv';
 		detailsSiteDiv.appendChild(siteNeedsDiv);
@@ -225,7 +222,82 @@ var view = {
 			siteReputationP.className = '';
 		};
 		detailsSiteDiv.appendChild(siteReputationP);
+		
+		for (i in site.infrastructure) {
+			if (site.infrastructure[i].buildUnits !== undefined) {
+				var infrastructureDiv = document.createElement('div');
+				infrastructureDiv.className = 'infrastructureDiv';
+				detailsSiteDiv.appendChild(infrastructureDiv);
+				var infrastructureHead = document.createElement('h3');
+				infrastructureHead.className = 'infrastructureHead';
+				infrastructureHead.innerHTML = site.infrastructure[i].name;
+				infrastructureDiv.appendChild(infrastructureHead);
+				var buildSelect = document.createElement('select');
+				buildSelect.className = 'buildSelect';
+				buildSelect.id = 'buildSelect_' + i;
+				buildSelect.setAttribute('onchange','handlers.displayBuildUnit('+i+')');
+				if (site.reputation.p1 < site.infrastructure[i].unlock) {
+					var lockedOption = document.createElement('option');
+					lockedOption.innerHTML = 'Unlocks at ' + site.infrastructure[i].unlock + ' reputation.';
+					lockedOption.disabled = true;
+					lockedOption.selected = true;
+					buildSelect.appendChild(lockedOption);
+				};
+				for (u in site.infrastructure[i].buildUnits) {
+					var buildOption = document.createElement('option');
+					buildOption.innerHTML = data.units[site.infrastructure[i].buildUnits[u]].name;
+					buildOption.value = site.infrastructure[i].buildUnits[u];
+					buildSelect.appendChild(buildOption);
+				};
+				infrastructureDiv.appendChild(buildSelect);
+				var buildBtn = document.createElement('button');
+				buildBtn.setAttribute('onclick','handlers.buildUnit('+i+')');
+				if (site.reputation.p1 >= site.infrastructure[i].unlock) {
+					buildBtn.innerHTML = 'Build';
+				} else {
+					buildBtn.innerHTML = 'Locked';
+					buildBtn.disabled = true;
+				};
+				infrastructureDiv.appendChild(buildBtn);
+				var buildInfoTable = document.createElement('table');
+				buildInfoTable.id = 'buildInfoTable_'+i;
+				infrastructureDiv.appendChild(buildInfoTable);
+			} else if (site.infrastructure[i].valuables !== undefined) {
+				var infrastructureDiv = document.createElement('div');
+				infrastructureDiv.innerHTML = 'Trade for Valuables';
+				detailsSiteDiv.appendChild(infrastructureDiv);
+			};
+		};
+				
 		view.displayMap();
+	},
+	
+	displayBuildUnit: function(i,unitName) {
+		var buildInfoTable = document.getElementById('buildInfoTable_' + i);
+		buildInfoTable.innerHTML = '';
+		buildInfoTable.className = 'buildInfoTable';
+		var unitType = data.units[unitName];
+		var stats = ['cargo','crew','speed','offroadSpeed'];
+		for (s in stats) {
+			var buildUnitStatP = document.createElement('tr');
+			buildUnitStatP.innerHTML = "<td class='buildInfoStatCell'>" + stats[s] + "</td><td>" + unitType[stats[s]] + "</td>";
+			buildInfoTable.appendChild(buildUnitStatP);
+		};
+		var costString = "<td class='buildInfoStatCell'>Build Cost</td><td>";
+		var costRep = 0;
+		for (b in unitType.buildCost) {
+			costString += unitType.buildCost[b] + " " + b;
+			if (Object.keys(unitType.buildCost).indexOf(b) < Object.keys(unitType.buildCost).length-1) {
+				costString += ", ";
+			};
+			costRep += Math.round(100 * unitType.buildCost[b] * view.focus.unit.location.commodities[b],1);
+		};
+		costString += " (~" + costRep + " reputation)</td>";
+		var buildCostP = document.createElement('tr');
+		buildCostP.innerHTML = costString;
+		buildInfoTable.appendChild(buildCostP);
+		
+		// Here is where we can enable and disable the Build button per unit
 	},
 	
 	displayUnit: function(unit) {
@@ -251,7 +323,7 @@ var view = {
 			unitPane.style.display = 'none';
 			detailsUnitDiv.appendChild(unitPane);
 			
-			var unitHead = document.createElement('h3');
+			var unitHead = document.createElement('h2');
 			unitHead.id = 'unitHead_'+u;
 			unitHead.innerHTML = unit.name;
 			unitHead.setAttribute('onclick','handlers.revealRename()');
@@ -285,7 +357,7 @@ var view = {
 					provisionsWater += unit.commodities[c].qty;
 				};
 			};
-			var provisions = Math.min(provisionsFood/unit.type.crew,provisionsWater/unit.type.crew);
+			var provisions = Math.floor(Math.min(provisionsFood/unit.type.crew,provisionsWater/unit.type.crew));
 			unitProvisionsP.innerHTML = provisions + " days provisions";
 		
 			var unitCommoditiesTable = document.createElement('table');
@@ -303,28 +375,30 @@ var view = {
 					unitCommoditiesNameCell.innerHTML += ' (' + unit.commodities[c].qty + '%)';
 				};
 				unitCommoditiesItem.appendChild(unitCommoditiesNameCell);
-				var unitCommoditiesValueCell = document.createElement('td');
-				unitCommoditiesValueCell.innerHTML = Math.round(100 * unit.location.commodities[unit.commodities[c].commodity],0);
-				unitCommoditiesItem.appendChild(unitCommoditiesValueCell);
-				var unitCommoditiesTradeCell = document.createElement('td');
-				var unitCommoditiesTradeBtn = document.createElement('button');
-				unitCommoditiesTradeBtn.innerHTML = "+";
-				unitCommoditiesTradeBtn.setAttribute('onclick','handlers.addFromUnit('+u+',"'+c+'")');
-				unitCommoditiesTradeBtn.id = 'unitAddBtn_' + u + '_' + c;
-				unitCommoditiesTradeCell.appendChild(unitCommoditiesTradeBtn);
-				if (unit.commodities[c].commodity == 'food' || unit.commodities[c].commodity == 'water') {
-					var resupplyBtn = document.createElement('button');
-					resupplyBtn.innerHTML = 'R';
-					resupplyBtn.setAttribute('onclick','handlers.resupply('+c+')');
-					var resupplyCost = (100 - unit.commodities[c].qty ) * unit.location.commodities[unit.commodities[c].commodity];
-					if (unit.commodities[c].qty == 100 || resupplyCost > unit.location.reputation.p1) {
-						resupplyBtn.disabled = true;
-					} else {
-						resupplyBtn.disabled = false;
+				if (unit.location !== undefined) {
+					var unitCommoditiesValueCell = document.createElement('td');
+					unitCommoditiesValueCell.innerHTML = Math.round(100 * unit.location.commodities[unit.commodities[c].commodity],0);
+					unitCommoditiesItem.appendChild(unitCommoditiesValueCell);
+					var unitCommoditiesTradeCell = document.createElement('td');
+					var unitCommoditiesTradeBtn = document.createElement('button');
+					unitCommoditiesTradeBtn.innerHTML = "+";
+					unitCommoditiesTradeBtn.setAttribute('onclick','handlers.addFromUnit('+u+',"'+c+'")');
+					unitCommoditiesTradeBtn.id = 'unitAddBtn_' + u + '_' + c;
+					unitCommoditiesTradeCell.appendChild(unitCommoditiesTradeBtn);
+					if (unit.commodities[c].commodity == 'food' || unit.commodities[c].commodity == 'water') {
+						var resupplyBtn = document.createElement('button');
+						resupplyBtn.innerHTML = 'R';
+						resupplyBtn.setAttribute('onclick','handlers.resupply('+c+')');
+						var resupplyCost = (100 - unit.commodities[c].qty ) * unit.location.commodities[unit.commodities[c].commodity];
+						if (unit.commodities[c].qty == 100 || resupplyCost > unit.location.reputation.p1) {
+							resupplyBtn.disabled = true;
+						} else {
+							resupplyBtn.disabled = false;
+						};
+						unitCommoditiesTradeCell.appendChild(resupplyBtn);
 					};
-					unitCommoditiesTradeCell.appendChild(resupplyBtn);
+					unitCommoditiesItem.appendChild(unitCommoditiesTradeCell);
 				};
-				unitCommoditiesItem.appendChild(unitCommoditiesTradeCell);
 				if (data.commodities[unit.commodities[c].commodity].cargo) {
 					cargo++;
 				};
@@ -346,7 +420,7 @@ var view = {
 				};
 			};
 		
-			view.displaySiteDetails(unit.location);
+			if (unit.location !== undefined) { view.displaySiteDetails(unit.location); };
 			view.updateTradeDiv();
 		};
 		
