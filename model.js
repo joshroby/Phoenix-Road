@@ -180,7 +180,6 @@ var model = {
 	},
 	
 	buildUnit: function(index,unitType) {
-		console.log('check');
 		unitType = data.units[unitType];
 		var unitsHere = [];
 		for (i in units) {
@@ -188,7 +187,6 @@ var model = {
 				unitsHere.push(units[i]);
 			};
 		};
-		console.log(unitsHere);
 		
 		var buildCost = [];
 		for (i in unitType.buildCost) {
@@ -209,7 +207,6 @@ var model = {
 				view.focus.unit.location.reputation.p1 -= 100 * view.focus.unit.location.commodities[buildCost[i]];
 			};
 		};
-		console.log(buildCost);
 		
 		// spawning the unit
 		var newUnit = new Unit(p1,view.focus.unit.location,unitType);
@@ -512,7 +509,7 @@ function Unit(owner,startLoc,type) {
 		// Move Goods, Adjust Site Values
 		for (i in this.currentTrade.unitStuff) {
 			this.commodities.splice(this.commodities.indexOf(this.currentTrade.unitStuff[i]),1);
-			this.location.commodities[this.currentTrade.unitStuff[i].commodity] *= 0.9;
+			this.location.commodities[this.currentTrade.unitStuff[i].commodity] *= 0.95;
 		};
 		for (i in this.currentTrade.siteStuff) {
 			this.commodities.push(this.currentTrade.siteStuff[i]);

@@ -250,49 +250,51 @@ var view = {
 		};
 		siteCommoditiesDiv.appendChild(siteReputationP);
 		
-		for (i in site.infrastructure) {
-			if (site.infrastructure[i].buildUnits !== undefined) {
-				var infrastructureDiv = document.createElement('div');
-				infrastructureDiv.className = 'infrastructureDiv';
-				siteInfrastructureDiv.appendChild(infrastructureDiv);
-				var infrastructureHead = document.createElement('h3');
-				infrastructureHead.className = 'infrastructureHead';
-				infrastructureHead.innerHTML = site.infrastructure[i].name;
-				infrastructureDiv.appendChild(infrastructureHead);
-				var buildSelect = document.createElement('select');
-				buildSelect.className = 'buildSelect';
-				buildSelect.id = 'buildSelect_' + i;
-				buildSelect.setAttribute('onchange','handlers.displayBuildUnit('+i+')');
-				if (site.reputation.p1 < site.infrastructure[i].unlock) {
-					var lockedOption = document.createElement('option');
-					lockedOption.innerHTML = 'Unlocks at ' + site.infrastructure[i].unlock + ' reputation.';
-					lockedOption.disabled = true;
-					lockedOption.selected = true;
-					buildSelect.appendChild(lockedOption);
+		if (site.hasVisited.p1) {
+			for (i in site.infrastructure) {
+				if (site.infrastructure[i].buildUnits !== undefined) {
+					var infrastructureDiv = document.createElement('div');
+					infrastructureDiv.className = 'infrastructureDiv';
+					siteInfrastructureDiv.appendChild(infrastructureDiv);
+					var infrastructureHead = document.createElement('h3');
+					infrastructureHead.className = 'infrastructureHead';
+					infrastructureHead.innerHTML = site.infrastructure[i].name;
+					infrastructureDiv.appendChild(infrastructureHead);
+					var buildSelect = document.createElement('select');
+					buildSelect.className = 'buildSelect';
+					buildSelect.id = 'buildSelect_' + i;
+					buildSelect.setAttribute('onchange','handlers.displayBuildUnit('+i+')');
+					if (site.reputation.p1 < site.infrastructure[i].unlock) {
+						var lockedOption = document.createElement('option');
+						lockedOption.innerHTML = 'Unlocks at ' + site.infrastructure[i].unlock + ' reputation.';
+						lockedOption.disabled = true;
+						lockedOption.selected = true;
+						buildSelect.appendChild(lockedOption);
+					};
+					for (u in site.infrastructure[i].buildUnits) {
+						var buildOption = document.createElement('option');
+						buildOption.innerHTML = data.units[site.infrastructure[i].buildUnits[u]].name;
+						buildOption.value = site.infrastructure[i].buildUnits[u];
+						buildSelect.appendChild(buildOption);
+					};
+					infrastructureDiv.appendChild(buildSelect);
+					var buildBtn = document.createElement('button');
+					buildBtn.setAttribute('onclick','handlers.buildUnit('+i+')');
+					if (site.reputation.p1 >= site.infrastructure[i].unlock) {
+						buildBtn.innerHTML = 'Build';
+					} else {
+						buildBtn.innerHTML = 'Locked';
+						buildBtn.disabled = true;
+					};
+					infrastructureDiv.appendChild(buildBtn);
+					var buildInfoTable = document.createElement('table');
+					buildInfoTable.id = 'buildInfoTable_'+i;
+					infrastructureDiv.appendChild(buildInfoTable);
+				} else if (site.infrastructure[i].valuables !== undefined) {
+					var infrastructureDiv = document.createElement('div');
+					infrastructureDiv.innerHTML = 'Trade for Valuables';
+					siteInfrastructureDiv.appendChild(infrastructureDiv);
 				};
-				for (u in site.infrastructure[i].buildUnits) {
-					var buildOption = document.createElement('option');
-					buildOption.innerHTML = data.units[site.infrastructure[i].buildUnits[u]].name;
-					buildOption.value = site.infrastructure[i].buildUnits[u];
-					buildSelect.appendChild(buildOption);
-				};
-				infrastructureDiv.appendChild(buildSelect);
-				var buildBtn = document.createElement('button');
-				buildBtn.setAttribute('onclick','handlers.buildUnit('+i+')');
-				if (site.reputation.p1 >= site.infrastructure[i].unlock) {
-					buildBtn.innerHTML = 'Build';
-				} else {
-					buildBtn.innerHTML = 'Locked';
-					buildBtn.disabled = true;
-				};
-				infrastructureDiv.appendChild(buildBtn);
-				var buildInfoTable = document.createElement('table');
-				buildInfoTable.id = 'buildInfoTable_'+i;
-				infrastructureDiv.appendChild(buildInfoTable);
-			} else if (site.infrastructure[i].valuables !== undefined) {
-				var infrastructureDiv = document.createElement('div');
-				infrastructureDiv.innerHTML = 'Trade for Valuables';
-				siteInfrastructureDiv.appendChild(infrastructureDiv);
 			};
 		};
 				

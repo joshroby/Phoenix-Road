@@ -5,7 +5,7 @@ var data = {
 		food: {
 			name: 'Food',
 			baseValue: 10,
-			stability: 8,
+			stability: 6,
 			cargo: true,
 		},
 		
@@ -19,21 +19,21 @@ var data = {
 		fiber: {
 			name: 'Fiber',
 			baseValue: 20,
-			stability: 4,
+			stability: 3,
 			cargo: true,
 		},
 		
 		lumber: {
 			name: 'Lumber',
 			baseValue: 30,
-			stability: 5,
+			stability: 4,
 			cargo: true,
 		},
 		
 		stone: {
 			name: 'Stone',
 			baseValue: 40,
-			stability: 6,
+			stability: 5,
 			cargo: true,
 		},
 		
@@ -85,7 +85,7 @@ var data = {
 			goodwill: 20,
 			visible: false,
 			unlock: 300,
-			buildUnits: ['donkeyCart','oxCart','horseCart','tinkersCart'],
+			buildUnits: ['donkeyCart','oxCart','horseCart','tinkersCart','surveyor'],
 		},
 		fields: {
 			name: 'Fields',
@@ -203,21 +203,21 @@ var data = {
 			buildCost: {lumber:2,fiber:2,food:1,water:1},
 		},
 	
-		oxCart: {
-			name: 'Ox Cart',
-			cargo: 5,
-			crew: 2,
-			speed: 8,
-			offroadSpeed: 5,
-			buildCost: {lumber:3,fiber:3,food:1,water:1},
-		},
-	
 		horseCart: {
 			name: 'Horse Cart',
 			cargo: 5,
 			crew: 2,
 			speed: 15,
 			offroadSpeed: 5,
+			buildCost: {lumber:3,fiber:3,food:1,water:1},
+		},
+	
+		oxCart: {
+			name: 'Ox Cart',
+			cargo: 5,
+			crew: 2,
+			speed: 8,
+			offroadSpeed: 8,
 			buildCost: {lumber:3,fiber:3,food:1,water:1},
 		},
 	
@@ -229,6 +229,16 @@ var data = {
 			offroadSpeed: 7,
 			canBuild: true,
 			buildCost: {lumber:4,fiber:4,stone:1,food:1,water:1},
+		},
+	
+		surveyor: {
+			name: "Surveyor",
+			cargo: 2,
+			crew: 1,
+			speed: 10,
+			offroadSpeed: 2,
+			canSurvey: true,
+			buildCost: {lumber:2,fiber:2,stone:1,food:1,fuel:2,water:1},
 		},
 		
 		bicycle: {

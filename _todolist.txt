@@ -1,14 +1,13 @@
-Wasteland Resupply Company To Do List
+Down the Phoenix Road To Do List
 
 
+- infrastructures only show up if you've visited there
 
 PERNICIOUS PROBLEMS
 - site label onmouseout that returns site details to the focus unit's location
 
 NEAR FUTURE
-- move cart icons to just below site icons
 - error reporting
-- smooth out values towards reason
 - offroading
 - zoom in / out (just changes viewbox?)
 
@@ -25,6 +24,8 @@ IMMEDIATE FUTURE
 - rejigger site labels for legibility… somehow
 - surveyer unit (sees hidden natural resources)
 - increasing vision ?
+- pathfinding for multi-step trips
+- scuttle units
 
 FAR FUTURE
 - boats? terrain?
