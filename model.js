@@ -15,7 +15,7 @@ var model = {
 		units = [];
 		p1 = {};
 		
-		p1.vision = 100;
+		p1.vision = 10;
 		p1.knownSites = [];
 		
 		var startUnit = new Unit(p1,undefined,data.units.donkeyCart);
