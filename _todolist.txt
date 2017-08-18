@@ -6,9 +6,9 @@ PERNICIOUS PROBLEMS
 - site label onmouseout that returns site details to the focus unit's location
 
 NEAR FUTURE
-- when unit makes first MoveStep, remove location
-	- and then fix all the bits that assume all units have locations
+- move cart icons to just below site icons
 - error reporting
+- smooth out values towards reason
 - offroading
 - zoom in / out (just changes viewbox?)
 
@@ -30,7 +30,6 @@ FAR FUTURE
 - boats? terrain?
 - hardholder territory
 - moving people
-- smooth out values towards reason
 - fucking events
 - transfer cargo (besides selling and buying)
 

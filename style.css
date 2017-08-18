@@ -3,6 +3,10 @@ body {
 	padding-top: 5vw;
 	}
 
+.narrowMargin {
+	margin: 2px;
+	}
+
 #mainMenuDiv {
 	background-color: darkslategray;
 	color: white;
@@ -24,7 +28,7 @@ body {
 	float: left;
 	width: 22vw;
 	padding-left: 2vw;
-	height: 60vw;
+	height: 55vw;
 	overflow-y: auto;
 	}
 
@@ -54,6 +58,7 @@ body {
 
 #clockDiv {
 	text-align: right;
+	height: 2.5vw;
 	}
 
 #clockSpan {
@@ -64,7 +69,21 @@ body {
 	width: 20vw;
 	float: left;
 	padding-left: 2vw;
-	height: 60vw;
+	height: 55vw;
+	}
+
+#siteCharacterDiv {
+	height: 30%;
+	overflow-y: auto;
+	}
+
+#siteCommoditiesDiv {
+	height: 30%;
+	overflow-y: auto;
+	}
+
+#siteInfrastructureDiv {
+	height: 30%;
 	overflow-y: auto;
 	}
 
@@ -81,12 +100,17 @@ body {
 	width: 100%;
 	}
 
+.commoditiesTable tr {
+	height: 1.9vh;
+	}
+
 .commoditiesTable td {
 	font-size: 0.5em;
 	}
 	
 .commoditiesTable button {
-	font-size: 0.5em;
+	font-size: 0.4em;
+	height: 1.4vh;
 	}
 	
 .commoditiesTable caption {

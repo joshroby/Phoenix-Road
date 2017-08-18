@@ -56,7 +56,7 @@ var handlers = {
 	
 	selectSite: function(siteIndex) {
 		site = sites[siteIndex];
-		if (view.focus.unit !== undefined) {
+		if (view.focus.unit !== undefined && view.focus.unit.location !== undefined) {
 			view.focus.unit.move(site);
 		};
 	},

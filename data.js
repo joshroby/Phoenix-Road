@@ -4,37 +4,43 @@ var data = {
 	
 		food: {
 			name: 'Food',
-			rarity: 1,
+			baseValue: 10,
+			stability: 8,
 			cargo: true,
 		},
 		
 		water: {
 			name: 'Water',
-			rarity: 0.1,
+			baseValue: 5,
+			stability: 3,
 			cargo: true,
 		},
 		
 		fiber: {
 			name: 'Fiber',
-			rarity: 2,
-			cargo: true,
-		},
-		
-		fuel: {
-			name: 'Fuel',
-			rarity: 10,
+			baseValue: 20,
+			stability: 4,
 			cargo: true,
 		},
 		
 		lumber: {
 			name: 'Lumber',
-			rarity: 3,
+			baseValue: 30,
+			stability: 5,
 			cargo: true,
 		},
 		
 		stone: {
 			name: 'Stone',
-			rarity: 5,
+			baseValue: 40,
+			stability: 6,
+			cargo: true,
+		},
+		
+		fuel: {
+			name: 'Fuel',
+			baseValue: 80,
+			stability: 1,
 			cargo: true,
 		},
 		

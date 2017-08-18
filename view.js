@@ -86,7 +86,7 @@ var view = {
 // 			siteLabel.addEventListener('mouseleave',handlers.displaySiteDetails.bind(this,-1),false);
 			siteLabel.innerHTML = p1.knownSites[i].name;
 			svg.appendChild(siteLabel);
-			
+
 			var newSite = document.createElementNS('http://www.w3.org/2000/svg','circle');
 			newSite.id = 'site_' + i;
 			if (p1.knownSites[i].hasVisited.p1) {
@@ -114,14 +114,14 @@ var view = {
 				unitY = units[i].route[0].y;
 			} else {
 				unitX = units[i].location.x;
-				unitY = units[i].location.y;
+				unitY = units[i].location.y + 10;
 			};
 			var newUnit = document.createElementNS('http://www.w3.org/2000/svg','rect');
 			newUnit.setAttribute('fill','red');
-			newUnit.setAttribute('x',unitX - 10);
-			newUnit.setAttribute('y',unitY - 10);
-			newUnit.setAttribute('width',20);
-			newUnit.setAttribute('height',20);
+			newUnit.setAttribute('x',unitX - 5);
+			newUnit.setAttribute('y',unitY - 5);
+			newUnit.setAttribute('width',10);
+			newUnit.setAttribute('height',10);
 			newUnit.setAttribute('onclick','handlers.selectUnit('+i+')');
 			svg.appendChild(newUnit);
 		};
@@ -134,9 +134,24 @@ var view = {
 		var siteHead = document.createElement('h2');
 		siteHead.innerHTML = site.name;
 		detailsSiteDiv.appendChild(siteHead);
+
+		var siteCharacterDiv = document.createElement('div');
+		siteCharacterDiv.id = 'siteCharacterDiv';
+		detailsSiteDiv.appendChild(siteCharacterDiv);
+		var siteCommoditiesDiv = document.createElement('div');
+		siteCommoditiesDiv.id = 'siteCommoditiesDiv';
+		detailsSiteDiv.appendChild(siteCommoditiesDiv);
+		var siteInfrastructureDiv = document.createElement('div');
+		siteInfrastructureDiv.id = 'siteInfrastructureDiv';
+		detailsSiteDiv.appendChild(siteInfrastructureDiv);
+
+		var sitePopulationP = document.createElement('p');
+		sitePopulationP.innerHTML = site.population + " souls";
+		sitePopulationP.className = 'narrowMargin';
+		siteCharacterDiv.appendChild(sitePopulationP);
 		var siteNeedsDiv = document.createElement('div');
 		siteNeedsDiv.id = 'siteNeedsDiv';
-		detailsSiteDiv.appendChild(siteNeedsDiv);
+		siteCharacterDiv.appendChild(siteNeedsDiv);
 		var siteNeeds = site.needs();
 		for (i in siteNeeds) {
 			var siteNeedDiv = document.createElement('div');
@@ -145,12 +160,10 @@ var view = {
 			siteNeedDiv.style.backgroundColor = siteNeeds[i].color;
 			siteNeedsDiv.appendChild(siteNeedDiv);
 		};
-		var sitePopulationP = document.createElement('p');
-		sitePopulationP.innerHTML = site.population + " souls";
-		detailsSiteDiv.appendChild(sitePopulationP);
 		var siteFeatureList = document.createElement('ul');
 		siteFeatureList.id = 'siteFeatureList';
-		detailsSiteDiv.appendChild(siteFeatureList);
+		siteFeatureList.className = 'narrowMargin';
+		siteCharacterDiv.appendChild(siteFeatureList);
 		var list = [];
 		for (i in site.resources) {
 			if (site.resources[i].visible || site.hasVisited.p1) {
@@ -176,10 +189,11 @@ var view = {
 		if (site.hasVisited.p1) {
 			var siteCommoditiesTable = document.createElement('table');
 			siteCommoditiesTable.className = 'commoditiesTable';
-			detailsSiteDiv.appendChild(siteCommoditiesTable);
+			siteCommoditiesDiv.appendChild(siteCommoditiesTable);
 			var siteCommoditiesTableTitle = document.createElement('caption');
 			siteCommoditiesTableTitle.innerHTML = 'Commodity Values';
 			siteCommoditiesTable.appendChild(siteCommoditiesTableTitle);
+			var knownValues = model.knownValues();
 			for (c in site.commodities) {
 				var siteCommoditiesItem = document.createElement('tr');
 				siteCommoditiesTable.appendChild(siteCommoditiesItem);
@@ -188,6 +202,19 @@ var view = {
 				siteCommoditiesItem.appendChild(siteCommoditiesNameCell);
 				var siteCommoditiesValueCell = document.createElement('td');
 				siteCommoditiesValueCell.innerHTML = Math.round(100 * site.commodities[c],0);
+				if (site.commodities[c] > knownValues[c]*2) {
+					siteCommoditiesValueCell.innerHTML += ' (+++)';
+				} else if (site.commodities[c] > knownValues[c]*1.5) {
+					siteCommoditiesValueCell.innerHTML += ' (++)';
+				} else if (site.commodities[c] > knownValues[c]*1.25) {
+					siteCommoditiesValueCell.innerHTML += ' (+)';
+				} else if (site.commodities[c] < knownValues[c]*.8){
+					siteCommoditiesValueCell.innerHTML += ' (-)';
+				} else if (site.commodities[c] < knownValues[c]*.66){
+					siteCommoditiesValueCell.innerHTML += ' (--)';
+				} else if (site.commodities[c] < knownValues[c]*.5){
+					siteCommoditiesValueCell.innerHTML += ' (---)';
+				};
 				siteCommoditiesItem.appendChild(siteCommoditiesValueCell);
 				var unitPresent = false;
 				for (u in units) {
@@ -221,13 +248,13 @@ var view = {
 			siteReputationP.innerHTML += 'You have no reputation here.';
 			siteReputationP.className = '';
 		};
-		detailsSiteDiv.appendChild(siteReputationP);
+		siteCommoditiesDiv.appendChild(siteReputationP);
 		
 		for (i in site.infrastructure) {
 			if (site.infrastructure[i].buildUnits !== undefined) {
 				var infrastructureDiv = document.createElement('div');
 				infrastructureDiv.className = 'infrastructureDiv';
-				detailsSiteDiv.appendChild(infrastructureDiv);
+				siteInfrastructureDiv.appendChild(infrastructureDiv);
 				var infrastructureHead = document.createElement('h3');
 				infrastructureHead.className = 'infrastructureHead';
 				infrastructureHead.innerHTML = site.infrastructure[i].name;
@@ -265,7 +292,7 @@ var view = {
 			} else if (site.infrastructure[i].valuables !== undefined) {
 				var infrastructureDiv = document.createElement('div');
 				infrastructureDiv.innerHTML = 'Trade for Valuables';
-				detailsSiteDiv.appendChild(infrastructureDiv);
+				siteInfrastructureDiv.appendChild(infrastructureDiv);
 			};
 		};
 				

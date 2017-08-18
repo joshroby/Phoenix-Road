@@ -34,7 +34,7 @@ var model = {
 
 	newMap: function(totalSites,minDist,maxDist,minAngle) {
 		if (totalSites == undefined) { totalSites = 50 };
-		if (minDist == undefined) {  minDist = 20 };
+		if (minDist == undefined) {  minDist = 30 };
 		if (maxDist == undefined) {  maxDist = 2.6 };
 		if (minAngle == undefined) {  minAngle = 30 };
 	
@@ -142,6 +142,26 @@ var model = {
 		return string.charAt(0).toUpperCase() + string.slice(1);
 	},
 	
+	knownValues: function() {
+		var knownValues = {};
+		var totalSites = 0;
+		for (c in data.commodities) {
+			knownValues[c] = 0;
+		};
+		for (s in p1.knownSites) {
+			if (p1.knownSites[s].hasVisited.p1) {
+				totalSites++;
+				for (c in knownValues) {
+					knownValues[c] += p1.knownSites[s].commodities[c];
+				};
+			};
+		};
+		for (c in knownValues) {
+			knownValues[c] /= totalSites;
+		};
+		return knownValues;
+	},
+	
 	advanceClock: function() {
 		model.currentDay++;
 		
@@ -211,7 +231,13 @@ function Site() {
 	
 	this.commodities = {};
 	for (c in data.commodities) {
-		this.commodities[c] = Math.random() * Math.random() * data.commodities[c].rarity;
+		this.commodities[c] = data.commodities[c].baseValue;
+		var randomFactor = 0;
+		for (r=0;r<data.commodities[c].stability;r++) {
+			randomFactor += Math.random();
+		};
+		randomFactor = 2 * randomFactor / data.commodities[c].stability;
+		this.commodities[c] *= randomFactor / 100;
 	};
 	
 	this.reputation = {p1:0};
@@ -312,7 +338,6 @@ function Site() {
 };
 
 function Unit(owner,startLoc,type) {
-	console.log(type);
 	if (owner !== undefined) {
 		this.owner = owner;
 	} else {
@@ -378,6 +403,7 @@ function Unit(owner,startLoc,type) {
 			for (s=0;s<steps;s++) {
 				this.route.push({x:this.location.x + s*diffX/steps,y:this.location.y + s*diffY/steps});
 			};
+			this.route[0].y += 10; // So unit doesn't overlap site
 			this.route.push(site);
 		} else if (this.location.neighbors.indexOf(site) == -1) {
 			view.displayError('no path to ',site);
