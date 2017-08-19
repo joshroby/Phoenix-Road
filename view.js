@@ -4,6 +4,8 @@ var view = {
 		unitPane: 0,
 	},
 	
+	errorMessage: '',
+	
 	zoom: {
 		z: 1000,
 		viewbox: {
@@ -26,6 +28,15 @@ var view = {
 		
 		var clockDiv = document.createElement('div');
 		clockDiv.id = 'clockDiv';
+		var notifySpan = document.createElement('span');
+		notifySpan.id = 'notifySpan';
+		notifySpan.innerHTML = view.errorMessage;
+		if (view.errorMessage !== '') {
+			notifySpan.className = 'errorMessage';
+		} else {
+			notifySpan.className = 'empty';
+		};
+		clockDiv.appendChild(notifySpan);
 		var clockSpan = document.createElement('span');
 		clockSpan.id = 'clockSpan';
 		clockSpan.innerHTML = 'Day ' + model.currentDay;
@@ -70,7 +81,7 @@ var view = {
 			newLandmark.setAttribute('rx',(0.5 * p1.knownLandmarks[i].size + 0.25) * 100);
 			newLandmark.setAttribute('ry',(1 - (0.5 * p1.knownLandmarks[i].size + 0.25)) * 100);
 			newLandmark.setAttribute('transform','rotate('+p1.knownLandmarks[i].type*360+' '+p1.knownLandmarks[i].x+' '+p1.knownLandmarks[i].y+')');
-// 			newLandmark.setAttribute('opacity',0.7);
+// 			newLandmark.setAttribute('opacity',0.5);
 			svg.appendChild(newLandmark);
 		};
 		
@@ -156,6 +167,11 @@ var view = {
 		svg.addEventListener('wheel',view.mapZoom);
 		
 		mapDiv.appendChild(svg);
+		
+		var revealButton = document.createElement('button');
+		revealButton.innerHTML = "Reveal";
+		revealButton.setAttribute('onclick','handlers.revealMap()');
+		mapDiv.appendChild(revealButton);
 	},
 	
 	mapZoom: function(e) {
@@ -650,7 +666,18 @@ var view = {
 	},
 	
 	displayError: function(message) {
-		console.log(message);		
+		console.log('error:',message);
+		document.getElementById('notifySpan').innerHTML = message;
+		document.getElementById('notifySpan').className = 'errorMessage';
+		view.errorMessage = message;
+		console.log(document.getElementById('notifySpan'));
+		var timedEvent = setTimeout(view.clearError,5000);
+	},
+	
+	clearError: function() {
+		document.getElementById('notifySpan').innerHTML = '';
+		document.getElementById('notifySpan').className = 'empty';
+		view.errorMessage = '';
 	},
 
 };

@@ -119,5 +119,11 @@ var handlers = {
 	cancelRoute: function() {
 		view.focus.unit.cancelRoute();
 	},
+	
+	revealMap: function() {
+		p1.knownSites = sites;
+		p1.knownLandmarks = landmarks;
+		view.displayMap();
+	},
 
 };

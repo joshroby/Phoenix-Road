@@ -61,8 +61,25 @@ body {
 	height: 2.5vw;
 	}
 
+#notifySpan {
+	background-color: red;
+	color: white;
+	width: 30vw;
+	}
+
+.empty {
+	margin: 2vw;
+	padding: 0;
+	}
+
+.errorMessage {
+	padding: 2vw;
+	margin: 0;
+	}
+
 #clockSpan {
 	margin-right: 2vw;
+	width: 20vw;
 	}
 
 #detailsSiteDiv {

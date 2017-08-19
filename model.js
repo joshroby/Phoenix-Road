@@ -127,8 +127,8 @@ var model = {
 		
 		// Landmarks
 		landmarks = [];
-		for (x=50;x<950;x += 50) {
-			for (y=50;y<950;y += 50) {
+		for (x=-50;x<1050;x += 50) {
+			for (y=-50;y<1050;y += 50) {
 				var farFromSites = true;
 				for (s in sites) {
 					if (Math.pow(Math.pow(sites[s].x - x,2) + Math.pow(sites[s].y - y,2),0.5) < avgDist * maxDist * 0.5) {
@@ -422,13 +422,13 @@ function Unit(owner,startLoc,type) {
 			this.route[0].y += 10; // So unit doesn't overlap site
 			this.route.push(site);
 		} else if (this.location.neighbors.indexOf(site) == -1) {
-			view.displayError('no path to ',site);
+			view.displayError('No path to ' + site.name + '.');
 		} else if (waterStore < waterDrank) {
-			view.displayError('not enough water');
+			view.displayError('Not enough water!');
 		} else if (foodStore < foodEaten) {
-			view.displayError('not enough food');
+			view.displayError('Not enough food!');
 		} else if (cargo > this.type.cargo) {
-			view.displayError('overburdened!');
+			view.displayError('Overburdened!');
 		};
 		view.displayUnit(this);
 	};
