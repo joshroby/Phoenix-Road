@@ -16,7 +16,7 @@ var model = {
 		units = [];
 		p1 = {};
 		
-		p1.vision = 10;
+		p1.vision = 60;
 		p1.knownSites = [];
 		p1.knownLandmarks = [];
 		
@@ -29,6 +29,12 @@ var model = {
 			location = location.neighbors[Math.random() * location.neighbors.length << 0];
 		};
 		location.infrastructure.push(data.infrastructure.cartwright);
+		
+		var location = startUnit.location;
+		for (i=0;i<10;i++) {
+			location = location.neighbors[Math.random() * location.neighbors.length << 0];
+		};
+		location.infrastructure.push(data.infrastructure.lensmeister);
 		
 		view.focus.unit = startUnit;
 		view.displayMap();
@@ -493,7 +499,7 @@ function Unit(owner,startLoc,type) {
 			this.location.hasVisited.p1 = true;
 		};
 		for (i in landmarks) {
-			if (( Math.pow(Math.pow(landmarks[i].x - unitX,2) + Math.pow(landmarks[i].y - unitY,2),.5) < 200 ) && this.owner.knownLandmarks.indexOf(landmarks[i]) == -1) {
+			if (( Math.pow(Math.pow(landmarks[i].x - unitX,2) + Math.pow(landmarks[i].y - unitY,2),.5) < this.owner.vision + 60 ) && this.owner.knownLandmarks.indexOf(landmarks[i]) == -1) {
 				this.owner.knownLandmarks.push(landmarks[i]);
 			};
 		};

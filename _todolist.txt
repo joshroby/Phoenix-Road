@@ -1,15 +1,15 @@
 Down the Phoenix Road To Do List
 
 
-- infrastructures only show up if you've visited there
+
 
 PERNICIOUS PROBLEMS
 - site label onmouseout that returns site details to the focus unit's location
 
 NEAR FUTURE
-- error reporting
+- surveying resources
+- increasing vision ?
 - offroading
-- zoom in / out (just changes viewbox?)
 
 IMMEDIATE FUTURE
 - building infrastructure
@@ -23,12 +23,13 @@ IMMEDIATE FUTURE
 - movement animation/transition
 - rejigger site labels for legibility… somehow
 - surveyer unit (sees hidden natural resources)
-- increasing vision ?
 - pathfinding for multi-step trips
 - scuttle units
 
 FAR FUTURE
 - boats? terrain?
+- trailblazing
+- building outposts / new sites
 - hardholder territory
 - moving people
 - fucking events

@@ -108,6 +108,12 @@ var data = {
 			goodwill: 20,
 			visible: false,
 		},
+		lensmeister: {
+			name: 'Lensmeister',
+			description: 'increases player vision',
+			visible: false,
+			upgrade: 'vision',
+		},
 		manorHouse: {
 			name:'Manor House',
 			buildCost: {stone:2,lumber:2,fiber:4},

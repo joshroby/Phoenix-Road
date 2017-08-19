@@ -17,7 +17,7 @@ var handlers = {
 	},
 	
 	clockSpeedUp: function() {
-		model.options.dayLength = Math.max(model.options.dayLength / 2,250);
+		model.options.dayLength = Math.max(model.options.dayLength / 2,100);
 		if (model.options.paused) {
 			model.options.paused = false;
 			document.getElementById('clockPauseBtn').innerHTML = '||';
@@ -90,6 +90,15 @@ var handlers = {
 	buildUnit: function(index) {
 		var buildUnit = document.getElementById('buildSelect_' + index).value;
 		model.buildUnit(index,buildUnit);
+	},
+	
+	upgrade: function(stat) {
+		p1[stat] *= 2;
+		for (u in units) {
+			units[u].look();
+		};
+		view.displayMap();
+		view.displaySiteDetails(view.focus.unit.location);
 	},
 	
 	makeTrade: function() {

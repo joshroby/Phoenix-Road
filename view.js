@@ -81,7 +81,6 @@ var view = {
 			newLandmark.setAttribute('rx',(0.5 * p1.knownLandmarks[i].size + 0.25) * 100);
 			newLandmark.setAttribute('ry',(1 - (0.5 * p1.knownLandmarks[i].size + 0.25)) * 100);
 			newLandmark.setAttribute('transform','rotate('+p1.knownLandmarks[i].type*360+' '+p1.knownLandmarks[i].x+' '+p1.knownLandmarks[i].y+')');
-// 			newLandmark.setAttribute('opacity',0.5);
 			svg.appendChild(newLandmark);
 		};
 		
@@ -395,6 +394,24 @@ var view = {
 					var buildInfoTable = document.createElement('table');
 					buildInfoTable.id = 'buildInfoTable_'+i;
 					infrastructureDiv.appendChild(buildInfoTable);
+				} else if (site.infrastructure[i].upgrade !== undefined) {
+					var upgrade = site.infrastructure[i].upgrade;
+					var upgradeString = upgrade.charAt(0).toUpperCase() + upgrade.slice(1);
+					var current = p1[upgrade] / 60;
+					var cost = current*500;
+					var infrastructureDiv = document.createElement('div');
+					var infrastructureHead = document.createElement('h3');
+					infrastructureHead.className = 'infrastructureHead';
+					infrastructureHead.innerHTML = site.infrastructure[i].name;
+					infrastructureDiv.appendChild(infrastructureHead);
+					infrastructureUpgradeButton = document.createElement('button');
+					infrastructureUpgradeButton.innerHTML = 'Upgrade ' + upgradeString + " (" +cost+ ")";
+					infrastructureUpgradeButton.setAttribute('onclick','handlers.upgrade("'+upgrade+'")');
+					if(cost > site.reputation.p1) {
+						infrastructureUpgradeButton.disabled = true;
+					};
+					infrastructureDiv.appendChild(infrastructureUpgradeButton);
+					siteInfrastructureDiv.appendChild(infrastructureDiv);
 				} else if (site.infrastructure[i].valuables !== undefined) {
 					var infrastructureDiv = document.createElement('div');
 					infrastructureDiv.innerHTML = 'Trade for Valuables';
