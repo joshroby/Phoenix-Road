@@ -1,4 +1,5 @@
 var sites = [];
+var landmarks = [];
 var units = [];
 var p1 = {};
 
@@ -17,6 +18,7 @@ var model = {
 		
 		p1.vision = 10;
 		p1.knownSites = [];
+		p1.knownLandmarks = [];
 		
 		var startUnit = new Unit(p1,undefined,data.units.donkeyCart);
 		startUnit.look();
@@ -122,6 +124,23 @@ var model = {
 				removeLink[1].neighbors.splice(removeLink[1].neighbors.indexOf(removeLink[0]),1);
 			};
 		};
+		
+		// Landmarks
+		landmarks = [];
+		for (x=50;x<950;x += 50) {
+			for (y=50;y<950;y += 50) {
+				var farFromSites = true;
+				for (s in sites) {
+					if (Math.pow(Math.pow(sites[s].x - x,2) + Math.pow(sites[s].y - y,2),0.5) < avgDist * maxDist * 0.5) {
+						farFromSites = false;
+					};
+				};
+				if (farFromSites) {
+					landmarks.push({x:x,y:y,type:Math.random(),size:Math.random()});
+				};
+			};
+		};
+		
 	},
 	
 	siteName: function() {
@@ -472,6 +491,11 @@ function Unit(owner,startLoc,type) {
 		};
 		if (this.location !== undefined) {
 			this.location.hasVisited.p1 = true;
+		};
+		for (i in landmarks) {
+			if (( Math.pow(Math.pow(landmarks[i].x - unitX,2) + Math.pow(landmarks[i].y - unitY,2),.5) < 200 ) && this.owner.knownLandmarks.indexOf(landmarks[i]) == -1) {
+				this.owner.knownLandmarks.push(landmarks[i]);
+			};
 		};
 	};
 

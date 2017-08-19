@@ -62,6 +62,18 @@ var view = {
 		background.setAttribute('height','1000');
 		svg.appendChild(background);
 		
+		for (i in p1.knownLandmarks) {
+			var newLandmark = document.createElementNS('http://www.w3.org/2000/svg','ellipse');
+			newLandmark.setAttribute('fill','darkorange');
+			newLandmark.setAttribute('cx',p1.knownLandmarks[i].x);
+			newLandmark.setAttribute('cy',p1.knownLandmarks[i].y);
+			newLandmark.setAttribute('rx',(0.5 * p1.knownLandmarks[i].size + 0.25) * 100);
+			newLandmark.setAttribute('ry',(1 - (0.5 * p1.knownLandmarks[i].size + 0.25)) * 100);
+			newLandmark.setAttribute('transform','rotate('+p1.knownLandmarks[i].type*360+' '+p1.knownLandmarks[i].x+' '+p1.knownLandmarks[i].y+')');
+// 			newLandmark.setAttribute('opacity',0.7);
+			svg.appendChild(newLandmark);
+		};
+		
 		for (i in p1.knownSites) {
 			for (n in p1.knownSites[i].neighbors) {
 				var newRoute = document.createElementNS('http://www.w3.org/2000/svg','path');
