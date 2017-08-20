@@ -241,15 +241,15 @@ var model = {
 	
 	victoryProgress: function() {
 		var count = 0;
+		var num = 0;
 		for (s in sites) {
 			var needs = sites[s].needs();
-			var allGreen = true;
 			for (n in needs) {
-				if (needs[n].color = 'springgreen') {allGreen = false;};
+				if (needs[n].color == 'springgreen') {count++};
 			};
-			if (allGreen) {count++};
+			num = needs.length;
 		};
-		return count / sites.length;
+		return count / (sites.length * num);
 	},
 
 };
@@ -278,12 +278,15 @@ function Site() {
 	this.reputation = {p1:0};
 	
 	this.resources = [];
+	this.hasSurveyed = {};
+	this.hasSurveyed.p1 = [];
 	var resourcesNum = 1 + Math.random() * Math.random() * 5 << 0;
 	for (r=0;r<resourcesNum;r++) {
 		var resources = Object.keys(data.resources);
 		var newResource = data.resources[resources[Math.random() * resources.length << 0]];
 		if (this.resources.indexOf(newResource) == -1) {
 			this.resources.push(newResource)
+			this.hasSurveyed.p1.push(false);
 		};
 	};
 	
@@ -446,7 +449,6 @@ function Unit(owner,startLoc,type) {
 			} else {
 				var speed = this.type.speed;
 			};
-			console.log(speed);
 			var steps = distance / speed;
 			this.route = [];
 			this.inTransit = true;

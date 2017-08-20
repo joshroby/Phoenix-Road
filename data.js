@@ -237,13 +237,14 @@ var data = {
 			buildCost: {lumber:4,fiber:4,stone:1,food:1,water:1},
 		},
 	
-		surveyor: {
-			name: "Surveyor",
+		dowser: {
+			name: "Dowser",
 			cargo: 2,
 			crew: 1,
 			speed: 10,
 			offroadSpeed: 2,
 			canSurvey: true,
+			surveyResources: ['mineralVein','pasture','spring'],
 			buildCost: {lumber:2,fiber:2,stone:1,food:1,fuel:2,water:1},
 		},
 		

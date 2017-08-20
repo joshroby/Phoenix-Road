@@ -192,10 +192,6 @@ var view = {
 		progressBarHolder.appendChild(progressExploreBar);
 		progressExploreDiv.appendChild(progressBarHolder);
 		
-// 		var revealButton = document.createElement('button');
-// 		revealButton.innerHTML = "Reveal";
-// 		revealButton.setAttribute('onclick','handlers.revealMap()');
-// 		progressExploreDiv.appendChild(revealButton);
 		
 		var progressRebuildDiv = document.createElement('div');
 		progressRebuildDiv.className = 'progressDiv';
@@ -214,6 +210,7 @@ var view = {
 		progressRebuildDoneBar.style.width = percentage + '%';
 		progressRebuildBar.appendChild(progressRebuildDoneBar);
 		progressRebuildDiv.appendChild(progressRebuildBar);
+
 	},
 	
 	mapZoom: function(e) {
@@ -313,7 +310,7 @@ var view = {
 		siteCharacterDiv.appendChild(siteFeatureList);
 		var list = [];
 		for (i in site.resources) {
-			if (site.resources[i].visible || site.hasVisited.p1) {
+			if (site.resources[i].visible || site.hasSurveyed.p1[i]) {
 				list.push(site.resources[i]);
 			};
 		};
