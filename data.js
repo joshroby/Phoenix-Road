@@ -205,7 +205,7 @@ var data = {
 			cargo: 4,
 			crew: 2,
 			speed: 10,
-			offroadSpeed: 7,
+			offroadSpeed: 5,
 			buildCost: {lumber:2,fiber:2,food:1,water:1},
 		},
 	
@@ -222,7 +222,7 @@ var data = {
 			name: 'Ox Cart',
 			cargo: 5,
 			crew: 2,
-			speed: 8,
+			speed: 10,
 			offroadSpeed: 8,
 			buildCost: {lumber:3,fiber:3,food:1,water:1},
 		},

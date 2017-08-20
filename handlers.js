@@ -54,6 +54,18 @@ var handlers = {
 		view.updateTradeDiv();
 	},
 	
+	toggleRoad: function() {
+		view.focus.unit.toggleRoad();
+	},
+	
+	survey: function() {
+		view.focus.unit.survey();
+	},
+	
+	scuttle: function() {
+		view.focus.unit.scuttle();
+	},
+	
 	selectSite: function(siteIndex) {
 		site = sites[siteIndex];
 		if (view.focus.unit !== undefined && view.focus.unit.location !== undefined) {

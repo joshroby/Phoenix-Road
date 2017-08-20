@@ -374,7 +374,8 @@ function Unit(owner,startLoc,type) {
 		type = data.units.donkeyCart;
 	};
 	
-	var inTransit = false;
+	this.inTransit = false;
+	this.offroad = false;
 	
 	var num = units.length + 1;
 	this.name = type.name + " #" + num;
@@ -397,6 +398,15 @@ function Unit(owner,startLoc,type) {
 		view.displayUnit(this);
 	};
 	
+	this.toggleRoad = function() {
+		if (this.offroad) {
+			this.offroad = false;
+		} else {
+			this.offroad = true;
+		};
+		view.displayUnit(this);
+	};
+	
 	this.move = function(site) {		
 		var distance = Math.pow(Math.pow(this.location.x - site.x,2) + Math.pow(this.location.y - site.y,2),.5);
 		var foodEaten = distance / this.type.speed * this.type.crew;
@@ -415,10 +425,16 @@ function Unit(owner,startLoc,type) {
 			};
 		};
 				
-		if (this.location.neighbors.indexOf(site) !== -1 && waterStore >= waterDrank && foodStore >= foodEaten && cargo <= this.type.cargo) {
+		if ((this.location.neighbors.indexOf(site) !== -1 || this.offroad == true) && waterStore >= waterDrank && foodStore >= foodEaten && cargo <= this.type.cargo) {
 			var diffX = site.x - this.location.x;
 			var diffY = site.y - this.location.y;
-			var steps = distance / this.type.speed;
+			if (this.offroad) {
+				var speed = this.type.offroadSpeed;
+			} else {
+				var speed = this.type.speed;
+			};
+			console.log(speed);
+			var steps = distance / speed;
 			this.route = [];
 			this.inTransit = true;
 			this.departed = false;
@@ -427,7 +443,7 @@ function Unit(owner,startLoc,type) {
 			};
 			this.route[0].y += 10; // So unit doesn't overlap site
 			this.route.push(site);
-		} else if (this.location.neighbors.indexOf(site) == -1) {
+		} else if (this.location.neighbors.indexOf(site) == -1 && this.offroad == false) {
 			view.displayError('No path to ' + site.name + '.');
 		} else if (waterStore < waterDrank) {
 			view.displayError('Not enough water!');
@@ -435,6 +451,8 @@ function Unit(owner,startLoc,type) {
 			view.displayError('Not enough food!');
 		} else if (cargo > this.type.cargo) {
 			view.displayError('Overburdened!');
+		} else {
+			console.log(this.location.neighbors.indexOf(site),this.offroad,waterStore,waterDrank,foodStore,foodEaten,cargo,this.type.cargo);
 		};
 		view.displayUnit(this);
 	};
@@ -504,6 +522,10 @@ function Unit(owner,startLoc,type) {
 			};
 		};
 	};
+	
+	this.survey = function() {
+		console.log('Survey!');
+	};
 
 	this.cancelRoute = function() {
 		this.route = [];
@@ -559,6 +581,16 @@ function Unit(owner,startLoc,type) {
 		view.displayUnit(this);
 		view.displaySiteDetails(view.focus.unit.location);
 	
+	};
+	
+	this.scuttle = function() {
+		if (this.location !== undefined) {
+			for (c in this.commodities) {
+				this.location.reputation.p1 += this.location.commodities[this.commodities[c].commodity] * this.commodities[c].qty;
+			};
+		};
+		units.splice(units.indexOf(this),1);
+		view.displayUnit(units[0]);
 	};
 	
 	units.push(this);

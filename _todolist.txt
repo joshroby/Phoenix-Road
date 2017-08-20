@@ -1,30 +1,27 @@
 Down the Phoenix Road To Do List
 
 
+- scuttle units
+- offroading
 
 
 PERNICIOUS PROBLEMS
 - site label onmouseout that returns site details to the focus unit's location
 
 NEAR FUTURE
-- surveying resources
-- increasing vision ?
-- offroading
 
 IMMEDIATE FUTURE
+- surveying resources
 - building infrastructure
 	- cartwright builds new units
 	- counting house enables trade in scrip
 	- production buildings lower value of output commodities & increase value of inputs
 	- housing increases housing
 	- defenses increase defense
+- pathfinding for multi-step trips
 - draw functions for units
-- cartwright
 - movement animation/transition
 - rejigger site labels for legibility… somehow
-- surveyer unit (sees hidden natural resources)
-- pathfinding for multi-step trips
-- scuttle units
 
 FAR FUTURE
 - boats? terrain?

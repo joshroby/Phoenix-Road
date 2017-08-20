@@ -38,6 +38,14 @@ body {
 	overflow-y: auto;
 	}
 
+#unitActionsDiv {
+	margin-top: 2vh;
+	text-align: center;
+	}
+#unitActionsDiv button {
+	margin: 1vh;
+	}
+
 #unitTabsDiv {
 	margin-top: 5vh;
 	height: 10vh;
