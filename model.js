@@ -21,7 +21,7 @@ var model = {
 		p1.knownLandmarks = [];
 		
 		var startUnit = new Unit(p1,undefined,data.units.donkeyCart);
-		var dowser = new Unit(p1,startUnit.location,data.units.dowser);
+// 		var dowser = new Unit(p1,startUnit.location,data.units.dowser);
 		startUnit.look();
 		startUnit.location.reputation.p1 = 100;
 		
@@ -191,14 +191,14 @@ var model = {
 	advanceClock: function() {
 		model.currentDay++;
 		
-		for (i in units) {
-			if (units[i].inTransit) {
-				units[i].moveStep();
-			} else if (units[i].isSurveying) {
-				units[i].eat();
-				if (units[i].surveyComplete == model.currentDay) {
-					units[i].surveyResult();
-				};
+		for (q in units) {
+			units[q].eat();
+			if (units[q].inTransit) {
+				units[q].moveStep();
+			} else if (units[q].surveyComplete == model.currentDay) {
+				units[q].surveyResult();
+			} else if (units[q].buildComplete == model.currentDay) {
+				units[q].buildResult();
 			};
 		};
 		
@@ -447,7 +447,7 @@ function Unit(owner,startLoc,type) {
 			};
 		};
 				
-		if ((this.location.neighbors.indexOf(site) !== -1 || this.offroad == true) && waterStore >= waterDrank && foodStore >= foodEaten && cargo <= this.type.cargo) {
+		if ((this.location.neighbors.indexOf(site) !== -1 || this.offroad == true) && waterStore >= waterDrank && foodStore >= foodEaten && cargo <= this.type.cargo && !this.isSurveying) {
 			var diffX = site.x - this.location.x;
 			var diffY = site.y - this.location.y;
 			if (this.offroad) {
@@ -472,6 +472,8 @@ function Unit(owner,startLoc,type) {
 			view.displayError('Not enough food!');
 		} else if (cargo > this.type.cargo) {
 			view.displayError('Overburdened!');
+		} else if (this.isSurveying) {
+			view.displayError('Busy surveying!');
 		} else {
 			console.log(this.location.neighbors.indexOf(site),this.offroad,waterStore,waterDrank,foodStore,foodEaten,cargo,this.type.cargo);
 		};
@@ -483,7 +485,6 @@ function Unit(owner,startLoc,type) {
 		this.departed = true;
 		this.location = undefined;
 		if (currentStep.name == undefined) {
-			this.eat();
 			this.look();
 		} else {
 			// arrived
