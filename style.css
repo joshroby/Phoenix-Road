@@ -90,6 +90,35 @@ body {
 	width: 20vw;
 	}
 
+.progressDiv {
+	float: left;
+	width: 50%;
+	}
+	
+.progressDiv button {
+	float: left;
+	}
+	
+.progressLabel {
+	float: left;
+	margin-top: 0;
+	margin-bottom: 0;
+	}
+
+.progressBar {
+	background-color: slategray;
+	width: 25vh;
+	margin-left: 8vh;
+	}
+
+.progressBarHolder {
+	float: left;
+	}
+
+.progressBarDone {
+	background-color: darkorange;
+	}
+
 #detailsSiteDiv {
 	width: 20vw;
 	float: left;

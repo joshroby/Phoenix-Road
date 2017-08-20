@@ -167,10 +167,53 @@ var view = {
 		
 		mapDiv.appendChild(svg);
 		
-		var revealButton = document.createElement('button');
-		revealButton.innerHTML = "Reveal";
-		revealButton.setAttribute('onclick','handlers.revealMap()');
-		mapDiv.appendChild(revealButton);
+		var progressDiv = document.createElement('div');
+		mapDiv.appendChild(progressDiv);
+		
+		var progressExploreDiv = document.createElement('div');
+		progressExploreDiv.className = 'progressDiv';
+		progressDiv.appendChild(progressExploreDiv);
+		var progressExploreP = document.createElement('p');
+		progressExploreP.innerHTML = "Explore: ";
+		progressExploreP.className = 'progressLabel';
+		progressExploreDiv.appendChild(progressExploreP);
+		var progressExploreBar = document.createElement('div');
+		progressExploreBar.className = 'progressBar';
+		var progressExploreDoneBar = document.createElement('div');
+		progressExploreDoneBar.className = 'progressBarDone';
+		var percentage = Math.round(p1.knownSites.length/sites.length * 100,0);
+		var caption = percentage + "%";
+		progressExploreDoneBar.innerHTML = caption;
+		progressExploreDoneBar.style.width = percentage + '%';
+		progressExploreBar.appendChild(progressExploreDoneBar);
+		progressExploreDiv.appendChild(progressExploreBar);
+		var progressBarHolder = document.createElement('div');
+		progressBarHolder.className = 'progressBarHolder';
+		progressBarHolder.appendChild(progressExploreBar);
+		progressExploreDiv.appendChild(progressBarHolder);
+		
+// 		var revealButton = document.createElement('button');
+// 		revealButton.innerHTML = "Reveal";
+// 		revealButton.setAttribute('onclick','handlers.revealMap()');
+// 		progressExploreDiv.appendChild(revealButton);
+		
+		var progressRebuildDiv = document.createElement('div');
+		progressRebuildDiv.className = 'progressDiv';
+		progressDiv.appendChild(progressRebuildDiv);
+		var progressRebuildP = document.createElement('p');
+		progressRebuildP.innerHTML = "Rebuild: ";
+		progressRebuildP.className = 'progressLabel';
+		progressRebuildDiv.appendChild(progressRebuildP);
+		var progressRebuildBar = document.createElement('div');
+		progressRebuildBar.className = 'progressBar';
+		var progressRebuildDoneBar = document.createElement('div');
+		progressRebuildDoneBar.className = 'progressBarDone';
+		var percentage = Math.round(model.victoryProgress() * 100,0);
+		var caption = percentage + "%";
+		progressRebuildDoneBar.innerHTML = caption;
+		progressRebuildDoneBar.style.width = percentage + '%';
+		progressRebuildBar.appendChild(progressRebuildDoneBar);
+		progressRebuildDiv.appendChild(progressRebuildBar);
 	},
 	
 	mapZoom: function(e) {

@@ -238,6 +238,19 @@ var model = {
 		view.focus.unit = newUnit;
 		view.displayUnit(newUnit);
 	},
+	
+	victoryProgress: function() {
+		var count = 0;
+		for (s in sites) {
+			var needs = sites[s].needs();
+			var allGreen = true;
+			for (n in needs) {
+				if (needs[n].color = 'springgreen') {allGreen = false;};
+			};
+			if (allGreen) {count++};
+		};
+		return count / sites.length;
+	},
 
 };
 
