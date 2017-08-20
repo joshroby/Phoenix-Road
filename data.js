@@ -37,9 +37,16 @@ var data = {
 			cargo: true,
 		},
 		
+		crudeOil: {
+			name: 'Crude Oil',
+			baseValue: 80,
+			stability: 2,
+			cargo: true,
+		},
+		
 		fuel: {
 			name: 'Fuel',
-			baseValue: 80,
+			baseValue: 100,
 			stability: 1,
 			cargo: true,
 		},
@@ -85,7 +92,7 @@ var data = {
 			goodwill: 20,
 			visible: false,
 			unlock: 300,
-			buildUnits: ['donkeyCart','oxCart','horseCart','tinkersCart','surveyor'],
+			buildUnits: ['donkeyCart','oxCart','horseCart','tinkersCart','dowser'],
 		},
 		fields: {
 			name: 'Fields',
@@ -244,6 +251,7 @@ var data = {
 			speed: 10,
 			offroadSpeed: 2,
 			canSurvey: true,
+			surveyTime: 7,
 			surveyResources: ['mineralVein','pasture','spring'],
 			buildCost: {lumber:2,fiber:2,stone:1,food:1,fuel:2,water:1},
 		},

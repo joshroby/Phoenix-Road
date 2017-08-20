@@ -21,6 +21,7 @@ var model = {
 		p1.knownLandmarks = [];
 		
 		var startUnit = new Unit(p1,undefined,data.units.donkeyCart);
+		var dowser = new Unit(p1,startUnit.location,data.units.dowser);
 		startUnit.look();
 		startUnit.location.reputation.p1 = 100;
 		
@@ -193,6 +194,11 @@ var model = {
 		for (i in units) {
 			if (units[i].inTransit) {
 				units[i].moveStep();
+			} else if (units[i].isSurveying) {
+				units[i].eat();
+				if (units[i].surveyComplete == model.currentDay) {
+					units[i].surveyResult();
+				};
 			};
 		};
 		
@@ -477,30 +483,8 @@ function Unit(owner,startLoc,type) {
 		this.departed = true;
 		this.location = undefined;
 		if (currentStep.name == undefined) {
-			// move a step
-
-			// consume food and water
-			var foodEaten = this.type.crew;
-			var waterDrank = this.type.crew;
-			for (i in this.commodities) {
-				if (this.commodities[i].commodity == 'food') {
-					var temp = this.commodities[i].qty;
-					this.commodities[i].qty = Math.round(Math.max(this.commodities[i].qty - foodEaten,0),0);
-					foodEaten = Math.max(foodEaten - temp,0);
-					if (this.commodities[i].qty == 0) {
-						this.commodities.splice(i,1);
-					};
-				} else if (this.commodities[i].commodity == 'water') {
-					var temp = this.commodities[i].qty;
-					this.commodities[i].qty = Math.round(Math.max(this.commodities[i].qty - waterDrank,0),0);
-					waterDrank = Math.max(waterDrank - temp,0);
-					if (this.commodities[i].qty == 0) {
-						this.commodities.splice(i,1);
-					};
-				};
-			};
+			this.eat();
 			this.look();
-
 		} else {
 			// arrived
 			this.location = currentStep;
@@ -513,6 +497,28 @@ function Unit(owner,startLoc,type) {
 		};
 		view.displayMap();
 		
+	};
+	
+	this.eat = function() {
+		var foodEaten = this.type.crew;
+		var waterDrank = this.type.crew;
+		for (i in this.commodities) {
+			if (this.commodities[i].commodity == 'food') {
+				var temp = this.commodities[i].qty;
+				this.commodities[i].qty = Math.round(Math.max(this.commodities[i].qty - foodEaten,0),0);
+				foodEaten = Math.max(foodEaten - temp,0);
+				if (this.commodities[i].qty == 0) {
+					this.commodities.splice(i,1);
+				};
+			} else if (this.commodities[i].commodity == 'water') {
+				var temp = this.commodities[i].qty;
+				this.commodities[i].qty = Math.round(Math.max(this.commodities[i].qty - waterDrank,0),0);
+				waterDrank = Math.max(waterDrank - temp,0);
+				if (this.commodities[i].qty == 0) {
+					this.commodities.splice(i,1);
+				};
+			};
+		};
 	};
 
 	this.look = function() {
@@ -539,7 +545,36 @@ function Unit(owner,startLoc,type) {
 	};
 	
 	this.survey = function() {
-		console.log('Survey!');
+		this.isSurveying = true;
+		var resources = [];
+		for (r in this.location.resources) {
+			for (c in this.type.surveyResources) {
+				if ( this.location.resources[r] == data.resources[this.type.surveyResources[c]] && this.location.hasSurveyed.p1[r] !== true) {
+					resources.push(r);
+				};
+			}
+		};
+		resources = resources.concat(resources);
+		resources.push(-1);
+		
+		this.surveyPotentials = resources;
+		this.surveyComplete = model.currentDay + this.type.surveyTime;
+		view.displayUnit(this);
+	};
+	
+	this.surveyResult = function() {
+		this.isSurveying = false;
+		var foundResource = this.surveyPotentials[Math.random() * this.surveyPotentials.length << 0];
+		if (foundResource !== -1) {
+			this.location.hasSurveyed.p1[foundResource] = true;
+			view.displayNotification('You found a ' + this.location.resources[foundResource].name + " in " + this.location.name);
+			view.displaySiteDetails(this.location);
+		} else {
+			view.displayError('You found nothing in ' + this.location.name + '.');
+		};
+		this.surveyPotentials = [];
+		this.surveyComplete = undefined;
+		model.options.paused = true;
 	};
 
 	this.cancelRoute = function() {

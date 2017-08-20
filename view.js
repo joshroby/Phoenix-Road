@@ -639,7 +639,7 @@ var view = {
 		var unitSurveyButton = document.createElement('button');
 		unitSurveyButton.innerHTML = 'Survey';
 		unitSurveyButton.setAttribute('onclick','handlers.survey()');
-		if (!unit.type.canSurvey) {unitSurveyButton.disabled = true;};
+		if (!unit.type.canSurvey || unit.isSurveying) {unitSurveyButton.disabled = true;};
 		unitActionsDiv.appendChild(unitSurveyButton);
 		
 		var unitScuttleButton = document.createElement('button');
@@ -767,6 +767,14 @@ var view = {
 		document.getElementById('notifySpan').innerHTML = '';
 		document.getElementById('notifySpan').className = 'empty';
 		view.errorMessage = '';
+	},
+	
+	displayNotification: function(message) {
+		console.log('notification:',message);
+		document.getElementById('notifySpan').innerHTML = message;
+		document.getElementById('notifySpan').className = 'notifyMessage';
+		view.errorMessage = message;
+		var timedEvent = setTimeout(view.clearError,5000);
 	},
 
 };
