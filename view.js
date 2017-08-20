@@ -615,39 +615,38 @@ var view = {
 				};
 			};
 		
-			if (unit.location !== undefined) { view.displaySiteDetails(unit.location); };
-			view.updateTradeDiv();
+			// Action Buttons
+			var unitActionsDiv = document.createElement('div');
+			unitActionsDiv.className = 'unitActionsDiv';
+			unitPane.appendChild(unitActionsDiv);
+		
+			var unitOffroadButton = document.createElement('button');
+			if (unit.offroad == false) {
+				unitOffroadButton.innerHTML = 'Go Offroad';
+			} else if (unit.location == undefined) {
+				unitOffroadButton.innerHTML = 'Reach a Site';
+				unitOffroadButton.disabled = true;
+			} else {
+				unitOffroadButton.innerHTML = 'Return to Road';
+			};
+			unitOffroadButton.setAttribute('onclick','handlers.toggleRoad()');
+			unitActionsDiv.appendChild(unitOffroadButton);
+		
+			var unitSurveyButton = document.createElement('button');
+			unitSurveyButton.innerHTML = 'Survey';
+			unitSurveyButton.setAttribute('onclick','handlers.survey()');
+			if (!unit.type.canSurvey || unit.isSurveying || unit.location == undefined) {unitSurveyButton.disabled = true;};
+			unitActionsDiv.appendChild(unitSurveyButton);
+		
+			var unitScuttleButton = document.createElement('button');
+			unitScuttleButton.innerHTML = 'Scuttle';
+			unitScuttleButton.setAttribute('onclick','handlers.scuttle()');
+			if (units.length == 1) {unitScuttleButton.disabled = true;};
+			unitActionsDiv.appendChild(unitScuttleButton);
+		
 		};
 		
-		// Action Buttons
-		var unitActionsDiv = document.createElement('div');
-		unitActionsDiv.id = 'unitActionsDiv';
-		unitPane.appendChild(unitActionsDiv);
-		
-		var unitOffroadButton = document.createElement('button');
-		if (unit.offroad == false) {
-			unitOffroadButton.innerHTML = 'Go Offroad';
-		} else if (unit.location == undefined) {
-			unitOffroadButton.innerHTML = 'Reach a Site';
-			unitOffroadButton.disabled = true;
-		} else {
-			unitOffroadButton.innerHTML = 'Return to Road';
-		};
-		unitOffroadButton.setAttribute('onclick','handlers.toggleRoad()');
-		unitActionsDiv.appendChild(unitOffroadButton);
-		
-		var unitSurveyButton = document.createElement('button');
-		unitSurveyButton.innerHTML = 'Survey';
-		unitSurveyButton.setAttribute('onclick','handlers.survey()');
-		if (!unit.type.canSurvey || unit.isSurveying) {unitSurveyButton.disabled = true;};
-		unitActionsDiv.appendChild(unitSurveyButton);
-		
-		var unitScuttleButton = document.createElement('button');
-		unitScuttleButton.innerHTML = 'Scuttle';
-		unitScuttleButton.setAttribute('onclick','handlers.scuttle()');
-		if (units.length == 1) {unitScuttleButton.disabled = true;};
-		unitActionsDiv.appendChild(unitScuttleButton);
-		
+		// Unit Tabs
 		if (unitsAtSite.length > 1) {
 			var unitTabsDiv = document.createElement('div');
 			unitTabsDiv.id = 'unitTabsDiv';
@@ -660,7 +659,9 @@ var view = {
 				unitTabsDiv.appendChild(unitTab);
 			};
 		};
-		
+
+		if (unit.location !== undefined) { view.displaySiteDetails(unit.location); };
+		view.updateTradeDiv();		
 		view.focus.unitPane = unitsAtSite.indexOf(selectedUnit);
 		document.getElementById('unitPane_' + view.focus.unitPane ).style.display = 'block';
 	},

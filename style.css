@@ -38,11 +38,11 @@ body {
 	overflow-y: auto;
 	}
 
-#unitActionsDiv {
+.unitActionsDiv {
 	margin-top: 2vh;
 	text-align: center;
 	}
-#unitActionsDiv button {
+.unitActionsDiv button {
 	margin: 1vh;
 	}
 
