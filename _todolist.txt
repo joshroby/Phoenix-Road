@@ -8,7 +8,6 @@ PERNICIOUS PROBLEMS
 NEAR FUTURE
 
 IMMEDIATE FUTURE
-- surveying resources
 - building infrastructure
 	- cartwright builds new units
 	- counting house enables trade in scrip

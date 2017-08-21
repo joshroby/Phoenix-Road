@@ -658,21 +658,39 @@ var view = {
 				unitPane.appendChild(unitBuildHead);
 				
 				var unitBuildSelect = document.createElement('select');
+				unitBuildSelect.id = 'unitBuildSelect_' + u;
+				unitBuildSelect.className = 'buildSelect';
+				unitBuildSelect.setAttribute('onchange','handlers.displayInfrastructurePreview('+u+')');
+				var unitBuildOption = document.createElement('option');
+				unitBuildOption.innerHTML = 'Select...';
+				unitBuildOption.selected = true;
+				unitBuildOption.disabled = true;
+				unitBuildSelect.appendChild(unitBuildOption);
 				for (b in unit.type.buildInfrastructures) {
-					var unitBuildOption = document.createElement('option');
-					console.log(unit.type.buildInfrastructures[b]);
-					unitBuildOption.innerHTML = data.infrastructure[unit.type.buildInfrastructures[b]].name;
-					unitBuildOption.value = unit.type.buildInfrastructures[b];
-					unitBuildSelect.appendChild(unitBuildOption);
+					var requirements = data.infrastructure[unit.type.buildInfrastructures[b]].requiredResource;
+					var requirementsFulfilled = false;
+					for (r in requirements) {
+						if (unit.location.resources.indexOf(data.resources[requirements[r]]) !== -1) {
+							requirementsFulfilled = true;
+						};
+					};
+					if (requirements == undefined || requirementsFulfilled) {
+						var unitBuildOption = document.createElement('option');
+						unitBuildOption.innerHTML = data.infrastructure[unit.type.buildInfrastructures[b]].name;
+						unitBuildOption.value = unit.type.buildInfrastructures[b];
+						unitBuildSelect.appendChild(unitBuildOption);
+					};
 				};
 				unitPane.appendChild(unitBuildSelect);
 				
 				var unitBuildBtn = document.createElement('button');
+				unitBuildBtn.id = 'unitBuildBtn';
 				unitBuildBtn.innerHTML = 'Build';
 				unitPane.appendChild(unitBuildBtn);
 				
 				var unitBuildPreviewDiv = document.createElement('div');
-				unitBuildPreviewDiv.id = 'unitBuildPreviewDiv';
+				unitBuildPreviewDiv.id = 'unitBuildPreviewDiv_' + u;
+				unitBuildPreviewDiv.className = 'unitBuildPreviewDiv';
 				unitPane.appendChild(unitBuildPreviewDiv);
 			};
 		
@@ -696,6 +714,64 @@ var view = {
 		view.updateTradeDiv();		
 		view.focus.unitPane = unitsAtSite.indexOf(selectedUnit);
 		document.getElementById('unitPane_' + view.focus.unitPane ).style.display = 'block';
+	},
+	
+	displayInfrastructurePreview: function(pane,key) {
+		var infrastructure = data.infrastructure[key];
+		var unitBuildPreviewDiv = document.getElementById('unitBuildPreviewDiv_' + pane);
+		unitBuildPreviewDiv.innerHTML = '';
+		
+		var unitBuildPreviewHead = document.createElement('h4');
+		unitBuildPreviewHead.innerHTML = infrastructure.name;
+		unitBuildPreviewDiv.appendChild(unitBuildPreviewHead);
+		
+		var unitBuildPreviewDesc = document.createElement('p');
+		unitBuildPreviewDesc.innerHTML = view.infrastructureDescription(key);
+		unitBuildPreviewDiv.appendChild(unitBuildPreviewDesc);
+		
+		var unitBuildCostP = document.createElement('p');
+		unitBuildCostP.innerHTML = 'Costs: ';
+		for (b in infrastructure.buildCost) {
+			unitBuildCostP.innerHTML += infrastructure.buildCost[b] + " " + b + ", ";
+		};
+		if (view.focus.unit.location !== undefined) {
+			unitBuildCostP.innerHTML += " (~" + Math.round(view.focus.unit.location.costInRep(infrastructure.buildCost),0) + " reputation)";
+		};
+		unitBuildPreviewDiv.appendChild(unitBuildCostP);
+		
+	},
+	
+	infrastructureDescription: function(key) {
+		var string = '';
+		var infrastructure = data.infrastructure[key];
+		if (infrastructure.requiredResource !== undefined) {
+			string += 'Upgrades a ' + infrastructure.requiredResource + '. ';
+		};
+		if (infrastructure.housing > 0) {
+			string += 'Provides housing for ' + infrastructure.housing + '. ';
+		};
+		if (infrastructure.defense > 0) {
+			string += 'Provides defense of ' + infrastructure.defense + '. ';
+		};
+		if (infrastructure.outputs !== undefined) {
+			string += 'Produces '
+		};
+		for (p in infrastructure.outputs) {
+			string += infrastructure.outputs[p] + ' ';
+		};
+		if (infrastructure.outputs !== undefined) {
+			string += '. '
+		};
+		if (infrastructure.inputs !== undefined) {
+			string += 'Increases value of '
+		};
+		for (p in infrastructure.inputs) {
+			string += infrastructure.inputs[p] + ' ';
+		};
+		if (infrastructure.inputs !== undefined) {
+			string += '. '
+		};
+		return string;
 	},
 	
 	switchUnitPane: function(paneIndex,unitIndex) {

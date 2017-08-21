@@ -2,6 +2,7 @@ var sites = [];
 var landmarks = [];
 var units = [];
 var p1 = {};
+var players;
 
 var model = {
 
@@ -19,9 +20,11 @@ var model = {
 		p1.vision = 60;
 		p1.knownSites = [];
 		p1.knownLandmarks = [];
+		players = {p1:p1};
 		
 		var startUnit = new Unit(p1,undefined,data.units.donkeyCart);
 // 		var dowser = new Unit(p1,startUnit.location,data.units.dowser);
+		var dowser = new Unit(p1,startUnit.location,data.units.tinkersCart);
 		startUnit.look();
 		startUnit.location.reputation.p1 = 100;
 		
@@ -403,6 +406,42 @@ function Site() {
 			};
 		};
 		return commodities;
+	};
+	
+	this.buyingPower = function(player) {
+		if (player == undefined) {player = 'p1'};
+		var buyingPower = this.reputation[player];
+		var unitsAtSite = [];
+		var trading = this.trading();
+		for (u in units) {
+			if (units[u].location == this && units[u].owner == players[player]) {
+				unitsAtSite.push(units[u]);
+			};
+		};
+		for (u in unitsAtSite) {
+			for (c in unitsAtSite[u].commodities) {
+				if (trading[unitsAtSite[u].commodities[c].commodity] !== undefined) {
+					buyingPower += trading[unitsAtSite[u].commodities[c].commodity] * unitsAtSite[u].commodities[c].qty;
+				};
+			};
+		};
+		return buyingPower;
+	};
+	
+	this.costInRep = function(buildCost) {
+		var cost = 0;
+		var requirements
+		var trading = this.trading();
+		for (b in buildCost) {
+			if (b == 'reputation') {
+				cost += buildCost[b];
+			} else if (trading[b] !== undefined) {
+				cost += buildCost[b] * this.commodities[b] * 100;
+			} else {
+				cost += Infinity;
+			};
+		};
+		return cost;
 	};
 	
 	sites.push(this);

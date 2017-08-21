@@ -48,6 +48,11 @@ var handlers = {
 		view.displayUnit(view.focus.unit);
 	},
 	
+	displayInfrastructurePreview: function(pane) {
+		var key = document.getElementById('unitBuildSelect_'+pane).value;
+		view.displayInfrastructurePreview(pane,key);
+	},
+	
 	switchUnitPane: function(unitIndex,paneIndex) {
 		view.switchUnitPane(paneIndex);
 		view.focus.unit = units[unitIndex];

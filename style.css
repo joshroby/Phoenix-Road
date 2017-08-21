@@ -46,6 +46,11 @@ body {
 	margin: 1vh;
 	}
 
+.unitBuildPreviewDiv {
+	margin-left: 1vh;
+	font-size: 0.6em;
+	}
+
 #unitTabsDiv {
 	margin-top: 5vh;
 	height: 10vh;

@@ -112,7 +112,6 @@ var data = {
 
 		aqueduct: {
 			name: 'Aqueduct',
-			description: 'reduces cost of water',
 			buildCost: {stone:4,lumber:2},
 			goodwill:20,
 			visible: true,
@@ -121,7 +120,6 @@ var data = {
 		},
 		bank: {
 			name:'Bank',
-			description: 'enables credit scrip',
 			buildCost: {stone:4,lumber:2,reputation:2000},
 			goodwill: 20,
 			visible: false,
@@ -145,16 +143,21 @@ var data = {
 		},
 		cartwright: {
 			name:'Cartwright',
-			description: 'enables basic unit building',
 			buildCost: {lumber:2},
 			goodwill: 20,
 			visible: false,
 			unlock: 300,
 			buildUnits: ['donkeyCart','oxCart','horseCart','tinkersCart','dowser'],
 		},
+		cisterns: {
+			name: 'Cisterns',
+			buildCost: {stone:4},
+			goodwill: 20,
+			visible: true,
+			outputs: ['water'],
+		},
 		fields: {
 			name: 'Fields',
-			description: 'reduces cost of food',
 			buildCost: {lumber:1,fiber:4},
 			goodwill: 20,
 			visible: true,
@@ -163,7 +166,6 @@ var data = {
 		},
 		foundry: {
 			name:'Foundry',
-			description: 'reduces cost of metals',
 			buildCost: {stone:8,lumber:8,cloth:2},
 			goodwill: 20,
 			visible: true,
@@ -179,7 +181,6 @@ var data = {
 		},
 		loom: {
 			name: 'Loom',
-			description: 'reduces cost of cloth',
 			buildCost: {lumber:2,fiber:4},
 			goodwill: 20,
 			visible: false,
@@ -188,14 +189,13 @@ var data = {
 		},
 		lensmeister: {
 			name: 'Lensmeister',
-			description: 'increases player vision',
 			visible: false,
 			upgrade: 'vision',
 		},
 		lumbermill: {
 			name: 'Lumbermill',
-			description: 'reduces cost of lumber',
 			buildCost: {lumber:3,fiber:2},
+			requiredResource: ['forest'],
 			goodwill:20,
 			visible:false,
 			outputs: ['lumber'],
@@ -209,7 +209,6 @@ var data = {
 		},
 		mine: {
 			name: 'Mine',
-			description: 'reduces cost of ore',
 			buildCost: {lumber:4},
 			goodwill: 20,
 			visible: false,
@@ -218,7 +217,6 @@ var data = {
 		},
 		orchards: {
 			name: 'Orchards',
-			description: 'reduces cost of food',
 			buildCost: {lumber:1},
 			goodwill: 20,
 			visible: true,
@@ -227,7 +225,6 @@ var data = {
 		},
 		pens: {
 			name: 'Pens',
-			description: 'reduces cost of food',
 			buildCost: {lumber:2,fiber:2,livestock:1},
 			goodwill: 20,
 			visible: false,
@@ -235,7 +232,6 @@ var data = {
 		},
 		quarry: {
 			name: 'Quarry',
-			description: 'reduces cost of stone',
 			buildCost: {lumber:4},
 			goodwill: 20,
 			visible: false,
@@ -244,7 +240,6 @@ var data = {
 		},
 		refinery: {
 			name: 'Refinery',
-			description: 'reduces cost of fuel',
 			buildCost: {lumber:1},
 			goodwill: 20,
 			visible: true,
@@ -260,7 +255,6 @@ var data = {
 		},
 		tannery: {
 			name:'Tannery',
-			description: 'reduces cost of leather',
 			buildCost: {stone:2,lumber:2,fiber:2},
 			goodwill: 20,
 			visible: false,
@@ -283,7 +277,6 @@ var data = {
 		},
 		watermill: {
 			name: 'Watermill',
-			description: 'reduces cost of food',
 			buildCost: {lumber:4,stone:1,cloth:2},
 			goodwill:20,
 			visible: false,
@@ -361,7 +354,7 @@ var data = {
 			speed: 10,
 			offroadSpeed: 7,
 			canBuild: true,
-			buildInfrastructures: ['loom','orchard','aqueduct','lumbermill'],
+			buildInfrastructures: ['loom','orchards','aqueduct','lumbermill','cisterns'],
 			buildCost: {lumber:4,fiber:4,stone:1,food:1,water:1},
 		},
 	
