@@ -4,6 +4,7 @@ var data = {
 	
 		food: {
 			name: 'Food',
+			common: true,
 			baseValue: 10,
 			stability: 6,
 			cargo: true,
@@ -11,6 +12,7 @@ var data = {
 		
 		water: {
 			name: 'Water',
+			common: true,
 			baseValue: 5,
 			stability: 3,
 			cargo: true,
@@ -18,6 +20,7 @@ var data = {
 		
 		fiber: {
 			name: 'Fiber',
+			common: false,
 			baseValue: 20,
 			stability: 3,
 			cargo: true,
@@ -25,6 +28,7 @@ var data = {
 		
 		lumber: {
 			name: 'Lumber',
+			common: true,
 			baseValue: 30,
 			stability: 4,
 			cargo: true,
@@ -32,35 +36,96 @@ var data = {
 		
 		stone: {
 			name: 'Stone',
+			common: true,
 			baseValue: 40,
 			stability: 5,
 			cargo: true,
 		},
 		
+		fuel: {
+			name: 'Fuel',
+			common: true,
+			baseValue: 100,
+			stability: 1,
+			cargo: true,
+		},
+		
 		crudeOil: {
 			name: 'Crude Oil',
+			common: false,
 			baseValue: 80,
 			stability: 2,
 			cargo: true,
 		},
 		
-		fuel: {
-			name: 'Fuel',
-			baseValue: 100,
-			stability: 1,
+		ore: {
+			name: 'Ore',
+			common: false,
+			baseValue: 40,
+			stability: 6,
 			cargo: true,
+		},
+		
+		metal: {
+			name: 'Metals',
+			common: false,
+			baseValue: 100,
+			stability: 4,
+			cargo: true,
+		},
+		
+		cloth: {
+			name: 'Cloth',
+			common: true,
+			baseValue: 60,
+			stability: 3,
+			cargo: true,
+		},
+		
+		hides: {
+			name: 'Hides',
+			common: false,
+			baseValue: 20,
+			stability: 2,
+			cargo: true,
+		},
+		
+		leather: {
+			name: 'Leather',
+			common: true,
+			baseValue: 50,
+			stability: 4,
+			cargo: true,
+		},
+		
+		scrip: {
+			name: 'Scrip',
+			common: false,
+			baseValue: 100,
+			stability: 10,
+			cargo: false,
 		},
 		
 	},
 	
 	infrastructure: {
 
+		aqueduct: {
+			name: 'Aqueduct',
+			description: 'reduces cost of water',
+			buildCost: {stone:4},
+			goodwill:20,
+			visible: true,
+			outputs: ['water'],
+		},
 		arbors: {
 			name: 'Arbors',
 			description: 'reduces cost of food',
 			buildCost: {lumber:1},
 			goodwill: 20,
 			visible: true,
+			inputs: ['water'],
+			outputs: ['food','lumber'],
 		},
 		bank: {
 			name:'Bank',
@@ -68,7 +133,8 @@ var data = {
 			buildCost: {stone:4,lumber:2,reputation:2000},
 			goodwill: 20,
 			visible: false,
-			valuables: 'scrip',
+			inputs: ['scrip'],
+			outputs: ['scrip'],
 		},
 		barracks: {
 			name:'Barracks',
@@ -100,10 +166,21 @@ var data = {
 			buildCost: {lumber:1,fiber:4},
 			goodwill: 20,
 			visible: true,
+			inputs: ['water'],
+			outputs: ['food','fiber'],
+		},
+		foundry: {
+			name:'Foundry',
+			description: 'reduces cost of metals',
+			buildCost: {stone:8,lumber:8,cloth:2},
+			goodwill: 20,
+			visible: true,
+			inputs: ['ore','fuel','water'],
+			outputs: ['metals']
 		},
 		fortress: {
 			name:'Fortress',
-			buildCost: {stone:8,lumber:8,fiber:2},
+			buildCost: {stone:8,lumber:8,fiber:2,cloth:2},
 			goodwill: 20,
 			visible: true,
 			defense:10,
@@ -114,6 +191,8 @@ var data = {
 			buildCost: {lumber:2,fiber:4},
 			goodwill: 20,
 			visible: false,
+			inputs: ['fiber'],
+			outputs: ['cloth'],
 		},
 		lensmeister: {
 			name: 'Lensmeister',
@@ -123,7 +202,7 @@ var data = {
 		},
 		manorHouse: {
 			name:'Manor House',
-			buildCost: {stone:2,lumber:2,fiber:4},
+			buildCost: {stone:2,lumber:2,cloth:4},
 			goodwill: 20,
 			visible: false,
 			housing:50,
@@ -134,6 +213,7 @@ var data = {
 			buildCost: {lumber:4},
 			goodwill: 20,
 			visible: false,
+			outputs: ['ore'],
 		},
 		pens: {
 			name: 'Pens',
@@ -141,6 +221,7 @@ var data = {
 			buildCost: {lumber:2,fiber:2},
 			goodwill: 20,
 			visible: false,
+			outputs: ['food','hides'],
 		},
 		quarry: {
 			name: 'Quarry',
@@ -148,6 +229,7 @@ var data = {
 			buildCost: {lumber:4},
 			goodwill: 20,
 			visible: false,
+			outputs: ['stone'],
 		},
 		stoneWall: {
 			name:'Stone Wall',
@@ -156,9 +238,17 @@ var data = {
 			visible: true,
 			defense:5,
 		},
+		tannery: {
+			name:'Tannery',
+			buildCost: {stone:2,lumber:2,fiber:2},
+			goodwill: 20,
+			visible: false,
+			inputs: ['hides'],
+			outputs: ['leather'],
+		},
 		tenements: {
 			name:'Tenements',
-			buildCost: {stone:8,lumber:4},
+			buildCost: {stone:8,lumber:4,cloth:2},
 			goodwill: 20,
 			visible: true,
 			housing:200,

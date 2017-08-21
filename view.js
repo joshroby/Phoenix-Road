@@ -331,6 +331,7 @@ var view = {
 		};
 		
 		if (site.hasVisited.p1) {
+			var commoditiesTraded = site.trading();
 			var siteCommoditiesTable = document.createElement('table');
 			siteCommoditiesTable.className = 'commoditiesTable';
 			siteCommoditiesDiv.appendChild(siteCommoditiesTable);
@@ -338,7 +339,7 @@ var view = {
 			siteCommoditiesTableTitle.innerHTML = 'Commodity Values';
 			siteCommoditiesTable.appendChild(siteCommoditiesTableTitle);
 			var knownValues = model.knownValues();
-			for (c in site.commodities) {
+			for (c in commoditiesTraded) {
 				var siteCommoditiesItem = document.createElement('tr');
 				siteCommoditiesTable.appendChild(siteCommoditiesItem);
 				var siteCommoditiesNameCell = document.createElement('td');
