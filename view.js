@@ -330,6 +330,20 @@ var view = {
 			siteFeatureList.appendChild(siteFeatureItem);
 		};
 		
+		var siteReputationP = document.createElement('p');
+		siteReputationP.id = 'siteReputationP';
+		if (site.reputation.p1 > 0) {
+			siteReputationP.innerHTML += 'Your reputation here: +' + Math.round(site.reputation.p1,0);
+			siteReputationP.className = 'positive';
+		} else if (site.reputation.p1 < 0) {
+			siteReputationP.innerHTML += 'You reputation here: ' + Math.round(site.reputation.p1,0);
+			siteReputationP.className = 'negative';
+		} else {
+			siteReputationP.innerHTML += 'You have no reputation here.';
+			siteReputationP.className = '';
+		};
+		siteCommoditiesDiv.appendChild(siteReputationP);
+		
 		if (site.hasVisited.p1) {
 			var commoditiesTraded = site.trading();
 			var siteCommoditiesTable = document.createElement('table');
@@ -381,20 +395,7 @@ var view = {
 				};
 			};
 		};
-		
-		var siteReputationP = document.createElement('p');
-		if (site.reputation.p1 > 0) {
-			siteReputationP.innerHTML += 'You have a positive reputation here. (' + Math.round(site.reputation.p1,0) + ')';
-			siteReputationP.className = 'positive';
-		} else if (site.reputation.p1 < 0) {
-			siteReputationP.innerHTML += 'You have a negative reputation here. (' + Math.round(site.reputation.p1,0) + ')';
-			siteReputationP.className = 'negative';
-		} else {
-			siteReputationP.innerHTML += 'You have no reputation here.';
-			siteReputationP.className = '';
-		};
-		siteCommoditiesDiv.appendChild(siteReputationP);
-		
+				
 		if (site.hasVisited.p1) {
 			for (i in site.infrastructure) {
 				if (site.infrastructure[i].buildUnits !== undefined) {
@@ -644,6 +645,31 @@ var view = {
 			unitScuttleButton.setAttribute('onclick','handlers.scuttle()');
 			if (units.length == 1) {unitScuttleButton.disabled = true;};
 			unitActionsDiv.appendChild(unitScuttleButton);
+			
+			// Building Infrastructure
+			if (unit.type.canBuild) {
+				var unitBuildHead = document.createElement('h3');
+				unitBuildHead.innerHTML = 'Build';
+				unitPane.appendChild(unitBuildHead);
+				
+				var unitBuildSelect = document.createElement('select');
+				for (b in unit.type.buildInfrastructures) {
+					var unitBuildOption = document.createElement('option');
+					console.log(unit.type.buildInfrastructures[b]);
+					unitBuildOption.innerHTML = data.infrastructure[unit.type.buildInfrastructures[b]].name;
+					unitBuildOption.value = unit.type.buildInfrastructures[b];
+					unitBuildSelect.appendChild(unitBuildOption);
+				};
+				unitPane.appendChild(unitBuildSelect);
+				
+				var unitBuildBtn = document.createElement('button');
+				unitBuildBtn.innerHTML = 'Build';
+				unitPane.appendChild(unitBuildBtn);
+				
+				var unitBuildPreviewDiv = document.createElement('div');
+				unitBuildPreviewDiv.id = 'unitBuildPreviewDiv';
+				unitPane.appendChild(unitBuildPreviewDiv);
+			};
 		
 		};
 		

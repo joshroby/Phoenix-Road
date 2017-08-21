@@ -93,6 +93,7 @@ body {
 
 #clockSpan {
 	margin-right: 2vw;
+	margin-left: 2vw;
 	width: 20vw;
 	}
 
@@ -138,12 +139,12 @@ body {
 	}
 
 #siteCommoditiesDiv {
-	height: 30%;
+	height: 40%;
 	overflow-y: auto;
 	}
 
 #siteInfrastructureDiv {
-	height: 30%;
+	height: 20%;
 	overflow-y: auto;
 	}
 
@@ -153,6 +154,10 @@ body {
 
 #siteFeatureList {
 	font-size: 0.8em;
+	}
+
+#siteReputationP {
+	margin: 0;
 	}
 
 .commoditiesTable {

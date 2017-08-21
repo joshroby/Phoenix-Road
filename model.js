@@ -317,7 +317,7 @@ function Site() {
 		this.infrastructure.push(data.infrastructure.manorHouse);
 	};
 	if (Math.random() < 0.2) {
-		var buildings = ['loom','foundry','tannery'];
+		var buildings = ['loom','foundry','refinery','tannery'];
 		this.infrastructure.push(data.infrastructure[buildings[Math.random() * buildings.length << 0]]);
 	};
 	if (this.resources.indexOf() == -1 && Math.random() < 0.1) {
@@ -332,7 +332,7 @@ function Site() {
 	} else if (this.commodities.food < 0.5) {
 		foodInfrastructure = 1;
 	};
-	var foodList = ['pens','fields','arbors'];
+	var foodList = ['pens','fields','orchards'];
 	for (f=0;f<foodInfrastructure;f++) {
 		var num = Math.random() * foodList.length << 0;
 		this.infrastructure.push(data.infrastructure[foodList[num]]);
@@ -344,7 +344,7 @@ function Site() {
 	if (this.commodities.stone < 0.4) {
 		this.infrastructure.push(data.infrastructure.quarry);
 	};
-	if (this.commodities.ore < 0.4) {
+	if (this.commodities.ore < 0.4 && this.resources.indexOf(data.resources.mineralVein) == -1) {
 		this.infrastructure.push(data.infrastructure.mine);
 	};
 	if (Math.random() < 0.02) {
