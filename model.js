@@ -392,14 +392,14 @@ function Site() {
 			industrial = industrial.concat(this.infrastructure[b].inputs);
 			industrial = industrial.concat(this.infrastructure[b].outputs);
 		};
-		for (c in this.commodities) {
-			if (data.commodities[c].common) {
-				commodities[c] = this.commodities[c];
+		for (d in this.commodities) {
+			if (data.commodities[d].common) {
+				commodities[d] = this.commodities[d];
 			};
 		};
-		for (c in this.commodities) {
-			if (industrial.indexOf(c) !== -1) {
-				commodities[c] = this.commodities[c];
+		for (d in this.commodities) {
+			if (industrial.indexOf(d) !== -1) {
+				commodities[d] = this.commodities[d];
 			};
 		};
 		return commodities;

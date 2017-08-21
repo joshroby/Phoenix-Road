@@ -563,6 +563,11 @@ var view = {
 			var unitCommoditiesTableTitle = document.createElement('caption');
 			unitCommoditiesTable.appendChild(unitCommoditiesTableTitle);
 			var cargo = 0;
+			if (unit.location !== undefined) {
+				var trading = unit.location.trading();
+			} else {
+				var trading = {};
+			};
 			for (c in unit.commodities) {
 				var unitCommoditiesItem = document.createElement('tr');
 				unitCommoditiesTable.appendChild(unitCommoditiesItem);
@@ -572,7 +577,7 @@ var view = {
 					unitCommoditiesNameCell.innerHTML += ' (' + unit.commodities[c].qty + '%)';
 				};
 				unitCommoditiesItem.appendChild(unitCommoditiesNameCell);
-				if (unit.location !== undefined) {
+				if (unit.location !== undefined && trading[unit.commodities[c].commodity] !== undefined) {
 					var unitCommoditiesValueCell = document.createElement('td');
 					unitCommoditiesValueCell.innerHTML = Math.round(100 * unit.location.commodities[unit.commodities[c].commodity],0);
 					unitCommoditiesItem.appendChild(unitCommoditiesValueCell);
