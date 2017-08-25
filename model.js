@@ -24,7 +24,7 @@ var model = {
 		
 		var startUnit = new Unit(p1,undefined,data.units.donkeyCart);
 // 		var dowser = new Unit(p1,startUnit.location,data.units.dowser);
-		var dowser = new Unit(p1,startUnit.location,data.units.tinkersCart);
+// 		var tinker = new Unit(p1,startUnit.location,data.units.tinkersCart);
 		startUnit.look();
 		startUnit.location.reputation.p1 = 100;
 		
@@ -442,6 +442,49 @@ function Site() {
 			};
 		};
 		return cost;
+	};
+	
+	this.buildInfrastructure = function(key) {
+		var infrastructure = data.infrastructure[key];
+		console.log(infrastructure);
+		for (c in infrastructure.inputs) {
+			this.commodities[infrastructure.inputs[c]] /= 0.8;
+		};
+		for (c in infrastructure.outputs) {
+			this.commodities[infrastructure.outputs[c]] *= 0.8;
+		};
+		this.reputation.p1 += infrastructure.goodwill;
+		this.useCommodities(infrastructure.buildCost);
+		this.infrastructure.push(infrastructure);
+	};
+	
+	this.useCommodities = function(useList) {
+		var unitsAtSite = [view.focus.unit];
+		for (u in units) {
+			if (units[u].location == view.focus.unit && units[u] !== view.focus.unit) {
+				unitsAtSite.push(units[u]);
+			};
+		};
+		var flatList = [];
+		for (c in useList) {
+			for (q=0;q<useList[c];q++) {
+				flatList.push(c);
+			};
+		};
+		for (c in flatList) {
+			var outstanding = true;
+			for (u in unitsAtSite) {
+				for (i in unitsAtSite[u].commodities) {
+					if (unitsAtSite[u].commodities[i].commodity == flatList[c] && unitsAtSite[u].commodities[i].qty == 100 && outstanding) {
+						unitsAtSite[u].commodities.splice(i,1);
+						outstanding = false;
+					};
+				};
+			};
+			if (outstanding) {
+				view.focus.unit.location.reputation.p1 -= view.focus.unit.location.commodities[flatList[c]] * 100 ;
+			};
+		};
 	};
 	
 	sites.push(this);

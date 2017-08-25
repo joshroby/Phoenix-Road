@@ -53,6 +53,13 @@ var handlers = {
 		view.displayInfrastructurePreview(pane,key);
 	},
 	
+	buildInfrastructure:function(pane) {
+		var key = document.getElementById('unitBuildSelect_'+pane).value;
+		view.focus.unit.location.buildInfrastructure(key);
+		view.displaySiteDetails(view.focus.unit.location);
+		view.displayUnit(view.focus.unit)
+	},
+	
 	switchUnitPane: function(unitIndex,paneIndex) {
 		view.switchUnitPane(paneIndex);
 		view.focus.unit = units[unitIndex];

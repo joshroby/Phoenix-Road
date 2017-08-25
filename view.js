@@ -652,7 +652,7 @@ var view = {
 			unitActionsDiv.appendChild(unitScuttleButton);
 			
 			// Building Infrastructure
-			if (unit.type.canBuild) {
+			if (unit.type.canBuild && unit.location !== undefined) {
 				var unitBuildHead = document.createElement('h3');
 				unitBuildHead.innerHTML = 'Build';
 				unitPane.appendChild(unitBuildHead);
@@ -674,7 +674,7 @@ var view = {
 							requirementsFulfilled = true;
 						};
 					};
-					if (requirements == undefined || requirementsFulfilled) {
+					if ((requirements == undefined || requirementsFulfilled) && unit.location.infrastructure.indexOf(data.infrastructure[unit.type.buildInfrastructures[b]]) == -1) {
 						var unitBuildOption = document.createElement('option');
 						unitBuildOption.innerHTML = data.infrastructure[unit.type.buildInfrastructures[b]].name;
 						unitBuildOption.value = unit.type.buildInfrastructures[b];
@@ -684,8 +684,9 @@ var view = {
 				unitPane.appendChild(unitBuildSelect);
 				
 				var unitBuildBtn = document.createElement('button');
-				unitBuildBtn.id = 'unitBuildBtn';
+				unitBuildBtn.id = 'unitBuildBtn_' + u;
 				unitBuildBtn.innerHTML = 'Build';
+				unitBuildBtn.setAttribute('onclick','handlers.buildInfrastructure('+u+')');
 				unitPane.appendChild(unitBuildBtn);
 				
 				var unitBuildPreviewDiv = document.createElement('div');
@@ -730,7 +731,7 @@ var view = {
 		unitBuildPreviewDiv.appendChild(unitBuildPreviewDesc);
 		
 		var unitBuildCostP = document.createElement('p');
-		unitBuildCostP.innerHTML = 'Costs: ';
+		unitBuildCostP.innerHTML = 'Materials: ';
 		for (b in infrastructure.buildCost) {
 			unitBuildCostP.innerHTML += infrastructure.buildCost[b] + " " + b + ", ";
 		};

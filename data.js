@@ -42,6 +42,22 @@ var data = {
 			cargo: true,
 		},
 		
+		clothing: {
+			name: 'Clothing',
+			common: true,
+			baseValue: 70,
+			stability: 2,
+			cargo: true,
+		},
+		
+		tack: {
+			name: 'Saddles and Tack',
+			common: true,
+			baseValue: 60,
+			stability: 3,
+			cargo: true,
+		},
+		
 		fuel: {
 			name: 'Fuel',
 			common: true,
@@ -76,7 +92,7 @@ var data = {
 		
 		cloth: {
 			name: 'Cloth',
-			common: true,
+			common: false,
 			baseValue: 60,
 			stability: 3,
 			cargo: true,
@@ -92,7 +108,7 @@ var data = {
 		
 		leather: {
 			name: 'Leather',
-			common: true,
+			common: false,
 			baseValue: 50,
 			stability: 4,
 			cargo: true,
@@ -246,6 +262,22 @@ var data = {
 			inputs: ['crudeOil'],
 			outputs: ['fuel'],
 		},
+		saddler: {
+			name: 'Saddler',
+			buildCost: {lumber:1,fiber:1,leather:1},
+			goodwill: 20,
+			visible: false,
+			inputs: ['leather'],
+			outputs: ['tack'],
+		},
+		seamstress: {
+			name: 'Seamstress',
+			buildCost: {lumber:1,fiber:1,leather:1,cloth:1},
+			goodwill: 20,
+			visible: false,
+			inputs: ['fiber','cloth','leather'],
+			outputs: ['clothing'],
+		},
 		stoneWall: {
 			name:'Stone Wall',
 			buildCost: {stone:8,lumber:2},
@@ -326,7 +358,7 @@ var data = {
 			crew: 2,
 			speed: 10,
 			offroadSpeed: 5,
-			buildCost: {lumber:2,fiber:2,food:1,water:1},
+			buildCost: {lumber:2,fiber:2,tack:1,food:1,water:1},
 		},
 	
 		horseCart: {
@@ -335,7 +367,7 @@ var data = {
 			crew: 2,
 			speed: 15,
 			offroadSpeed: 5,
-			buildCost: {lumber:3,fiber:3,food:1,water:1},
+			buildCost: {lumber:3,fiber:3,tack:1,food:1,water:1},
 		},
 	
 		oxCart: {
@@ -344,7 +376,7 @@ var data = {
 			crew: 2,
 			speed: 10,
 			offroadSpeed: 8,
-			buildCost: {lumber:3,fiber:3,food:1,water:1},
+			buildCost: {lumber:3,fiber:3,tack:1,food:1,water:1},
 		},
 	
 		tinkersCart: {
@@ -354,8 +386,8 @@ var data = {
 			speed: 10,
 			offroadSpeed: 7,
 			canBuild: true,
-			buildInfrastructures: ['loom','orchards','aqueduct','lumbermill','cisterns'],
-			buildCost: {lumber:4,fiber:4,stone:1,food:1,water:1},
+			buildInfrastructures: ['aqueduct','barracks','bunker','cisterns','fields','loom','lumbermill','orchards','pens','quarry','saddler','seamstress','stoneWall','tannery','woodenPallisade','watermill'],
+			buildCost: {lumber:4,fiber:4,tack:1,stone:1,food:1,water:1},
 		},
 	
 		dowser: {
@@ -367,7 +399,7 @@ var data = {
 			canSurvey: true,
 			surveyTime: 7,
 			surveyResources: ['mineralVein','pasture','spring'],
-			buildCost: {lumber:2,fiber:2,stone:1,food:1,fuel:2,water:1},
+			buildCost: {lumber:2,fiber:2,stone:1,tack:1,food:1,fuel:2,water:1},
 		},
 		
 		bicycle: {
