@@ -1,19 +1,18 @@
 Down the Phoenix Road To Do List
 
-- building infrastructure
-	- cartwright builds new units
-	- counting house enables trade in scrip
-	- production buildings lower value of output commodities & increase value of inputs
-	- housing increases housing
-	- defenses increase defense
 
 
 PERNICIOUS PROBLEMS
 - site label onmouseout that returns site details to the focus unit's location
 
 NEAR FUTURE
+- enable/disable build buttons by selections
+- dump cargo when you can't sell it
+- view.enableUnitAddBtns() tries to enable buttons for commodities that aren't traded there
+- build times?
 
 IMMEDIATE FUTURE
+- zoom function's impression of where cursor is on map is derived as if map is zoomed out
 - pathfinding for multi-step trips
 - draw functions for units
 - movement animation/transition
@@ -21,6 +20,7 @@ IMMEDIATE FUTURE
 - other only-findable infrastructures
 	- zeppelin hanger
 	- some kind of cult?
+- stone wall replaces pallisade & other such issues
 
 FAR FUTURE
 - boats? terrain?

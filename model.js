@@ -4,6 +4,8 @@ var units = [];
 var p1 = {};
 var players;
 
+var errors = {};
+
 var model = {
 
 	options: {
@@ -27,6 +29,18 @@ var model = {
 // 		var tinker = new Unit(p1,startUnit.location,data.units.tinkersCart);
 		startUnit.look();
 		startUnit.location.reputation.p1 = 100;
+		
+		var startCargo = undefined;
+		var cheapestValue = Infinity;
+		var tradingHere = startUnit.location.trading();
+		for (c in startUnit.location.commodities) {
+			if (startUnit.location.commodities[c] < cheapestValue && tradingHere[c] !== undefined && c !== 'food' && c !== 'water') {
+				startCargo = c;
+				cheapestValue = startUnit.location.commodities[c];
+			};
+		};
+		startUnit.commodities.push({commodity:startCargo,qty:100});
+		startUnit.location.reputation.p1 -= cheapestValue * 100;
 		
 		var location = startUnit.location;
 		for (i=0;i<5;i++) {
@@ -300,6 +314,28 @@ function Site() {
 	};
 	
 	this.infrastructure = [];
+	
+	// Basic Agriculture
+	var foodInfrastructure = 0;
+	if (this.commodities.food < 0.05) {
+		foodInfrastructure = 3;
+	} else if (this.commodities.food < 0.08) {
+		foodInfrastructure = 2;
+	} else if (this.commodities.food < 0.1) {
+		foodInfrastructure = 1;
+	};
+	var foodList = ['pens','fields','orchards'];
+	for (f=0;f<foodInfrastructure;f++) {
+		var num = Math.random() * foodList.length << 0;
+		this.infrastructure.push(data.infrastructure[foodList[num]]);
+		foodList.splice(num,1);
+	};
+	if (this.commodities.fiber < 0.15 && this.infrastructure.indexOf(data.infrastructure.fields) == -1) {
+		this.infrastructure.push(data.infrastructure.fields);
+	};
+
+	
+	// Basic Housing and Defense
 	if (this.commodities.stone < 0.5) {
 		this.infrastructure.push(data.infrastructure.bunker);
 	};
@@ -319,39 +355,32 @@ function Site() {
 	} else if (this.commodities.lumber + this.commodities.stone < 0.6) {
 		this.infrastructure.push(data.infrastructure.manorHouse);
 	};
-	if (Math.random() < 0.2) {
-		var buildings = ['loom','foundry','refinery','tannery'];
-		this.infrastructure.push(data.infrastructure[buildings[Math.random() * buildings.length << 0]]);
-	};
-	if (this.resources.indexOf() == -1 && Math.random() < 0.1) {
-		this.infrastructure.push(data.infrastructure.mine);
-	};
 	
-	var foodInfrastructure = 0;
-	if (this.commodities.food < 0.1) {
-		foodInfrastructure = 3;
-	} else if (this.commodities.food < 0.3) {
-		foodInfrastructure = 2;
-	} else if (this.commodities.food < 0.5) {
-		foodInfrastructure = 1;
-	};
-	var foodList = ['pens','fields','orchards'];
-	for (f=0;f<foodInfrastructure;f++) {
-		var num = Math.random() * foodList.length << 0;
-		this.infrastructure.push(data.infrastructure[foodList[num]]);
-		foodList.splice(num,1);
-	};
-	if (this.commodities.fiber < 0.4 && this.infrastructure.indexOf(data.infrastructure.fields) == -1) {
-		this.infrastructure.push(data.infrastructure.fields);
-	};
-	if (this.commodities.stone < 0.4) {
-		this.infrastructure.push(data.infrastructure.quarry);
-	};
-	if (this.commodities.ore < 0.4 && this.resources.indexOf(data.resources.mineralVein) == -1) {
-		this.infrastructure.push(data.infrastructure.mine);
-	};
-	if (Math.random() < 0.02) {
-		this.infrastructure.push(data.infrastructure.cartwright);
+	// Basic Industry
+	if (Math.random() < 0.2) {
+		var industry = undefined;
+		if (this.commodities.stone < 0.3 && this.resources.indexOf(data.resources.outcropping) == -1 && Math.random() < 0.1) {
+			industry = data.infrastructure.mine;
+		};
+		if (this.commodities.ore < 0.3 && this.resources.indexOf(data.resources.mineralVein) == -1 && Math.random() < 0.1 && industry == undefined) {
+			industry = data.infrastructure.mine;
+		};
+		if (this.commodities.crudeOil < 0.6 && this.resources.indexOf(data.resources.oilReservoir) == -1 && Math.random() < 0.05 && industry == undefined) {
+			industry = data.infrastructure.oilWell;
+		};
+		if (industry == undefined) {
+			var buildings = ['cartwright','foundry','loom','refinery','saddler','seamstress','tannery'];
+			industry = data.infrastructure[buildings[Math.random() * buildings.length << 0]];
+			for (c in industry.inputs) {
+				this.commodities[industry.inputs[c]] /= 0.8;
+			};
+			for (c in industry.outputs) {
+				this.commodities[industry.outputs[c]] *= 0.8;
+			};
+		};
+		if (industry !== undefined) {
+			this.infrastructure.push(industry);
+		}
 	};
 	
 	this.needs = function() {
@@ -396,6 +425,7 @@ function Site() {
 			industrial = industrial.concat(this.infrastructure[b].outputs);
 		};
 		for (d in this.commodities) {
+			errors.v426 = d;
 			if (data.commodities[d].common) {
 				commodities[d] = this.commodities[d];
 			};

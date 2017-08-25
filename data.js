@@ -53,7 +53,7 @@ var data = {
 		tack: {
 			name: 'Saddles and Tack',
 			common: true,
-			baseValue: 60,
+			baseValue: 80,
 			stability: 3,
 			cargo: true,
 		},
@@ -164,6 +164,7 @@ var data = {
 			visible: false,
 			unlock: 300,
 			buildUnits: ['donkeyCart','oxCart','horseCart','tinkersCart','dowser'],
+			inputs: ['tack','lumber'],
 		},
 		cisterns: {
 			name: 'Cisterns',
@@ -230,6 +231,13 @@ var data = {
 			visible: false,
 			requiredResource: ['mineralVein'],
 			outputs: ['ore'],
+		},
+		oilWell: {
+			name: 'Oil Well',
+			buildCost: {metal:8},
+			goodwill: 20,
+			visible: true,
+			outputs: ['crudeOil'],
 		},
 		orchards: {
 			name: 'Orchards',
@@ -331,6 +339,10 @@ var data = {
 			name: "Mineral Vein",
 			visible: false,
 		},
+		oilReservoir: {
+			name: "Oil Reservoir",
+			visible: false,
+		},
 		outcropping: {
 			name: "Outcropping",
 			visible: true,
@@ -398,7 +410,7 @@ var data = {
 			offroadSpeed: 2,
 			canSurvey: true,
 			surveyTime: 7,
-			surveyResources: ['mineralVein','pasture','spring'],
+			surveyResources: ['mineralVein','oilReservoir','pasture','spring'],
 			buildCost: {lumber:2,fiber:2,stone:1,tack:1,food:1,fuel:2,water:1},
 		},
 		
