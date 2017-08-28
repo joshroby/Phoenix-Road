@@ -185,12 +185,7 @@ var view = {
 		progressExploreDoneBar.innerHTML = caption;
 		progressExploreDoneBar.style.width = percentage + '%';
 		progressExploreBar.appendChild(progressExploreDoneBar);
-		progressExploreDiv.appendChild(progressExploreBar);
-		var progressBarHolder = document.createElement('div');
-		progressBarHolder.className = 'progressBarHolder';
-		progressBarHolder.appendChild(progressExploreBar);
-		progressExploreDiv.appendChild(progressBarHolder);
-		
+		progressExploreDiv.appendChild(progressExploreBar);		
 		
 		var progressRebuildDiv = document.createElement('div');
 		progressRebuildDiv.className = 'progressDiv';
@@ -839,12 +834,12 @@ var view = {
 			var balanceDiv = document.getElementById('balanceDiv');
 			balanceDiv.innerHTML = Math.round(currentTrade.balance , 0);
 			if (currentTrade.balance >=  -1 * view.focus.unit.location.reputation.p1) {
-				balanceDiv.className = 'balancePositive';
+				balanceDiv.className = 'positive';
 			} else {
-				balanceDiv.className = 'balanceNegative';
+				balanceDiv.className = 'negative';
 			};
 		
-			if (currentTrade.balance >= -1 * view.focus.unit.location.reputation.p1 && Object.keys(view.focus.unit.commodities).length - currentTrade.unitStuff.length + currentTrade.siteStuff.length) {
+			if (currentTrade.balance >= -1 * view.focus.unit.location.reputation.p1) {
 				document.getElementById('tradeBtn').disabled = false;
 			} else {
 				document.getElementById('tradeBtn').disabled = true;

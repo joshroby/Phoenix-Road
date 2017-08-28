@@ -104,27 +104,23 @@ body {
 
 .progressDiv {
 	float: left;
-	width: 50%;
-	}
-	
-.progressDiv button {
-	float: left;
+	width: 48%;
+	padding-top: 0.5vh;
+	padding-bottom: 0.5vh;
+	margin-left: 1%;
 	}
 	
 .progressLabel {
 	float: left;
 	margin-top: 0;
 	margin-bottom: 0;
+	padding-left: 1vw;
 	}
 
 .progressBar {
 	background-color: slategray;
-	width: 25vh;
-	margin-left: 8vh;
-	}
-
-.progressBarHolder {
-	float: left;
+	width: 24vh;
+	margin-left: 9vh;
 	}
 
 .progressBarDone {
@@ -234,28 +230,44 @@ body {
 	clear:both;
 	margin-top: 5vh;
 	display: none;
-	margin-left: 25vw;
+	margin-left: 24vw;
 	width: 50vw;
+	}
+
+.tradeDiv {
+	border: 1px solid darkorange;
+	margin: 1vw;
+	}
+
+.tradeDiv ul {
+	list-style: square inside;
+	padding-left: 1vw;
+	}
+
+.tradeDiv li {
 	}
 
 #unitStuffDiv {
 	float: left;
-	width: 20vw;
+	width: 17vw;
 	}
 
 #tradeControlsDiv {
 	float: left;
 	width: 9vw;
+	text-align: center;
+	background-color: darkorange;
 	}
 
 #siteStuffDiv {
 	float: left;
-	width: 20vw;
+	width: 17vw;
 	}
 
 #balanceDiv {
-	text-size: 3em;
+	font-size: 2em;
 	text-align: center;
+	font-weight: bolder;
 	}
 
 .positive {
