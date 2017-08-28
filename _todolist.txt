@@ -4,11 +4,11 @@ Down the Phoenix Road To Do List
 
 NEAR FUTURE
 - dump cargo when you can't sell it
-- view.enableUnitAddBtns() tries to enable buttons for commodities that aren't traded there
 - build times?
+- upgrades instead of standalone builds
 
 IMMEDIATE FUTURE
-- zoom function's impression of where cursor is on map is derived as if map is zoomed out
+- zoom function's impression of where cursor is on map is always derived as if map is zoomed out
 - pathfinding for multi-step trips
 - draw functions for units
 - movement animation/transition
@@ -17,6 +17,7 @@ IMMEDIATE FUTURE
 	- zeppelin hanger
 	- some kind of cult?
 - stone wall replaces pallisade & other such issues
+- convert 'goodwill' from flat bonus into an everyday earn instead
 
 FAR FUTURE
 - boats? terrain?

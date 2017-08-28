@@ -119,8 +119,8 @@ body {
 
 .progressBar {
 	background-color: slategray;
-	width: 24vh;
-	margin-left: 9vh;
+	width: 15vw;
+	margin-left: 9vw;
 	}
 
 .progressBarDone {
@@ -235,7 +235,6 @@ body {
 	}
 
 .tradeDiv {
-/* 	border: 1px solid darkorange; */
 	margin: 1vw;
 	}
 

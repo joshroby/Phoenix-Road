@@ -809,10 +809,10 @@ function Unit(owner,startLoc,type) {
 		};
 		// Convert remaining requirements to reputation
 		var repCost = 0;
-		for (c in buildCost) {
+		for (c in outstanding) {
 			if (trading[c] !== undefined) {
-				repCost += buildCost[c] * this.location.commodities[c] * 100;
-			} else {
+				repCost += outstanding[c] * this.location.commodities[c] * 100;
+			} else if (outstanding[c] > 0) {
 				repCost = Infinity;
 			};
 		};
