@@ -803,7 +803,7 @@ function Unit(owner,startLoc,type) {
 			for (c in unitsAtSite[u].commodities) {
 				var commodity = unitsAtSite[u].commodities[c].commodity;
 				if (outstanding[commodity] > 0) {
-					outstanding[commodity] -= unitsAtSite[u].qty / 100;
+					outstanding[commodity] -= unitsAtSite[u].commodities[c].qty / 100;
 				};
 			};
 		};
@@ -820,6 +820,7 @@ function Unit(owner,startLoc,type) {
 			result = true;
 		}
 		
+		console.log(outstanding);
 		console.log(repCost);
 		
 		return result;
