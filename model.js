@@ -42,17 +42,19 @@ var model = {
 		startUnit.commodities.push({commodity:startCargo,qty:100});
 		startUnit.location.reputation.p1 -= cheapestValue * 100;
 		
-		var location = startUnit.location;
+		var localArea = [startUnit.location];
 		for (i=0;i<5;i++) {
-			location = location.neighbors[Math.random() * location.neighbors.length << 0];
+			for (s in localArea) {
+				for (n in localArea[s].neighbors) {
+					if (localArea.indexOf(localArea[s].neighbors[n]) == -1) {
+						localArea.push(localArea[s].neighbors[n]);
+					};
+				};
+			};
 		};
-		location.infrastructure.push(data.infrastructure.cartwright);
-		
-		var location = startUnit.location;
-		for (i=0;i<10;i++) {
-			location = location.neighbors[Math.random() * location.neighbors.length << 0];
-		};
-		location.infrastructure.push(data.infrastructure.lensmeister);
+		localArea.shift();
+		localArea[Math.random() * localArea.length << 0].infrastructure.push(data.infrastructure.cartwright);
+		localArea[Math.random() * localArea.length << 0].infrastructure.push(data.infrastructure.lensmeister);
 		
 		view.focus.unit = startUnit;
 		view.displayMap();

@@ -40,7 +40,9 @@ var handlers = {
 		} else {
 			site = sites[siteIndex];
 		};
-		view.displaySiteDetails(site);
+		if (site !== undefined) {
+			view.displaySiteDetails(site);
+		};
 	},
 	
 	selectUnit: function(unitIndex) {

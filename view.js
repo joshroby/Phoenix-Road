@@ -323,7 +323,7 @@ var view = {
 			siteFeatureItem.innerHTML = list[i].name;
 			siteFeatureList.appendChild(siteFeatureItem);
 		};
-		
+	
 		var siteReputationP = document.createElement('p');
 		siteReputationP.id = 'siteReputationP';
 		if (site.reputation.p1 > 0) {
@@ -337,7 +337,7 @@ var view = {
 			siteReputationP.className = '';
 		};
 		siteCommoditiesDiv.appendChild(siteReputationP);
-		
+	
 		if (site.hasVisited.p1) {
 			var commoditiesTraded = site.trading();
 			var siteCommoditiesTable = document.createElement('table');
@@ -389,7 +389,7 @@ var view = {
 				};
 			};
 		};
-				
+			
 		if (site.hasVisited.p1) {
 			for (i in site.infrastructure) {
 				if (site.infrastructure[i].buildUnits !== undefined) {
@@ -451,7 +451,7 @@ var view = {
 				};
 			};
 		};
-				
+			
 		view.displayMap();
 	},
 	
@@ -861,8 +861,14 @@ var view = {
 	},
 	
 	enableUnitAddBtns: function() {
+		var trading = undefined;
+		if (view.focus.unit.location !== undefined) {
+			trading = view.focus.unit.location.trading();
+		};
 		for (i in view.focus.unit.commodities) {
-			document.getElementById('unitAddBtn_' + view.focus.unitPane + '_' + i).disabled = false;
+			if (trading[view.focus.unit.commodities[i].commodity] !== undefined) {
+				document.getElementById('unitAddBtn_' + view.focus.unitPane + '_' + i).disabled = false;
+			};
 		};
 	},
 	
