@@ -82,7 +82,7 @@ var data = {
 			cargo: true,
 		},
 		
-		metal: {
+		metals: {
 			name: 'Metals',
 			common: false,
 			baseValue: 100,
@@ -234,7 +234,7 @@ var data = {
 		},
 		oilWell: {
 			name: 'Oil Well',
-			buildCost: {metal:8},
+			buildCost: {metals:8},
 			goodwill: 20,
 			visible: true,
 			outputs: ['crudeOil'],
@@ -420,7 +420,7 @@ var data = {
 			crew: 1,
 			speed: 15,
 			offroadSpeed: 5,
-			buildCost: {metal:1,food:1,water:1},
+			buildCost: {metals:1,food:1,water:1},
 		},
 		
 		zeppelin: {

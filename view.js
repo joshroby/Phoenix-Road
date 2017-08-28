@@ -412,7 +412,7 @@ var view = {
 					buildSelect.setAttribute('onchange','handlers.displayBuildUnit('+i+')');
 					if (site.reputation.p1 < site.infrastructure[i].unlock) {
 						var lockedOption = document.createElement('option');
-						lockedOption.innerHTML = 'Unlocks at ' + site.infrastructure[i].unlock + ' reputation.';
+						lockedOption.innerHTML = 'Select unit...';
 						lockedOption.disabled = true;
 						lockedOption.selected = true;
 						buildSelect.appendChild(lockedOption);
@@ -425,13 +425,9 @@ var view = {
 					};
 					infrastructureDiv.appendChild(buildSelect);
 					var buildBtn = document.createElement('button');
+					buildBtn.id = 'siteBuildBtn';
 					buildBtn.setAttribute('onclick','handlers.buildUnit('+i+')');
-					if (site.reputation.p1 >= site.infrastructure[i].unlock) {
-						buildBtn.innerHTML = 'Build';
-					} else {
-						buildBtn.innerHTML = 'Locked';
-						buildBtn.disabled = true;
-					};
+					buildBtn.innerHTML = 'Build';
 					infrastructureDiv.appendChild(buildBtn);
 					var buildInfoTable = document.createElement('table');
 					buildInfoTable.id = 'buildInfoTable_'+i;
@@ -490,7 +486,12 @@ var view = {
 		buildCostP.innerHTML = costString;
 		buildInfoTable.appendChild(buildCostP);
 		
-		// Here is where we can enable and disable the Build button per unit
+		// Enable/disable the Build button
+		if (view.focus.unit.canAfford(unitType.buildCost)) {
+			document.getElementById('siteBuildBtn').disabled = false;
+		} else {
+			document.getElementById('siteBuildBtn').disabled = true;
+		};
 	},
 	
 	displayUnit: function(unit) {
@@ -739,6 +740,12 @@ var view = {
 			unitBuildCostP.innerHTML += " (~" + Math.round(view.focus.unit.location.costInRep(infrastructure.buildCost),0) + " reputation)";
 		};
 		unitBuildPreviewDiv.appendChild(unitBuildCostP);
+		
+		if (view.focus.unit.canAfford(infrastructure.buildCost)) {
+			document.getElementById('unitBuildBtn_'+pane).disabled = false;
+		} else {
+			document.getElementById('unitBuildBtn_'+pane).disabled = true;
+		};
 		
 	},
 	

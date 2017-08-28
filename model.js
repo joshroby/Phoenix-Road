@@ -783,5 +783,45 @@ function Unit(owner,startLoc,type) {
 		view.displayUnit(units[0]);
 	};
 	
+	this.canAfford = function(buildCost) {
+		var result = false;
+		var trading = this.location.trading();
+		var unitsAtSite = [];
+		for (u in units) {
+			if (units[u].location == this.location) {
+				unitsAtSite.push(units[u]);
+			};
+		};
+		var outstanding = {};
+		for (c in buildCost) {
+			outstanding[c] = buildCost[c];
+		};
+		// Count up cargo that can be used
+		for (u in unitsAtSite) {
+			for (c in unitsAtSite[u].commodities) {
+				var commodity = unitsAtSite[u].commodities[c].commodity;
+				if (outstanding[commodity] > 0) {
+					outstanding[commodity] -= unitsAtSite[u].qty / 100;
+				};
+			};
+		};
+		// Convert remaining requirements to reputation
+		var repCost = 0;
+		for (c in buildCost) {
+			if (trading[c] !== undefined) {
+				repCost += buildCost[c] * this.location.commodities[c] * 100;
+			} else {
+				repCost = Infinity;
+			};
+		};
+		if (repCost <= this.location.reputation.p1) {
+			result = true;
+		}
+		
+		console.log(repCost);
+		
+		return result;
+	};
+	
 	units.push(this);
 };
