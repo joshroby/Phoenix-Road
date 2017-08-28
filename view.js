@@ -114,9 +114,6 @@ var view = {
 			siteLabel.setAttribute('x',p1.knownSites[i].x + 10);
 			siteLabel.setAttribute('y',p1.knownSites[i].y + 5);
 			siteLabel.setAttribute('onmouseover','handlers.displaySiteDetails('+siteIndex+')');
-			siteLabel.setAttribute('onmouseout','handlers.displaySiteDetails(-1)');
-// 			siteLabel.addEventListener('mouseenter',handlers.displaySiteDetails.bind(this,siteIndex),false);
-// 			siteLabel.addEventListener('mouseleave',handlers.displaySiteDetails.bind(this,-1),false);
 			siteLabel.innerHTML = p1.knownSites[i].name;
 			svg.appendChild(siteLabel);
 
@@ -164,6 +161,8 @@ var view = {
 		svg.addEventListener('mouseup',view.mapDragEnd);
 		svg.addEventListener('mouseleave',view.mapDragEnd);
 		svg.addEventListener('wheel',view.mapZoom);
+		
+		svg.setAttribute('onmouseout','handlers.displaySiteDetails(-1)');
 		
 		mapDiv.appendChild(svg);
 		

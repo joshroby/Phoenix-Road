@@ -2,11 +2,7 @@ Down the Phoenix Road To Do List
 
 
 
-PERNICIOUS PROBLEMS
-- site label onmouseout that returns site details to the focus unit's location
-
 NEAR FUTURE
-- enable/disable build buttons by selections
 - dump cargo when you can't sell it
 - view.enableUnitAddBtns() tries to enable buttons for commodities that aren't traded there
 - build times?
