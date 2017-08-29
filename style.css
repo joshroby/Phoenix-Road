@@ -57,10 +57,11 @@ body {
 	}
 
 .unitTab {
+	float: left;
 	font-size: 0.5em;
 	background-color: lightgrey;
 	padding: 0.5vw;
-	margin: 1vw;
+	margin: 0.5vw;
 	border: 0.5px solid darkgrey;
 	}
 	

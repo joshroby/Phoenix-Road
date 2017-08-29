@@ -752,11 +752,14 @@ var view = {
 			var unitTabsDiv = document.createElement('div');
 			unitTabsDiv.id = 'unitTabsDiv';
 			detailsUnitDiv.appendChild(unitTabsDiv);
-			for ( u in unitsAtSite ) {
+			for (var u in unitsAtSite ) {
 				var unitTab = document.createElement('span');
 				unitTab.className = 'unitTab';
-				unitTab.innerHTML = unitsAtSite[u].name;
+				unitTab.innerHTML = unitsAtSite[u].name + ' (' + unitsAtSite[u].commodities.length + '/' + unitsAtSite[u].type.cargo + ')';
 				unitTab.setAttribute('onclick','handlers.switchUnitPane('+units.indexOf(unitsAtSite[u])+','+u+')');
+				if (unitsAtSite[u].inTransit) {
+					unitTab.style.backgroundColor = '#AAAA00';
+				};
 				unitTabsDiv.appendChild(unitTab);
 			};
 		};
