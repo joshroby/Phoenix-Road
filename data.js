@@ -470,7 +470,7 @@ var data = {
 			crew: 4,
 			speed: 0,
 			offroadSpeed: 20,
-			buildCost: {lumber:5,fiber:20,food:1,water:1},
+			buildCost: {lumber:5,cloth:20,fiber:5,food:1,water:1},
 		},
 	
 	},

@@ -459,13 +459,11 @@ var view = {
 					buildSelect.className = 'buildSelect';
 					buildSelect.id = 'buildSelect_' + i;
 					buildSelect.setAttribute('onchange','handlers.displayBuildUnit('+i+')');
-					if (site.reputation.p1 < site.infrastructure[i].unlock) {
-						var lockedOption = document.createElement('option');
-						lockedOption.innerHTML = 'Select unit...';
-						lockedOption.disabled = true;
-						lockedOption.selected = true;
-						buildSelect.appendChild(lockedOption);
-					};
+					var lockedOption = document.createElement('option');
+					lockedOption.innerHTML = 'Select unit...';
+					lockedOption.disabled = true;
+					lockedOption.selected = true;
+					buildSelect.appendChild(lockedOption);
 					for (u in site.infrastructure[i].buildUnits) {
 						var buildOption = document.createElement('option');
 						buildOption.innerHTML = data.units[site.infrastructure[i].buildUnits[u]].name;
