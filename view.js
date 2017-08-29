@@ -65,13 +65,58 @@ var view = {
 		svg.setAttribute('viewBox',viewboxString);
 		svg.id = 'mapSVG';
 		
+		var defs = document.createElementNS('http://www.w3.org/2000/svg','defs');
+		svg.appendChild(defs);
+		var greenGradient = document.createElementNS('http://www.w3.org/2000/svg','radialGradient');
+		greenGradient.id = 'greenGradient';
+		defs.appendChild(greenGradient);
+		var stop = document.createElementNS('http://www.w3.org/2000/svg','stop');
+		stop.setAttribute('offset','20%');
+		stop.setAttribute('stop-color','green');
+		stop.setAttribute('stop-opacity',0.05);
+		greenGradient.appendChild(stop);
+		var stop = document.createElementNS('http://www.w3.org/2000/svg','stop');
+		stop.setAttribute('offset','80%');
+		stop.setAttribute('stop-color','green');
+		stop.setAttribute('stop-opacity',0.02);
+		greenGradient.appendChild(stop);
+		var stop = document.createElementNS('http://www.w3.org/2000/svg','stop');
+		stop.setAttribute('offset','100%');
+		stop.setAttribute('stop-color','green');
+		stop.setAttribute('stop-opacity',0);
+		greenGradient.appendChild(stop);
+				
 		var background = document.createElementNS('http://www.w3.org/2000/svg','rect');
-		background.setAttribute('fill','#FF9900');
+		background.setAttribute('fill','#FFAA00');
 		background.setAttribute('x','0');
 		background.setAttribute('y','0');
 		background.setAttribute('width','1000');
 		background.setAttribute('height','1000');
 		svg.appendChild(background);
+		
+		for (i in p1.knownSites) {
+			for (c in p1.knownSites[i].carpet) {
+				var newCarpet = document.createElementNS('http://www.w3.org/2000/svg','ellipse');
+// 				if (p1.knownSites[i].hasVisited.p1) {
+					newCarpet.setAttribute('fill','url(#greenGradient)');
+// 				} else {
+// 					newCarpet.setAttribute('fill','none');
+// 				};
+				newCarpet.setAttribute('stroke','none');
+				newCarpet.setAttribute('cx',p1.knownSites[i].x);
+				newCarpet.setAttribute('cy',p1.knownSites[i].y);
+				var r = 0;
+				var needs = p1.knownSites[i].needs();
+				for (n in needs) {
+					r += needs[n].completion * ( 400 / needs.length);
+				};
+
+				newCarpet.setAttribute('rx',(0.5 * p1.knownSites[i].carpet[c].squish + 0.25) * r);
+				newCarpet.setAttribute('ry',(1 - (0.5 * p1.knownSites[i].carpet[c].squish + 0.25)) * r);
+				newCarpet.setAttribute('transform','rotate('+p1.knownSites[i].carpet[c].tilt*360+' '+p1.knownSites[i].x+' '+p1.knownSites[i].y+')');
+				svg.appendChild(newCarpet);
+			};
+		};
 		
 		for (i in p1.knownLandmarks) {
 			var newLandmark = document.createElementNS('http://www.w3.org/2000/svg','ellipse');
@@ -856,7 +901,7 @@ var view = {
 	},
 	
 	enableUnitAddBtn: function(commodityIndex) {
-		console.log('unitAddBtn_' + view.focus.unitPane + '_' + commodityIndex);
+// 		console.log('unitAddBtn_' + view.focus.unitPane + '_' + commodityIndex);
 		document.getElementById('unitAddBtn_' + view.focus.unitPane + '_' + commodityIndex).disabled = false;
 	},
 	

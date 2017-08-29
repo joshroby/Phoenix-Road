@@ -55,7 +55,7 @@ var model = {
 		localArea.shift();
 		localArea[Math.random() * localArea.length << 0].infrastructure.push(data.infrastructure.cartwright);
 		localArea[Math.random() * localArea.length << 0].infrastructure.push(data.infrastructure.lensmeister);
-		
+		sites[Math.random() * sites.length << 0].infrastructure.push(data.infrastructure.hangar);
 		view.focus.unit = startUnit;
 		view.displayMap();
 	},
@@ -284,6 +284,8 @@ function Site() {
 	this.y = 25 + Math.random() * 950 << 0;
 	this.name = model.siteName();
 	
+	this.carpet = [{tilt:Math.random(),squish:Math.random()},{tilt:Math.random(),squish:Math.random()},{tilt:Math.random(),squish:Math.random()}];
+	
 	this.hasVisited = {};
 	
 	this.population = Math.random() * Math.random() * 1000 << 0;
@@ -388,6 +390,7 @@ function Site() {
 	this.needs = function() {
 		var housing = 0;
 		var defense = 0;
+		var i;
 		for (i in this.infrastructure) {
 			if (this.infrastructure[i].housing > 0) {
 				housing += this.infrastructure[i].housing;
@@ -399,23 +402,23 @@ function Site() {
 
 		var array = [];
 		if (this.wages < this.commodities.food + this.commodities.water) {
-			array.push({label:'hungry',color:'salmon'});
+			array.push({label:'hungry',color:'salmon',completion:0});
 		} else {
-			array.push({label:'well-fed',color:'springgreen'});
+			array.push({label:'well-fed',color:'springgreen',completion:1});
 		};
 		if (housing < this.population / 5) {
-			array.push({label:'cold',color:'salmon'});
+			array.push({label:'cold',color:'salmon',completion:0});
 		} else if (housing < this.population / 3) {
-			array.push({label:'crowded',color:'yellow'});
+			array.push({label:'crowded',color:'yellow',completion:0.5});
 		} else {
-			array.push({label:'comfy',color:'springgreen'});
+			array.push({label:'comfy',color:'springgreen',completion:1});
 		};
 		if (defense < 20) {
-			array.push({label:'scared',color:'salmon'});
+			array.push({label:'scared',color:'salmon',completion:0});
 		} else {
-			array.push({label:'bold',color:'springgreen'});
+			array.push({label:'bold',color:'springgreen',completion:1});
 		};
-		array.push({label:'bored',color:'salmon'});
+		array.push({label:'bored',color:'salmon',completion:0});
 		return array;
 	};
 	
@@ -571,9 +574,13 @@ function Unit(owner,startLoc,type) {
 	};
 	
 	this.move = function(site) {		
+		var speed = this.type.speed;
+		if (this.offroad) {
+			speed = this.type.offroadSpeed;
+		};
 		var distance = Math.pow(Math.pow(this.location.x - site.x,2) + Math.pow(this.location.y - site.y,2),.5);
-		var foodEaten = distance / this.type.speed * this.type.crew;
-		var waterDrank = distance / this.type.speed * this.type.crew;
+		var foodEaten = distance / speed * this.type.crew;
+		var waterDrank = distance / speed * this.type.crew;
 		var foodStore = 0;
 		var waterStore = 0;
 		var cargo = 0;
@@ -819,9 +826,6 @@ function Unit(owner,startLoc,type) {
 		if (repCost <= this.location.reputation.p1) {
 			result = true;
 		}
-		
-		console.log(outstanding);
-		console.log(repCost);
 		
 		return result;
 	};

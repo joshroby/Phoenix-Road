@@ -162,7 +162,6 @@ var data = {
 			buildCost: {lumber:2},
 			goodwill: 20,
 			visible: false,
-			unlock: 300,
 			buildUnits: ['donkeyCart','oxCart','horseCart','tinkersCart','dowser'],
 			inputs: ['tack','lumber'],
 		},
@@ -195,6 +194,13 @@ var data = {
 			goodwill: 20,
 			visible: true,
 			defense:10,
+		},
+		hangar: {
+			name:'Hangar',
+			goodwill: 20,
+			visible: false,
+			buildUnits: ['zeppelin'],
+			inputs: ['metals','fiber'],
 		},
 		loom: {
 			name: 'Loom',
