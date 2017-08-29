@@ -133,6 +133,7 @@ var data = {
 			visible: true,
 			requiredResource: ['river','spring'],
 			outputs: ['water'],
+			jobs: 5,
 		},
 		bank: {
 			name:'Bank',
@@ -141,6 +142,7 @@ var data = {
 			visible: false,
 			inputs: ['scrip'],
 			outputs: ['scrip'],
+			jobs: 4,
 		},
 		barracks: {
 			name:'Barracks',
@@ -148,6 +150,7 @@ var data = {
 			goodwill: 20,
 			visible: true,
 			housing:100,
+			jobs: 10,
 		},
 		bunker: {
 			name:'Bunker',
@@ -156,6 +159,7 @@ var data = {
 			visible: false,
 			housing:20,
 			defense:5,
+			jobs: 1,
 		},
 		cartwright: {
 			name:'Cartwright',
@@ -164,6 +168,7 @@ var data = {
 			visible: false,
 			buildUnits: ['donkeyCart','oxCart','horseCart','tinkersCart','dowser'],
 			inputs: ['tack','lumber'],
+			jobs: 2,
 		},
 		cisterns: {
 			name: 'Cisterns',
@@ -171,6 +176,7 @@ var data = {
 			goodwill: 20,
 			visible: true,
 			outputs: ['water'],
+			jobs: 2,
 		},
 		fields: {
 			name: 'Fields',
@@ -179,6 +185,7 @@ var data = {
 			visible: true,
 			inputs: ['water'],
 			outputs: ['food','fiber'],
+			jobs: 20,
 		},
 		foundry: {
 			name:'Foundry',
@@ -186,7 +193,8 @@ var data = {
 			goodwill: 20,
 			visible: true,
 			inputs: ['ore','fuel','water'],
-			outputs: ['metals']
+			outputs: ['metals'],
+			jobs: 5,
 		},
 		fortress: {
 			name:'Fortress',
@@ -194,6 +202,7 @@ var data = {
 			goodwill: 20,
 			visible: true,
 			defense:10,
+			jobs: 10,
 		},
 		hangar: {
 			name:'Hangar',
@@ -201,6 +210,7 @@ var data = {
 			visible: false,
 			buildUnits: ['zeppelin'],
 			inputs: ['metals','fiber'],
+			jobs: 3,
 		},
 		loom: {
 			name: 'Loom',
@@ -209,11 +219,13 @@ var data = {
 			visible: false,
 			inputs: ['fiber'],
 			outputs: ['cloth'],
+			jobs: 10,
 		},
 		lensmeister: {
 			name: 'Lensmeister',
 			visible: false,
 			upgrade: 'vision',
+			jobs: 1,
 		},
 		lumbermill: {
 			name: 'Lumbermill',
@@ -222,6 +234,7 @@ var data = {
 			goodwill:20,
 			visible:false,
 			outputs: ['lumber'],
+			jobs: 10,
 		},
 		manorHouse: {
 			name:'Manor House',
@@ -229,6 +242,7 @@ var data = {
 			goodwill: 20,
 			visible: false,
 			housing:50,
+			jobs: 2,
 		},
 		mine: {
 			name: 'Mine',
@@ -237,6 +251,7 @@ var data = {
 			visible: false,
 			requiredResource: ['mineralVein'],
 			outputs: ['ore'],
+			jobs: 20,
 		},
 		oilWell: {
 			name: 'Oil Well',
@@ -244,6 +259,7 @@ var data = {
 			goodwill: 20,
 			visible: true,
 			outputs: ['crudeOil'],
+			jobs: 20,
 		},
 		orchards: {
 			name: 'Orchards',
@@ -252,6 +268,7 @@ var data = {
 			visible: true,
 			inputs: ['water'],
 			outputs: ['food','lumber'],
+			jobs: 10,
 		},
 		pens: {
 			name: 'Pens',
@@ -259,6 +276,7 @@ var data = {
 			goodwill: 20,
 			visible: false,
 			outputs: ['food','hides'],
+			jobs: 10,
 		},
 		quarry: {
 			name: 'Quarry',
@@ -267,6 +285,7 @@ var data = {
 			visible: false,
 			requiredResource: ['outcropping'],
 			outputs: ['stone'],
+			jobs: 20,
 		},
 		refinery: {
 			name: 'Refinery',
@@ -275,6 +294,7 @@ var data = {
 			visible: true,
 			inputs: ['crudeOil'],
 			outputs: ['fuel'],
+			jobs: 15,
 		},
 		saddler: {
 			name: 'Saddler',
@@ -283,6 +303,7 @@ var data = {
 			visible: false,
 			inputs: ['leather'],
 			outputs: ['tack'],
+			jobs: 2,
 		},
 		seamstress: {
 			name: 'Seamstress',
@@ -291,6 +312,7 @@ var data = {
 			visible: false,
 			inputs: ['fiber','cloth','leather'],
 			outputs: ['clothing'],
+			jobs: 4,
 		},
 		stoneWall: {
 			name:'Stone Wall',
@@ -306,6 +328,7 @@ var data = {
 			visible: false,
 			inputs: ['hides'],
 			outputs: ['leather'],
+			jobs: 2,
 		},
 		tenements: {
 			name:'Tenements',
@@ -313,6 +336,7 @@ var data = {
 			goodwill: 20,
 			visible: true,
 			housing:200,
+			jobs: 10,
 		},
 		woodenPallisade: {
 			name:'Wooden Pallisade',
@@ -328,6 +352,7 @@ var data = {
 			visible: false,
 			requiredResource: ['river'],
 			outputs: ['food'],
+			jobs: 2,
 		},
 	},
 	

@@ -3,9 +3,16 @@ Down the Phoenix Road To Do List
 
 
 NEAR FUTURE
+- infrastructure raises wages / provides jobs
+	- hunger ( wages / food cost )
+	- housing ( housing / population )
+	- safety ( defense / danger (currently static) )
+- upgrades instead of standalone builds
+	- stone wall replaces pallisade & other such issues
+- mouseover on site infrastructure tells you what it does
 - dump cargo when you can't sell it
 - build times?
-- upgrades instead of standalone builds
+- Unit.moveStep() needs to check overburdened
 
 IMMEDIATE FUTURE
 - zoom function's impression of where cursor is on map is always derived as if map is zoomed out
@@ -13,11 +20,11 @@ IMMEDIATE FUTURE
 - draw functions for units
 - movement animation/transition
 - rejigger site labels for legibility… somehow
-- other only-findable infrastructures
-	- zeppelin hanger
-	- some kind of cult?
-- stone wall replaces pallisade & other such issues
 - convert 'goodwill' from flat bonus into an everyday earn instead
+- make Unit.eat() consume food/water/fuel differently for different units
+	- and fuel only when in transit
+- when you select a route, if all units have routes, then start clock
+- unit tabs reflect inTransit and cargo capacity
 
 FAR FUTURE
 - boats? terrain?
@@ -27,7 +34,14 @@ FAR FUTURE
 - moving people
 - fucking events
 - transfer cargo (besides selling and buying)
+- visible progress on map (spreading carpet of green?)
+- warehousing
+- caravan
+- other only-findable infrastructures
+	- some kind of cult?
 
 
 EVENTS
 - plague event which slowly increases values and kills population, can deliver medicine commodities to cure them
+- your basic 'something happened to affect commodity prices' event
+- find a bike

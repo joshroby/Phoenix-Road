@@ -26,7 +26,7 @@ var model = {
 		
 		var startUnit = new Unit(p1,undefined,data.units.donkeyCart);
 // 		var dowser = new Unit(p1,startUnit.location,data.units.dowser);
-// 		var tinker = new Unit(p1,startUnit.location,data.units.tinkersCart);
+		var tinker = new Unit(p1,startUnit.location,data.units.tinkersCart);
 		startUnit.look();
 		startUnit.location.reputation.p1 = 100;
 		
@@ -270,7 +270,7 @@ var model = {
 		for (s in sites) {
 			var needs = sites[s].needs();
 			for (n in needs) {
-				if (needs[n].color == 'springgreen') {count++};
+				count += needs[c].completion;
 			};
 			num = needs.length;
 		};
@@ -390,6 +390,7 @@ function Site() {
 	this.needs = function() {
 		var housing = 0;
 		var defense = 0;
+		var jobs = 0;
 		var i;
 		for (i in this.infrastructure) {
 			if (this.infrastructure[i].housing > 0) {
@@ -398,27 +399,39 @@ function Site() {
 			if (this.infrastructure[i].defense > 0) {
 				defense += this.infrastructure[i].defense;
 			};
+			if (this.infrastructure[i].jobs > 0) {
+				jobs += this.infrastructure[i].jobs;
+			};
 		};
+		var jobs = 5 * jobs / this.population;
 
 		var array = [];
-		if (this.wages < this.commodities.food + this.commodities.water) {
-			array.push({label:'hungry',color:'salmon',completion:0});
-		} else {
-			array.push({label:'well-fed',color:'springgreen',completion:1});
-		};
-		if (housing < this.population / 5) {
-			array.push({label:'cold',color:'salmon',completion:0});
-		} else if (housing < this.population / 3) {
-			array.push({label:'crowded',color:'yellow',completion:0.5});
-		} else {
-			array.push({label:'comfy',color:'springgreen',completion:1});
-		};
-		if (defense < 20) {
-			array.push({label:'scared',color:'salmon',completion:0});
-		} else {
-			array.push({label:'bold',color:'springgreen',completion:1});
-		};
-		array.push({label:'bored',color:'salmon',completion:0});
+		var hunger = Math.min(1,jobs * this.wages / (this.commodities.food + this.commodities.water));
+		var hungerLabels = [
+			'half-starved',
+			'hungry',
+			'sated',
+			'well-fed'
+		];
+		array.push({label:hungerLabels[hungerLabels.length * hunger * 0.99 << 0],completion:hunger});
+		
+		var housingRatio = Math.min(1,housing / this.population);
+		var housingLabels = [
+			'cold',
+			'crowded',
+			'comfy'
+		];
+		array.push({label:housingLabels[housingLabels.length * housingRatio * 0.99 << 0],completion:housingRatio});
+		
+		var safety = Math.min(1,defense / 20);
+		var safetyLabels = [
+			'scared',
+			'cowering',
+			'vigilant',
+			'bold'
+		];
+		array.push({label:safetyLabels[safetyLabels.length * safety * 0.99 << 0],completion:safety});
+		
 		return array;
 	};
 	

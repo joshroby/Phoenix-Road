@@ -109,7 +109,7 @@ body {
 	padding-bottom: 0.5vh;
 	margin-left: 1%;
 	}
-	
+
 .progressLabel {
 	float: left;
 	margin-top: 0;
@@ -119,12 +119,16 @@ body {
 
 .progressBar {
 	background-color: slategray;
-	width: 15vw;
-	margin-left: 9vw;
+	}
+
+.bigProgressBar {
+	margin-left: 8vw;
+	width: 16vw;
 	}
 
 .progressBarDone {
 	background-color: darkorange;
+	white-space: nowrap;
 	}
 
 #detailsSiteDiv {
@@ -135,12 +139,18 @@ body {
 	}
 
 #siteCharacterDiv {
-	height: 30%;
+	height: 25%;
 	overflow-y: auto;
 	}
 
+.siteHead {
+	margin-bottom: 0;
+	width: 100%;
+	border-bottom: 1px solid slategray;
+	}
+
 #siteCommoditiesDiv {
-	height: 40%;
+	height: 45%;
 	overflow-y: auto;
 	}
 
@@ -150,11 +160,23 @@ body {
 	}
 
 #siteNeedsDiv {
-	height: 2vh;
+	}
+
+.siteNeedDiv {
+	font-size: 0.7em;
 	}
 
 #siteFeatureList {
+	clear: right;
+	clear: left;
 	font-size: 0.8em;
+	list-style: none;
+	padding-left: 1vh;
+	}
+	
+.siteFeatureItem {
+	float: left;
+	width: 50%;
 	}
 
 #siteReputationP {
@@ -193,15 +215,6 @@ body {
 	}
 
 .subBtn {
-	}
-
-.siteNeedDiv {
-	float: left;
-	font-size: 0.3em;
-	width: 4vw;
-	text-align: center;
-	margin-right: 0.5vw;
-	border: 0.5px solid grey;
 	}
 
 .infrastructureDiv {

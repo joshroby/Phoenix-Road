@@ -222,7 +222,7 @@ var view = {
 		progressExploreP.className = 'progressLabel';
 		progressExploreDiv.appendChild(progressExploreP);
 		var progressExploreBar = document.createElement('div');
-		progressExploreBar.className = 'progressBar';
+		progressExploreBar.className = 'progressBar bigProgressBar';
 		var progressExploreDoneBar = document.createElement('div');
 		progressExploreDoneBar.className = 'progressBarDone';
 		var percentage = Math.round(p1.knownSites.length/sites.length * 100,0);
@@ -240,7 +240,7 @@ var view = {
 		progressRebuildP.className = 'progressLabel';
 		progressRebuildDiv.appendChild(progressRebuildP);
 		var progressRebuildBar = document.createElement('div');
-		progressRebuildBar.className = 'progressBar';
+		progressRebuildBar.className = 'progressBar bigProgressBar';
 		var progressRebuildDoneBar = document.createElement('div');
 		progressRebuildDoneBar.className = 'progressBarDone';
 		var percentage = Math.round(model.victoryProgress() * 100,0);
@@ -316,6 +316,7 @@ var view = {
 		detailsSiteDiv.innerHTML = '';
 		var siteHead = document.createElement('h2');
 		siteHead.innerHTML = site.name;
+		siteHead.className = 'siteHead';
 		detailsSiteDiv.appendChild(siteHead);
 
 		var siteCharacterDiv = document.createElement('div');
@@ -339,8 +340,16 @@ var view = {
 		for (i in siteNeeds) {
 			var siteNeedDiv = document.createElement('div');
 			siteNeedDiv.className = 'siteNeedDiv';
-			siteNeedDiv.innerHTML = siteNeeds[i].label;
-			siteNeedDiv.style.backgroundColor = siteNeeds[i].color;
+			var siteNeedsBar = document.createElement('div');
+			siteNeedsBar.className = 'progressBar';
+			var siteNeedsBarDone = document.createElement('div');
+			siteNeedsBarDone.className = 'progressBarDone';
+			var width = siteNeeds[i].completion * 100;
+			siteNeedsBarDone.style.width = width + "%";
+			siteNeedsBarDone.style.backgroundColor = view.progressColor(width);
+			siteNeedsBarDone.innerHTML = siteNeeds[i].label;
+			siteNeedsBar.appendChild(siteNeedsBarDone);
+			siteNeedDiv.appendChild(siteNeedsBar);
 			siteNeedsDiv.appendChild(siteNeedDiv);
 		};
 		var siteFeatureList = document.createElement('ul');
@@ -365,6 +374,7 @@ var view = {
 		});
 		for (i in list) {
 			var siteFeatureItem = document.createElement('li');
+			siteFeatureItem.className = 'siteFeatureItem';
 			siteFeatureItem.innerHTML = list[i].name;
 			siteFeatureList.appendChild(siteFeatureItem);
 		};
@@ -937,6 +947,18 @@ var view = {
 		document.getElementById('notifySpan').className = 'notifyMessage';
 		view.errorMessage = message;
 		var timedEvent = setTimeout(view.clearError,5000);
+	},
+	
+	progressColor: function(percentage) {
+		var red = Math.round(255 - (percentage*2.55)/2,0);
+		var green = Math.round(107 + (percentage*2.55)/2,0);
+		var blue = Math.round(Math.max(percentage*2.55 - 127,0),0);
+		red = red.toString(16).toUpperCase();
+		green = green.toString(16).toUpperCase();
+		blue = blue.toString(16).toUpperCase();
+		if (blue.length == 1) {blue = '0' + blue;};
+		var hexcode = '#' + red + green + blue;
+		return hexcode;
 	},
 
 };
