@@ -55,6 +55,7 @@ var model = {
 		localArea.shift();
 		localArea[Math.random() * localArea.length << 0].infrastructure.push(data.infrastructure.cartwright);
 		localArea[Math.random() * localArea.length << 0].infrastructure.push(data.infrastructure.lensmeister);
+		sites[Math.random() * sites.length << 0].infrastructure.push(data.infrastructure.kidOnABike);
 		sites[Math.random() * sites.length << 0].infrastructure.push(data.infrastructure.hangar);
 		view.focus.unit = startUnit;
 		view.displayMap();
@@ -281,6 +282,14 @@ var model = {
 			num = needs.length;
 		};
 		return count / (sites.length * num);
+	},
+	
+	recruit: function(infrastructure) {
+		var newUnit = new Unit(players.p1,view.focus.unit.location,data.units[infrastructure.recruit]);
+		newUnit.name = infrastructure.name;
+		var location = view.focus.unit.location;
+		location.infrastructure.splice(location.infrastructure.indexOf(infrastructure));
+		view.displayUnit(newUnit);
 	},
 
 };

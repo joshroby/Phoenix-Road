@@ -152,6 +152,12 @@ var data = {
 			housing:100,
 			jobs: 10,
 		},
+		kidOnABike: {
+			name: 'Kid on a Bike',
+			recruit: 'bicycle',
+			text: "There's a kid here with an ancient but functional bike.",
+			visible: false,
+		},
 		bunker: {
 			name:'Bunker',
 			buildCost: {stone:2,lumber:1},

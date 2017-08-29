@@ -159,6 +159,11 @@ var handlers = {
 		view.focus.unit.cancelRoute();
 	},
 	
+	recruitKidOnBike: function(infrastructureIndex) {
+		var infrastructure = view.focus.unit.location.infrastructure[infrastructureIndex];
+		model.recruit(infrastructure);
+	},
+	
 	revealMap: function() {
 		p1.knownSites = sites;
 		p1.knownLandmarks = landmarks;

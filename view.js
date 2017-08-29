@@ -503,6 +503,14 @@ var view = {
 					var infrastructureDiv = document.createElement('div');
 					infrastructureDiv.innerHTML = 'Trade for Valuables';
 					siteInfrastructureDiv.appendChild(infrastructureDiv);
+				} else if (site.infrastructure[i].recruit !== undefined) {
+					var infrastructureDiv = document.createElement('div');
+					infrastructureDiv.innerHTML = site.infrastructure[i].text + '<br />';
+					var recruitBtn = document.createElement('button');
+					recruitBtn.innerHTML = 'Recruit ' + site.infrastructure[i].name;
+					recruitBtn.setAttribute('onclick','handlers.recruitKidOnBike('+i+')');
+					infrastructureDiv.appendChild(recruitBtn);
+					siteInfrastructureDiv.appendChild(infrastructureDiv);
 				};
 			};
 		};
