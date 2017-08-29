@@ -148,7 +148,11 @@ var handlers = {
 	
 	renameUnit: function() {
 		var newName = document.getElementById('unitRenameInput_'+view.focus.unitPane).value;
-		view.focus.unit.rename(newName);
+		if (newName !== '') {
+			view.focus.unit.rename(newName);
+		} else {
+			view.focus.unit.rename(view.focus.unit.name);
+		};
 	},
 	
 	cancelRoute: function() {

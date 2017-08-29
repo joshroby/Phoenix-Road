@@ -129,7 +129,7 @@ var data = {
 		aqueduct: {
 			name: 'Aqueduct',
 			buildCost: {stone:4,lumber:2},
-			goodwill:20,
+			goodwill:2,
 			visible: true,
 			requiredResource: ['river','spring'],
 			outputs: ['water'],
@@ -138,7 +138,7 @@ var data = {
 		bank: {
 			name:'Bank',
 			buildCost: {stone:4,lumber:2,reputation:2000},
-			goodwill: 20,
+			goodwill: -1,
 			visible: false,
 			inputs: ['scrip'],
 			outputs: ['scrip'],
@@ -147,7 +147,7 @@ var data = {
 		barracks: {
 			name:'Barracks',
 			buildCost: {stone:4,lumber:2},
-			goodwill: 20,
+			goodwill: 3,
 			visible: true,
 			housing:100,
 			jobs: 10,
@@ -155,7 +155,7 @@ var data = {
 		bunker: {
 			name:'Bunker',
 			buildCost: {stone:2,lumber:1},
-			goodwill: 20,
+			goodwill: 1,
 			visible: false,
 			housing:20,
 			defense:5,
@@ -164,7 +164,7 @@ var data = {
 		cartwright: {
 			name:'Cartwright',
 			buildCost: {lumber:2},
-			goodwill: 20,
+			goodwill: 1,
 			visible: false,
 			buildUnits: ['donkeyCart','oxCart','horseCart','tinkersCart','dowser'],
 			inputs: ['tack','lumber'],
@@ -173,7 +173,7 @@ var data = {
 		cisterns: {
 			name: 'Cisterns',
 			buildCost: {stone:4},
-			goodwill: 20,
+			goodwill: 1,
 			visible: true,
 			outputs: ['water'],
 			jobs: 2,
@@ -181,7 +181,7 @@ var data = {
 		fields: {
 			name: 'Fields',
 			buildCost: {lumber:1,fiber:4},
-			goodwill: 20,
+			goodwill: 1,
 			visible: true,
 			inputs: ['water'],
 			outputs: ['food','fiber'],
@@ -190,7 +190,7 @@ var data = {
 		foundry: {
 			name:'Foundry',
 			buildCost: {stone:8,lumber:8,cloth:2},
-			goodwill: 20,
+			goodwill: 5,
 			visible: true,
 			inputs: ['ore','fuel','water'],
 			outputs: ['metals'],
@@ -199,14 +199,13 @@ var data = {
 		fortress: {
 			name:'Fortress',
 			buildCost: {stone:8,lumber:8,fiber:2,cloth:2},
-			goodwill: 20,
+			goodwill: 5,
 			visible: true,
 			defense:10,
 			jobs: 10,
 		},
 		hangar: {
 			name:'Hangar',
-			goodwill: 20,
 			visible: false,
 			buildUnits: ['zeppelin'],
 			inputs: ['metals','fiber'],
@@ -215,7 +214,7 @@ var data = {
 		loom: {
 			name: 'Loom',
 			buildCost: {lumber:2,fiber:4},
-			goodwill: 20,
+			goodwill: 3,
 			visible: false,
 			inputs: ['fiber'],
 			outputs: ['cloth'],
@@ -231,7 +230,7 @@ var data = {
 			name: 'Lumbermill',
 			buildCost: {lumber:3,fiber:2},
 			requiredResource: ['forest'],
-			goodwill:20,
+			goodwill:2,
 			visible:false,
 			outputs: ['lumber'],
 			jobs: 10,
@@ -239,7 +238,7 @@ var data = {
 		manorHouse: {
 			name:'Manor House',
 			buildCost: {stone:2,lumber:2,cloth:4},
-			goodwill: 20,
+			goodwill: 1,
 			visible: false,
 			housing:50,
 			jobs: 2,
@@ -247,7 +246,7 @@ var data = {
 		mine: {
 			name: 'Mine',
 			buildCost: {lumber:4},
-			goodwill: 20,
+			goodwill: 3,
 			visible: false,
 			requiredResource: ['mineralVein'],
 			outputs: ['ore'],
@@ -256,7 +255,7 @@ var data = {
 		oilWell: {
 			name: 'Oil Well',
 			buildCost: {metals:8},
-			goodwill: 20,
+			goodwill: 3,
 			visible: true,
 			outputs: ['crudeOil'],
 			jobs: 20,
@@ -264,24 +263,26 @@ var data = {
 		orchards: {
 			name: 'Orchards',
 			buildCost: {lumber:1},
-			goodwill: 20,
+			goodwill: 1,
 			visible: true,
+			requiredResource: ['forest'],
 			inputs: ['water'],
 			outputs: ['food','lumber'],
 			jobs: 10,
 		},
 		pens: {
 			name: 'Pens',
-			buildCost: {lumber:2,fiber:2,livestock:1},
-			goodwill: 20,
+			buildCost: {lumber:2,fiber:2},
+			goodwill: 2,
 			visible: false,
+			requiredResource: ['pasture'],
 			outputs: ['food','hides'],
 			jobs: 10,
 		},
 		quarry: {
 			name: 'Quarry',
 			buildCost: {lumber:4},
-			goodwill: 20,
+			goodwill: 2,
 			visible: false,
 			requiredResource: ['outcropping'],
 			outputs: ['stone'],
@@ -290,7 +291,7 @@ var data = {
 		refinery: {
 			name: 'Refinery',
 			buildCost: {lumber:1},
-			goodwill: 20,
+			goodwill: 5,
 			visible: true,
 			inputs: ['crudeOil'],
 			outputs: ['fuel'],
@@ -299,7 +300,7 @@ var data = {
 		saddler: {
 			name: 'Saddler',
 			buildCost: {lumber:1,fiber:1,leather:1},
-			goodwill: 20,
+			goodwill: 2,
 			visible: false,
 			inputs: ['leather'],
 			outputs: ['tack'],
@@ -308,7 +309,7 @@ var data = {
 		seamstress: {
 			name: 'Seamstress',
 			buildCost: {lumber:1,fiber:1,leather:1,cloth:1},
-			goodwill: 20,
+			goodwill: 2,
 			visible: false,
 			inputs: ['fiber','cloth','leather'],
 			outputs: ['clothing'],
@@ -317,14 +318,14 @@ var data = {
 		stoneWall: {
 			name:'Stone Wall',
 			buildCost: {stone:8,lumber:2},
-			goodwill: 20,
+			goodwill: 2,
 			visible: true,
 			defense:5,
 		},
 		tannery: {
 			name:'Tannery',
 			buildCost: {stone:2,lumber:2,fiber:2},
-			goodwill: 20,
+			goodwill: 2,
 			visible: false,
 			inputs: ['hides'],
 			outputs: ['leather'],
@@ -333,22 +334,29 @@ var data = {
 		tenements: {
 			name:'Tenements',
 			buildCost: {stone:8,lumber:4,cloth:2},
-			goodwill: 20,
+			goodwill: 5,
 			visible: true,
 			housing:200,
 			jobs: 10,
 		},
+		warehouse: {
+			name: 'Warehouse',
+			buildCost: {stone:2,lumber:4},
+			goodwill: -1,
+			visible: false,
+			jobs: 5,
+		},
 		woodenPallisade: {
 			name:'Wooden Pallisade',
 			buildCost: {lumber:4,fiber:2},
-			goodwill: 20,
+			goodwill: 1,
 			visible: true,
 			defense:3,
 		},
 		watermill: {
 			name: 'Watermill',
 			buildCost: {lumber:4,stone:1,cloth:2},
-			goodwill:20,
+			goodwill:5,
 			visible: false,
 			requiredResource: ['river'],
 			outputs: ['food'],
@@ -360,10 +368,6 @@ var data = {
 	
 		forest: {
 			name: "Forest",
-			visible: true,
-		},
-		herds: {
-			name: "Herds",
 			visible: true,
 		},
 		mineralVein: {

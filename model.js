@@ -26,7 +26,7 @@ var model = {
 		
 		var startUnit = new Unit(p1,undefined,data.units.donkeyCart);
 // 		var dowser = new Unit(p1,startUnit.location,data.units.dowser);
-		var tinker = new Unit(p1,startUnit.location,data.units.tinkersCart);
+// 		var tinker = new Unit(p1,startUnit.location,data.units.tinkersCart);
 		startUnit.look();
 		startUnit.location.reputation.p1 = 100;
 		
@@ -210,7 +210,7 @@ var model = {
 	advanceClock: function() {
 		model.currentDay++;
 		
-		for (q in units) {
+		for (var q in units) {
 			units[q].eat();
 			if (units[q].inTransit) {
 				units[q].moveStep();
@@ -218,6 +218,12 @@ var model = {
 				units[q].surveyResult();
 			} else if (units[q].buildComplete == model.currentDay) {
 				units[q].buildResult();
+			};
+		};
+		
+		for (var s in sites) {
+			for (var g in sites[s].goodwill) {
+				sites[s].reputation[g] += sites[s].goodwill[g]/20;
 			};
 		};
 		
@@ -303,6 +309,7 @@ function Site() {
 	};
 	
 	this.reputation = {p1:0};
+	this.goodwill = {p1:0};
 	
 	this.resources = [];
 	this.hasSurveyed = {};
@@ -494,14 +501,13 @@ function Site() {
 	
 	this.buildInfrastructure = function(key) {
 		var infrastructure = data.infrastructure[key];
-		console.log(infrastructure);
 		for (c in infrastructure.inputs) {
 			this.commodities[infrastructure.inputs[c]] /= 0.8;
 		};
 		for (c in infrastructure.outputs) {
 			this.commodities[infrastructure.outputs[c]] *= 0.8;
 		};
-		this.reputation.p1 += infrastructure.goodwill;
+		this.goodwill.p1 += infrastructure.goodwill;
 		this.useCommodities(infrastructure.buildCost);
 		this.infrastructure.push(infrastructure);
 	};
@@ -546,6 +552,8 @@ function Unit(owner,startLoc,type) {
 	};
 	if (startLoc !== undefined) {
 		this.location = startLoc;
+	} else if (units.length > 0) {
+		this.location = units[0].location;
 	} else {
 		this.location = sites[Math.random() * sites.length << 0];
 	};
@@ -556,8 +564,17 @@ function Unit(owner,startLoc,type) {
 	this.inTransit = false;
 	this.offroad = false;
 	
-	var num = units.length + 1;
-	this.name = type.name + " #" + num;
+	this.name = 'Unnamed ' + type.name;
+	var num = 0;
+	for (var u in units) {
+		if (units[u].name.substring(0,7) == 'Unnamed' && units[u].type == type) {
+			num++;
+		};
+	};
+	if (num > 0) {
+		num++;
+		this.name += ' #' + num;
+	};
 	
 	this.type = type;
 	
@@ -656,6 +673,8 @@ function Unit(owner,startLoc,type) {
 			this.look();
 			model.options.paused = true;
 			document.getElementById('clockPauseBtn').innerHTML = '>';
+			view.focus.unit = this;
+			view.displayUnit(this);
 		};
 		view.displayMap();
 		

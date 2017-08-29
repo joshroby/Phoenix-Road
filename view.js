@@ -515,7 +515,7 @@ var view = {
 		buildInfoTable.innerHTML = '';
 		buildInfoTable.className = 'buildInfoTable';
 		var unitType = data.units[unitName];
-		var stats = ['cargo','crew','speed','offroadSpeed'];
+		var stats = ['cargo','crew','speed','offroadSpeed','surveyResources','buildInfrastructures'];
 		for (s in stats) {
 			var buildUnitStatP = document.createElement('tr');
 			buildUnitStatP.innerHTML = "<td class='buildInfoStatCell'>" + stats[s] + "</td><td>" + unitType[stats[s]] + "</td>";
@@ -827,6 +827,15 @@ var view = {
 		};
 		if (infrastructure.inputs !== undefined) {
 			string += '. '
+		};
+		if (infrastructure.jobs !== undefined) {
+			string += 'Provides ' + infrastructure.jobs + ' jobs. ';
+		};
+		if (infrastructure.goodwill > 0) {
+			string += 'Gains the builder ' + infrastructure.goodwill + ' reputation each fortnight.';
+		} else if (infrastructure.goodwill < 0) {
+			string += 'Costs the builder ' + infrastructure.goodwill + ' reputation each fortnight.';
+
 		};
 		return string;
 	},
