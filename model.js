@@ -25,10 +25,10 @@ var model = {
 		players = {p1:p1};
 		
 		var startUnit = new Unit(p1,undefined,data.units.donkeyCart);
-		var dowser = new Unit(p1,startUnit.location,data.units.dowser);
-		var tinker = new Unit(p1,startUnit.location,data.units.tinkersCart);
+// 		var dowser = new Unit(p1,startUnit.location,data.units.dowser);
+// 		var tinker = new Unit(p1,startUnit.location,data.units.tinkersCart);
 		startUnit.look();
-		startUnit.location.reputation.p1 = 10000;
+		startUnit.location.reputation.p1 = 100;
 		
 		var startCargo = undefined;
 		var cheapestValue = Infinity;
@@ -208,6 +208,19 @@ var model = {
 			knownValues[c] /= totalSites;
 		};
 		return knownValues;
+	},
+	
+	checkClock: function() {
+		var allBusy = true;
+		for (var u in units) {
+			if (!units[u].inTransit && !units[u].isSurveying && !units[u].isBuilding ) {
+				allBusy = false;
+			};
+		};
+		if (allBusy && model.options.paused) {
+			model.options.paused = false;
+			model.advanceClock();
+		};
 	},
 	
 	advanceClock: function() {
@@ -666,6 +679,7 @@ function Unit(owner,startLoc,type) {
 			};
 			this.route[0].y += 10; // So unit doesn't overlap site
 			this.route.push(site);
+			model.checkClock();
 		} else if (this.location.neighbors.indexOf(site) == -1 && this.offroad == false) {
 			view.displayError('No path to ' + site.name + '.');
 		} else if (waterStore < waterDrank) {
@@ -779,6 +793,7 @@ function Unit(owner,startLoc,type) {
 		this.surveyPotentials = resources;
 		this.surveyComplete = model.currentDay + this.type.surveyTime;
 		view.displayUnit(this);
+		model.checkClock();
 	};
 	
 	this.surveyResult = function() {
@@ -804,6 +819,7 @@ function Unit(owner,startLoc,type) {
 		this.buildComplete = model.currentDay + infrastructure.buildTime;
 		this.location.useCommodities(infrastructure.buildCost);
 		view.displayUnit(this);
+		model.checkClock();
 	};
 	
 	this.buildResult = function() {
