@@ -4,10 +4,28 @@ body {
 	}
 
 div:after {
-  content: "";
-  display: table;
-  clear: both;
-}
+	content: "";
+	display: table;
+	clear: both;
+	}
+
+.tipAnchor {
+	}
+
+.tipAnchor span.tooltip {
+	display: none;
+	z-index: 100;
+	}
+
+a.tipAnchor:hover span.tooltip {
+	position: absolute;
+	margin-top: 2vh;
+	display: inline;
+	background-color: white;
+	border: 1px solid darkorange;
+	padding: 0.5vh;
+	width: 15vw;
+	}
 
 .narrowMargin {
 	margin: 2px;

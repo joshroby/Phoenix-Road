@@ -389,6 +389,15 @@ var data = {
 			outputs: ['tack'],
 			jobs: 2,
 		},
+		seine: {
+			name: 'Seine',
+			buildCost: {fiber:4},
+			buildTime: 1,
+			goodwill: 1,
+			visible: false,
+			outputs: ['food'],
+			jobs: 4,
+		},
 		seamstress: {
 			name: 'Seamstress',
 			buildCost: {lumber:1,fiber:1,leather:1,cloth:1},
@@ -546,6 +555,7 @@ var data = {
 				'pens',
 				'saddler',
 				'seamstress',
+				'seine',
 				'tannery',
 				'well',
 				'woodenPallisade'

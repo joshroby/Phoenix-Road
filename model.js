@@ -319,7 +319,8 @@ function Site() {
 	this.hasVisited = {};
 	
 	this.population = 4 + Math.random() * Math.random() * 496 << 0;
-	this.wages = Math.random() * Math.random();
+	this.wages = (Math.random() * Math.random() + 0.25) * (data.commodities.food.baseValue + data.commodities.water.baseValue);
+	this.danger = 20;
 	
 	this.commodities = {};
 	for (var c in data.commodities) {
@@ -437,17 +438,23 @@ function Site() {
 				jobs += this.infrastructure[i].jobs;
 			};
 		};
-		var jobs = 5 * jobs / this.population;
 
 		var array = [];
-		var hunger = Math.min(1,jobs * this.wages / (this.commodities.food + this.commodities.water));
+		var hunger = Math.min(1,(jobs * this.wages) / (this.population * 100 * (this.commodities.food + this.commodities.water)) );
 		var hungerLabels = [
 			'half-starved',
 			'hungry',
 			'sated',
 			'well-fed'
 		];
-		array.push({label:hungerLabels[hungerLabels.length * hunger * 0.99 << 0],completion:hunger});
+		var prettyWage = Math.round(this.wages,0);
+		var prettyGDP = Math.round(this.wages*jobs,0);
+		var foodAndWaterIcon = view.commodityIcon('food') + "+" + view.commodityIcon('water');
+		var prettyFoodCost = Math.round(100 * this.commodities.food,0);
+		var prettyWaterCost = Math.round(100 * this.commodities.water,0);
+		var provisionsCost = Math.round(100 * this.population * (this.commodities.food + this.commodities.water),0);
+		var hungerDesc = '<strong>Hunger</strong><br />'+prettyGDP+' income / ' + provisionsCost + ' ' + foodAndWaterIcon + 'costs<br />(income = '+jobs+' jobs @ '+prettyWage+' wage)<br />('+foodAndWaterIcon+' = ('+prettyFoodCost+' + '+prettyWaterCost+') x '+this.population+' pop)';
+		array.push({label:hungerLabels[hungerLabels.length * hunger * 0.99 << 0],completion:hunger,desc:hungerDesc});
 		
 		var housingRatio = Math.min(1,housing / this.population);
 		var housingLabels = [
@@ -455,16 +462,18 @@ function Site() {
 			'crowded',
 			'comfy'
 		];
-		array.push({label:housingLabels[housingLabels.length * housingRatio * 0.99 << 0],completion:housingRatio});
+		var housingDesc = '<strong>Housing</strong><br />'+housing+' beds / '+this.population+' souls ';
+		array.push({label:housingLabels[housingLabels.length * housingRatio * 0.99 << 0],completion:housingRatio,desc:housingDesc});
 		
-		var safety = Math.min(1,defense / 20);
+		var safety = Math.min(1,defense / this.danger);
 		var safetyLabels = [
 			'scared',
 			'cowering',
 			'vigilant',
 			'bold'
 		];
-		array.push({label:safetyLabels[safetyLabels.length * safety * 0.99 << 0],completion:safety});
+		var safetyDesc = '<strong>Safety</strong><br />'+defense+' defense / '+this.danger+' danger';
+		array.push({label:safetyLabels[safetyLabels.length * safety * 0.99 << 0],completion:safety,desc:safetyDesc});
 		
 		return array;
 	};

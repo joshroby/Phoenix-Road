@@ -365,7 +365,15 @@ var view = {
 			var width = siteNeeds[i].completion * 100;
 			siteNeedsBarDone.style.width = width + "%";
 			siteNeedsBarDone.style.backgroundColor = view.progressColor(width);
-			siteNeedsBarDone.innerHTML = siteNeeds[i].label;
+// 			siteNeedsBarDone.innerHTML = siteNeeds[i].label;
+			var siteNeedsBarLabel = document.createElement('a');
+			siteNeedsBarLabel.className = 'tipAnchor';
+			siteNeedsBarLabel.innerHTML = siteNeeds[i].label;
+			siteNeedsBarDone.appendChild(siteNeedsBarLabel);
+			var tooltipSpan = document.createElement('span');
+			tooltipSpan.className = 'tooltip';
+			tooltipSpan.innerHTML = siteNeeds[i].desc;
+			siteNeedsBarLabel.prepend(tooltipSpan);
 			siteNeedsBar.appendChild(siteNeedsBarDone);
 			siteNeedDiv.appendChild(siteNeedsBar);
 			siteNeedsDiv.appendChild(siteNeedDiv);
@@ -391,10 +399,14 @@ var view = {
 			return 0;
 		});
 		for (var i in list) {
-			var siteFeatureItem = document.createElement('li');
-			siteFeatureItem.className = 'siteFeatureItem';
+			var siteFeatureItem = document.createElement('a');
+			siteFeatureItem.className = 'siteFeatureItem tipAnchor';
 			siteFeatureItem.innerHTML = list[i].name;
 			siteFeatureList.appendChild(siteFeatureItem);
+			var siteFeatureItemTooltip = document.createElement('span');
+			siteFeatureItemTooltip.className = 'tooltip';
+			siteFeatureItemTooltip.innerHTML = "<strong>" + list[i].name + "</strong><br>" + view.infrastructureDescription(list[i]);
+			siteFeatureItem.prepend(siteFeatureItemTooltip);
 		};
 	
 		var siteReputationP = document.createElement('p');
@@ -856,7 +868,7 @@ var view = {
 		unitBuildPreviewDiv.innerHTML = '';
 		
 		var unitBuildPreviewDesc = document.createElement('p');
-		unitBuildPreviewDesc.innerHTML = view.infrastructureDescription(key);
+		unitBuildPreviewDesc.innerHTML = view.infrastructureDescription(data.infrastructure(key));
 		unitBuildPreviewDiv.appendChild(unitBuildPreviewDesc);
 		
 		var unitBuildCostP = document.createElement('p');
@@ -900,9 +912,8 @@ var view = {
 		
 	},
 	
-	infrastructureDescription: function(key) {
+	infrastructureDescription: function(infrastructure) {
 		var string = '';
-		var infrastructure = data.infrastructure[key];
 		if (infrastructure.requiredResource !== undefined) {
 			string += 'Upgrades a ' + infrastructure.requiredResource + '. ';
 		};
