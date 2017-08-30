@@ -94,8 +94,8 @@ var view = {
 		background.setAttribute('height','1000');
 		svg.appendChild(background);
 		
-		for (i in p1.knownSites) {
-			for (c in p1.knownSites[i].carpet) {
+		for (var i in p1.knownSites) {
+			for (var c in p1.knownSites[i].carpet) {
 				var newCarpet = document.createElementNS('http://www.w3.org/2000/svg','ellipse');
 // 				if (p1.knownSites[i].hasVisited.p1) {
 					newCarpet.setAttribute('fill','url(#greenGradient)');
@@ -107,7 +107,7 @@ var view = {
 				newCarpet.setAttribute('cy',p1.knownSites[i].y);
 				var r = 0;
 				var needs = p1.knownSites[i].needs();
-				for (n in needs) {
+				for (var n in needs) {
 					r += needs[n].completion * ( 400 / needs.length);
 				};
 
@@ -118,7 +118,7 @@ var view = {
 			};
 		};
 		
-		for (i in p1.knownLandmarks) {
+		for (var i in p1.knownLandmarks) {
 			var newLandmark = document.createElementNS('http://www.w3.org/2000/svg','ellipse');
 			newLandmark.setAttribute('fill','darkorange');
 			newLandmark.setAttribute('cx',p1.knownLandmarks[i].x);
@@ -129,8 +129,8 @@ var view = {
 			svg.appendChild(newLandmark);
 		};
 		
-		for (i in p1.knownSites) {
-			for (n in p1.knownSites[i].neighbors) {
+		for (var i in p1.knownSites) {
+			for (var n in p1.knownSites[i].neighbors) {
 				var newRoute = document.createElementNS('http://www.w3.org/2000/svg','path');
 				newRoute.setAttribute('fill','none');
 				newRoute.setAttribute('stroke','yellow');
@@ -147,7 +147,7 @@ var view = {
 			};
 		};
 		
-		for (i in p1.knownSites) {
+		for (var i in p1.knownSites) {
 			var siteIndex = sites.indexOf(p1.knownSites[i]);
 			
 			var siteLabel = document.createElementNS('http://www.w3.org/2000/svg','text');
@@ -183,7 +183,7 @@ var view = {
 			svg.appendChild(newSite);
 		};
 		
-		for (i in units) {
+		for (var i in units) {
 			if (units[i].inTransit) {
 				unitX = units[i].route[0].x;
 				unitY = units[i].route[0].y;
@@ -337,7 +337,7 @@ var view = {
 		siteNeedsDiv.id = 'siteNeedsDiv';
 		siteCharacterDiv.appendChild(siteNeedsDiv);
 		var siteNeeds = site.needs();
-		for (i in siteNeeds) {
+		for (var i in siteNeeds) {
 			var siteNeedDiv = document.createElement('div');
 			siteNeedDiv.className = 'siteNeedDiv';
 			var siteNeedsBar = document.createElement('div');
@@ -357,12 +357,12 @@ var view = {
 		siteFeatureList.className = 'narrowMargin';
 		siteCharacterDiv.appendChild(siteFeatureList);
 		var list = [];
-		for (i in site.resources) {
+		for (var i in site.resources) {
 			if (site.resources[i].visible || site.hasSurveyed.p1[i]) {
 				list.push(site.resources[i]);
 			};
 		};
-		for (i in site.infrastructure) {
+		for (var i in site.infrastructure) {
 			if (site.infrastructure[i].visible || site.hasVisited.p1) {
 				list.push(site.infrastructure[i]);
 			};
@@ -372,7 +372,7 @@ var view = {
 			if(a.name > b.name) return 1;
 			return 0;
 		});
-		for (i in list) {
+		for (var i in list) {
 			var siteFeatureItem = document.createElement('li');
 			siteFeatureItem.className = 'siteFeatureItem';
 			siteFeatureItem.innerHTML = list[i].name;
@@ -402,7 +402,7 @@ var view = {
 			siteCommoditiesTableTitle.innerHTML = 'Commodity Values';
 			siteCommoditiesTable.appendChild(siteCommoditiesTableTitle);
 			var knownValues = model.knownValues();
-			for (c in commoditiesTraded) {
+			for (var c in commoditiesTraded) {
 				var siteCommoditiesItem = document.createElement('tr');
 				siteCommoditiesTable.appendChild(siteCommoditiesItem);
 				var siteCommoditiesNameCell = document.createElement('td');
@@ -425,7 +425,7 @@ var view = {
 				};
 				siteCommoditiesItem.appendChild(siteCommoditiesValueCell);
 				var unitPresent = false;
-				for (u in units) {
+				for (var u in units) {
 					if (units[u].location == site) {
 						unitPresent = true;
 					};
@@ -446,7 +446,7 @@ var view = {
 		};
 			
 		if (site.hasVisited.p1) {
-			for (i in site.infrastructure) {
+			for (var i in site.infrastructure) {
 				if (site.infrastructure[i].buildUnits !== undefined) {
 					var infrastructureDiv = document.createElement('div');
 					infrastructureDiv.className = 'infrastructureDiv';
@@ -464,7 +464,7 @@ var view = {
 					lockedOption.disabled = true;
 					lockedOption.selected = true;
 					buildSelect.appendChild(lockedOption);
-					for (u in site.infrastructure[i].buildUnits) {
+					for (var u in site.infrastructure[i].buildUnits) {
 						var buildOption = document.createElement('option');
 						buildOption.innerHTML = data.units[site.infrastructure[i].buildUnits[u]].name;
 						buildOption.value = site.infrastructure[i].buildUnits[u];
@@ -522,14 +522,14 @@ var view = {
 		buildInfoTable.className = 'buildInfoTable';
 		var unitType = data.units[unitName];
 		var stats = ['cargo','crew','speed','offroadSpeed','surveyResources','buildInfrastructures'];
-		for (s in stats) {
+		for (var s in stats) {
 			var buildUnitStatP = document.createElement('tr');
 			buildUnitStatP.innerHTML = "<td class='buildInfoStatCell'>" + stats[s] + "</td><td>" + unitType[stats[s]] + "</td>";
 			buildInfoTable.appendChild(buildUnitStatP);
 		};
 		var costString = "<td class='buildInfoStatCell'>Build Cost</td><td>";
 		var costRep = 0;
-		for (b in unitType.buildCost) {
+		for (var b in unitType.buildCost) {
 			costString += unitType.buildCost[b] + " " + b;
 			if (Object.keys(unitType.buildCost).indexOf(b) < Object.keys(unitType.buildCost).length-1) {
 				costString += ", ";
@@ -555,7 +555,7 @@ var view = {
 		detailsUnitDiv.innerHTML = '';
 		
 		var unitsAtSite = [];
-		for (i in units) {
+		for (var i in units) {
 			if (units[i].location == unit.location && !units[i].departed) {
 				unitsAtSite.push(units[i]);
 			} else if (units[i] == unit) {
@@ -563,7 +563,7 @@ var view = {
 			};
 		};
 	
-		for (u in unitsAtSite) {
+		for (var u in unitsAtSite) {
 			unit = unitsAtSite[u];
 			unitIndex = units.indexOf(unit);
 			var unitPane = document.createElement('div');
@@ -603,7 +603,7 @@ var view = {
 			unitPane.appendChild(unitProvisionsP);
 			var provisionsFood = 0;
 			var provisionsWater = 0;
-			for (c in unit.commodities) {
+			for (var c in unit.commodities) {
 				if (unit.commodities[c].commodity == 'food') {
 					provisionsFood += unit.commodities[c].qty;
 				} else if (unit.commodities[c].commodity == 'water') {
@@ -624,7 +624,7 @@ var view = {
 			} else {
 				var trading = {};
 			};
-			for (c in unit.commodities) {
+			for (var c in unit.commodities) {
 				var unitCommoditiesItem = document.createElement('tr');
 				unitCommoditiesTable.appendChild(unitCommoditiesItem);
 				var unitCommoditiesNameCell = document.createElement('td');
@@ -722,10 +722,10 @@ var view = {
 				unitBuildOption.selected = true;
 				unitBuildOption.disabled = true;
 				unitBuildSelect.appendChild(unitBuildOption);
-				for (b in unit.type.buildInfrastructures) {
+				for (var b in unit.type.buildInfrastructures) {
 					var requirements = data.infrastructure[unit.type.buildInfrastructures[b]].requiredResource;
 					var requirementsFulfilled = false;
-					for (r in requirements) {
+					for (var r in requirements) {
 						if (unit.location.resources.indexOf(data.resources[requirements[r]]) !== -1) {
 							requirementsFulfilled = true;
 						};
@@ -765,13 +765,17 @@ var view = {
 				unitTab.setAttribute('onclick','handlers.switchUnitPane('+units.indexOf(unitsAtSite[u])+','+u+')');
 				if (unitsAtSite[u].inTransit) {
 					unitTab.style.backgroundColor = '#AAAA00';
+				} else if (unitsAtSite[u].isSurveying) {
+					unitTab.style.backgroundColor = '#AFEEEE';
 				};
 				unitTabsDiv.appendChild(unitTab);
 			};
 		};
 
-		if (unit.location !== undefined) { view.displaySiteDetails(unit.location); };
-		view.updateTradeDiv();		
+		if (unit.location !== undefined) {
+			view.displaySiteDetails(unit.location);
+			view.updateTradeDiv();	
+		};
 		view.focus.unitPane = unitsAtSite.indexOf(selectedUnit);
 		document.getElementById('unitPane_' + view.focus.unitPane ).style.display = 'block';
 	},
@@ -791,13 +795,19 @@ var view = {
 		
 		var unitBuildCostP = document.createElement('p');
 		unitBuildCostP.innerHTML = 'Materials: ';
-		for (b in infrastructure.buildCost) {
+		for (var b in infrastructure.buildCost) {
 			unitBuildCostP.innerHTML += infrastructure.buildCost[b] + " " + b + ", ";
 		};
 		if (view.focus.unit.location !== undefined) {
 			unitBuildCostP.innerHTML += " (~" + Math.round(view.focus.unit.location.costInRep(infrastructure.buildCost),0) + " reputation)";
 		};
 		unitBuildPreviewDiv.appendChild(unitBuildCostP);
+		
+		if (infrastructure.requiredResource !== undefined) {
+			var unitBuildRequirementP = document.createElement('p');
+			unitBuildRequirementP.innerHTML = 'Requires: ' + infrastructure.requiredResource;
+			unitBuildPreviewDiv.appendChild(unitBuildRequirementP);
+		};
 		
 		if (view.focus.unit.canAfford(infrastructure.buildCost)) {
 			document.getElementById('unitBuildBtn_'+pane).disabled = false;
@@ -822,7 +832,7 @@ var view = {
 		if (infrastructure.outputs !== undefined) {
 			string += 'Produces '
 		};
-		for (p in infrastructure.outputs) {
+		for (var p in infrastructure.outputs) {
 			string += infrastructure.outputs[p] + ' ';
 		};
 		if (infrastructure.outputs !== undefined) {
@@ -831,7 +841,7 @@ var view = {
 		if (infrastructure.inputs !== undefined) {
 			string += 'Increases value of '
 		};
-		for (p in infrastructure.inputs) {
+		for (var p in infrastructure.inputs) {
 			string += infrastructure.inputs[p] + ' ';
 		};
 		if (infrastructure.inputs !== undefined) {
@@ -851,7 +861,7 @@ var view = {
 	
 	switchUnitPane: function(paneIndex,unitIndex) {
 		var panes = document.getElementById('detailsUnitDiv').children;
-		for (i=0;i<panes.length-1;i++) {
+		for (var i=0;i<panes.length-1;i++) {
 			panes[i].style.display = 'none';
 		};
 		document.getElementById('unitPane_'+paneIndex).style.display = 'block';
@@ -878,7 +888,7 @@ var view = {
 			unitStuffDiv.innerHTML = '';
 			var unitStuffList = document.createElement('ul');
 			unitStuffDiv.appendChild(unitStuffList);
-			for (i in currentTrade.unitStuff) {
+			for (var i in currentTrade.unitStuff) {
 				var unitStuffItem = document.createElement('li');
 				unitStuffItem.innerHTML = data.commodities[currentTrade.unitStuff[i].commodity].name + ' ';
 				var unitStuffRemoveBtn = document.createElement('button');
@@ -893,7 +903,7 @@ var view = {
 			siteStuffDiv.innerHTML = '';
 			var siteStuffList = document.createElement('ul');
 			siteStuffDiv.appendChild(siteStuffList);
-			for (i in currentTrade.siteStuff) {
+			for (var i in currentTrade.siteStuff) {
 				var siteStuffItem = document.createElement('li');
 				siteStuffItem.innerHTML = data.commodities[currentTrade.siteStuff[i].commodity].name + ' ';
 				var siteStuffRemoveBtn = document.createElement('button');
@@ -938,7 +948,7 @@ var view = {
 		if (view.focus.unit.location !== undefined) {
 			trading = view.focus.unit.location.trading();
 		};
-		for (i in view.focus.unit.commodities) {
+		for (var i in view.focus.unit.commodities) {
 			if (trading[view.focus.unit.commodities[i].commodity] !== undefined) {
 				document.getElementById('unitAddBtn_' + view.focus.unitPane + '_' + i).disabled = false;
 			};

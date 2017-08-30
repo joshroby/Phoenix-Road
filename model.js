@@ -25,7 +25,7 @@ var model = {
 		players = {p1:p1};
 		
 		var startUnit = new Unit(p1,undefined,data.units.donkeyCart);
-// 		var dowser = new Unit(p1,startUnit.location,data.units.dowser);
+		var dowser = new Unit(p1,startUnit.location,data.units.dowser);
 // 		var tinker = new Unit(p1,startUnit.location,data.units.tinkersCart);
 		startUnit.look();
 		startUnit.location.reputation.p1 = 100;
@@ -43,7 +43,7 @@ var model = {
 		startUnit.location.reputation.p1 -= cheapestValue * 100;
 		
 		var localArea = [startUnit.location];
-		for (i=0;i<5;i++) {
+		for (var i=0;i<5;i++) {
 			for (s in localArea) {
 				for (n in localArea[s].neighbors) {
 					if (localArea.indexOf(localArea[s].neighbors[n]) == -1) {
@@ -56,6 +56,7 @@ var model = {
 		localArea[Math.random() * localArea.length << 0].infrastructure.push(data.infrastructure.cartwright);
 		localArea[Math.random() * localArea.length << 0].infrastructure.push(data.infrastructure.lensmeister);
 		sites[Math.random() * sites.length << 0].infrastructure.push(data.infrastructure.kidOnABike);
+		sites[Math.random() * sites.length << 0].infrastructure.push(data.infrastructure.mechanic);
 		sites[Math.random() * sites.length << 0].infrastructure.push(data.infrastructure.hangar);
 		view.focus.unit = startUnit;
 		view.displayMap();
@@ -68,13 +69,13 @@ var model = {
 		if (minAngle == undefined) {  minAngle = 30 };
 	
 		sites = [];
-		for (i=0;i<totalSites*3;i++) {
+		for (var i=0;i<totalSites*3;i++) {
 			var newSite = new Site();
 		};
 		
 		// Remove too-close sites, reduce to totalSites
-		for (i in sites) {
-			for (t in sites) {
+		for (var i in sites) {
+			for (var t in sites) {
 				var distance = Math.pow(Math.pow(sites[i].x - sites[t].x,2) + Math.pow(sites[i].y - sites[t].y,2),.5);
 				if (distance < minDist) {
 					sites.splice(t,1);
@@ -86,10 +87,10 @@ var model = {
 		// Find Neighbors
 		
 		var total = 0;
-		for (i in sites) {
+		for (var i in sites) {
 			var shortestDistance = Infinity;
 			var nearestSite = 0;
-			for (t in sites) {
+			for (var t in sites) {
 				var distance = Math.pow(Math.pow(sites[i].x - sites[t].x,2) + Math.pow(sites[i].y - sites[t].y,2),.5);
 				if (distance < shortestDistance && t !== i) {
 					shortestDistance = distance;
@@ -100,9 +101,9 @@ var model = {
 			total += shortestDistance;
 		};
 		var avgDist = total / sites.length;
-		for (i in sites) {
+		for (var i in sites) {
 			sites[i].neighbors = [];
-			for (t in sites) {
+			for (var t in sites) {
 				var distance = Math.pow(Math.pow(sites[i].x - sites[t].x,2) + Math.pow(sites[i].y - sites[t].y,2),.5);
 				if (distance < avgDist * maxDist && distance >= minDist) {
 					sites[i].neighbors.push(sites[t]);
@@ -112,13 +113,13 @@ var model = {
 		
 		// Remove neighbors on too-similar vectors
 		var removeList = [];
-		for (i in sites) {
+		for (var i in sites) {
 			neighborAngles = [];
-			for (n in sites[i].neighbors) {
+			for (var n in sites[i].neighbors) {
 				neighborAngles.push(Math.atan2(sites[i].neighbors[n].y - sites[i].y,sites[i].neighbors[n].x - sites[i].x) * 180 / Math.PI);
 			}
-			for (a in neighborAngles) {
-				for (n in neighborAngles) {
+			for (var a in neighborAngles) {
+				for (var n in neighborAngles) {
 					var angleDiff = Math.abs(neighborAngles[a] - neighborAngles[n]);
 					if ((360 - minAngle < angleDiff || angleDiff < minAngle) && angleDiff !== 0) {
 						removeList.push([sites[i],sites[i].neighbors[n],sites[i].neighbors[a]]);
@@ -129,7 +130,7 @@ var model = {
 			};
 		};
 		
-		for (i in removeList) {
+		for (var i in removeList) {
 			var removeLink = [];
 			var a = removeList[i][0];
 			var b = removeList[i][1];
@@ -154,8 +155,8 @@ var model = {
 		
 		// Landmarks
 		landmarks = [];
-		for (x=-50;x<1050;x += 50) {
-			for (y=-50;y<1050;y += 50) {
+		for (var x=-50;x<1050;x += 50) {
+			for (var y=-50;y<1050;y += 50) {
 				var farFromSites = true;
 				for (s in sites) {
 					if (Math.pow(Math.pow(sites[s].x - x,2) + Math.pow(sites[s].y - y,2),0.5) < avgDist * maxDist * 0.5) {
@@ -176,7 +177,7 @@ var model = {
 		var syllables = 2 + Math.random() * Math.random() * 4 << 0;
 		if (syllables == 5) { syllables = 1 }
 		var string = '';
-		for (s=0;s<syllables;s++) {
+		for (var s=0;s<syllables;s++) {
 			if (Math.random() > 0.2) {
 				string += consonants[Math.random() * consonants.length << 0];
 			};
@@ -191,18 +192,18 @@ var model = {
 	knownValues: function() {
 		var knownValues = {};
 		var totalSites = 0;
-		for (c in data.commodities) {
+		for (var c in data.commodities) {
 			knownValues[c] = 0;
 		};
-		for (s in p1.knownSites) {
+		for (var s in p1.knownSites) {
 			if (p1.knownSites[s].hasVisited.p1) {
 				totalSites++;
-				for (c in knownValues) {
+				for (var c in knownValues) {
 					knownValues[c] += p1.knownSites[s].commodities[c];
 				};
 			};
 		};
-		for (c in knownValues) {
+		for (var c in knownValues) {
 			knownValues[c] /= totalSites;
 		};
 		return knownValues;
@@ -239,22 +240,22 @@ var model = {
 	buildUnit: function(index,unitType) {
 		unitType = data.units[unitType];
 		var unitsHere = [];
-		for (i in units) {
+		for (var i in units) {
 			if (units[i].location == view.focus.unit.location) {
 				unitsHere.push(units[i]);
 			};
 		};
 		
 		var buildCost = [];
-		for (i in unitType.buildCost) {
+		for (var i in unitType.buildCost) {
 			for (q=0;q<unitType.buildCost[i];q++) {
 				buildCost.push(i);
 			};
 		};
-		for (i in buildCost) {
+		for (var i in buildCost) {
 			var unpaid = true;
-			for (u in unitsHere) {
-				for (c in unitsHere[u].commodities) {
+			for (var u in unitsHere) {
+				for (var c in unitsHere[u].commodities) {
 					if (unitsHere[u].commodities[c].commodity == buildCost[i] && unitsHere[u].commodities[c].qty == 100 && unpaid) {
 						unitsHere[u].commodities.splice(c,1);
 					};
@@ -276,8 +277,8 @@ var model = {
 		var num = 0;
 		for (s in sites) {
 			var needs = sites[s].needs();
-			for (n in needs) {
-				count += needs[c].completion;
+			for (var n in needs) {
+				count += needs[n].completion;
 			};
 			num = needs.length;
 		};
@@ -307,10 +308,10 @@ function Site() {
 	this.wages = Math.random() * Math.random();
 	
 	this.commodities = {};
-	for (c in data.commodities) {
+	for (var c in data.commodities) {
 		this.commodities[c] = data.commodities[c].baseValue;
 		var randomFactor = 0;
-		for (r=0;r<data.commodities[c].stability;r++) {
+		for (var r=0;r<data.commodities[c].stability;r++) {
 			randomFactor += Math.random();
 		};
 		randomFactor = 2 * randomFactor / data.commodities[c].stability;
@@ -324,7 +325,7 @@ function Site() {
 	this.hasSurveyed = {};
 	this.hasSurveyed.p1 = [];
 	var resourcesNum = 1 + Math.random() * Math.random() * 5 << 0;
-	for (r=0;r<resourcesNum;r++) {
+	for (var r=0;r<resourcesNum;r++) {
 		var resources = Object.keys(data.resources);
 		var newResource = data.resources[resources[Math.random() * resources.length << 0]];
 		if (this.resources.indexOf(newResource) == -1) {
@@ -345,7 +346,7 @@ function Site() {
 		foodInfrastructure = 1;
 	};
 	var foodList = ['pens','fields','orchards'];
-	for (f=0;f<foodInfrastructure;f++) {
+	for (var f=0;f<foodInfrastructure;f++) {
 		var num = Math.random() * foodList.length << 0;
 		this.infrastructure.push(data.infrastructure[foodList[num]]);
 		foodList.splice(num,1);
@@ -408,7 +409,7 @@ function Site() {
 		var defense = 0;
 		var jobs = 0;
 		var i;
-		for (i in this.infrastructure) {
+		for (var i in this.infrastructure) {
 			if (this.infrastructure[i].housing > 0) {
 				housing += this.infrastructure[i].housing;
 			};
@@ -454,17 +455,17 @@ function Site() {
 	this.trading = function() {
 		var commodities = {};
 		var industrial = [];
-		for (b in this.infrastructure) {
+		for (var b in this.infrastructure) {
 			industrial = industrial.concat(this.infrastructure[b].inputs);
 			industrial = industrial.concat(this.infrastructure[b].outputs);
 		};
-		for (d in this.commodities) {
+		for (var d in this.commodities) {
 			errors.v426 = d;
 			if (data.commodities[d].common) {
 				commodities[d] = this.commodities[d];
 			};
 		};
-		for (d in this.commodities) {
+		for (var d in this.commodities) {
 			if (industrial.indexOf(d) !== -1) {
 				commodities[d] = this.commodities[d];
 			};
@@ -477,12 +478,12 @@ function Site() {
 		var buyingPower = this.reputation[player];
 		var unitsAtSite = [];
 		var trading = this.trading();
-		for (u in units) {
+		for (var u in units) {
 			if (units[u].location == this && units[u].owner == players[player]) {
 				unitsAtSite.push(units[u]);
 			};
 		};
-		for (u in unitsAtSite) {
+		for (var u in unitsAtSite) {
 			for (c in unitsAtSite[u].commodities) {
 				if (trading[unitsAtSite[u].commodities[c].commodity] !== undefined) {
 					buyingPower += trading[unitsAtSite[u].commodities[c].commodity] * unitsAtSite[u].commodities[c].qty;
@@ -496,7 +497,7 @@ function Site() {
 		var cost = 0;
 		var requirements
 		var trading = this.trading();
-		for (b in buildCost) {
+		for (var b in buildCost) {
 			if (b == 'reputation') {
 				cost += buildCost[b];
 			} else if (trading[b] !== undefined) {
@@ -510,10 +511,10 @@ function Site() {
 	
 	this.buildInfrastructure = function(key) {
 		var infrastructure = data.infrastructure[key];
-		for (c in infrastructure.inputs) {
+		for (var c in infrastructure.inputs) {
 			this.commodities[infrastructure.inputs[c]] /= 0.8;
 		};
-		for (c in infrastructure.outputs) {
+		for (var c in infrastructure.outputs) {
 			this.commodities[infrastructure.outputs[c]] *= 0.8;
 		};
 		this.goodwill.p1 += infrastructure.goodwill;
@@ -523,21 +524,21 @@ function Site() {
 	
 	this.useCommodities = function(useList) {
 		var unitsAtSite = [view.focus.unit];
-		for (u in units) {
+		for (var u in units) {
 			if (units[u].location == view.focus.unit && units[u] !== view.focus.unit) {
 				unitsAtSite.push(units[u]);
 			};
 		};
 		var flatList = [];
-		for (c in useList) {
+		for (var c in useList) {
 			for (q=0;q<useList[c];q++) {
 				flatList.push(c);
 			};
 		};
-		for (c in flatList) {
+		for (var c in flatList) {
 			var outstanding = true;
-			for (u in unitsAtSite) {
-				for (i in unitsAtSite[u].commodities) {
+			for (var u in unitsAtSite) {
+				for (var i in unitsAtSite[u].commodities) {
 					if (unitsAtSite[u].commodities[i].commodity == flatList[c] && unitsAtSite[u].commodities[i].qty == 100 && outstanding) {
 						unitsAtSite[u].commodities.splice(i,1);
 						outstanding = false;
@@ -571,7 +572,12 @@ function Unit(owner,startLoc,type) {
 	};
 	
 	this.inTransit = false;
-	this.offroad = false;
+	
+	if (type.speed > 0) {
+		this.offroad = false;
+	} else {
+		this.offroad = true;
+	};
 	
 	this.name = 'Unnamed ' + type.name;
 	var num = 0;
@@ -623,7 +629,7 @@ function Unit(owner,startLoc,type) {
 		var foodStore = 0;
 		var waterStore = 0;
 		var cargo = 0;
-		for (i in this.commodities) {
+		for (var i in this.commodities) {
 			if (this.commodities[i].commodity == 'food') {
 				foodStore += this.commodities[i].qty;
 			} else if (this.commodities[i].commodity == 'water') {
@@ -668,31 +674,43 @@ function Unit(owner,startLoc,type) {
 	};
 	
 	this.moveStep = function() {
-		var currentStep = this.route.shift();
-		this.departed = true;
-		this.location = undefined;
-		if (currentStep.name == undefined) {
-			this.look();
-		} else {
-			// arrived
-			this.location = currentStep;
-			this.route = [];
-			this.inTransit = false;
-			this.departed = false;
-			this.look();
-			model.options.paused = true;
-			document.getElementById('clockPauseBtn').innerHTML = '>';
+		if (load > this.type.cargo) {
+			view.displayError(this.name + ' is overburdened!');
 			view.focus.unit = this;
 			view.displayUnit(this);
+		} else {
+			var currentStep = this.route.shift();
+			this.departed = true;
+			this.location = undefined;
+			var load = 0;
+			this.clearTrade();
+			for (var c in this.commodities) {
+				if (data.commodities[this.commodities[c].commodity].cargo) {
+					load++;
+				};
+			};
+			if (currentStep.name == undefined) {
+				this.look();
+			} else {
+				// arrived
+				this.location = currentStep;
+				this.route = [];
+				this.inTransit = false;
+				this.departed = false;
+				this.look();
+				model.options.paused = true;
+				document.getElementById('clockPauseBtn').innerHTML = '>';
+				view.focus.unit = this;
+				view.displayUnit(this);
+			};
+			view.displayMap();
 		};
-		view.displayMap();
-		
 	};
 	
 	this.eat = function() {
 		var foodEaten = this.type.crew;
 		var waterDrank = this.type.crew;
-		for (i in this.commodities) {
+		for (var i in this.commodities) {
 			if (this.commodities[i].commodity == 'food') {
 				var temp = this.commodities[i].qty;
 				this.commodities[i].qty = Math.round(Math.max(this.commodities[i].qty - foodEaten,0),0);
@@ -719,7 +737,7 @@ function Unit(owner,startLoc,type) {
 			unitX = this.location.x;
 			unitY = this.location.y;
 		};
-		for (i in sites) {
+		for (var i in sites) {
 			if (( (this.location !== undefined && this.location.neighbors.indexOf(sites[i]) !== -1) || Math.pow(Math.pow(sites[i].x - unitX,2) + Math.pow(sites[i].y - unitY,2),.5) < this.owner.vision ) && this.owner.knownSites.indexOf(sites[i]) == -1) {
 				this.owner.knownSites.push(sites[i]);
 			};
@@ -727,7 +745,7 @@ function Unit(owner,startLoc,type) {
 		if (this.location !== undefined) {
 			this.location.hasVisited.p1 = true;
 		};
-		for (i in landmarks) {
+		for (var i in landmarks) {
 			if (( Math.pow(Math.pow(landmarks[i].x - unitX,2) + Math.pow(landmarks[i].y - unitY,2),.5) < this.owner.vision + 60 ) && this.owner.knownLandmarks.indexOf(landmarks[i]) == -1) {
 				this.owner.knownLandmarks.push(landmarks[i]);
 			};
@@ -737,8 +755,8 @@ function Unit(owner,startLoc,type) {
 	this.survey = function() {
 		this.isSurveying = true;
 		var resources = [];
-		for (r in this.location.resources) {
-			for (c in this.type.surveyResources) {
+		for (var r in this.location.resources) {
+			for (var c in this.type.surveyResources) {
 				if ( this.location.resources[r] == data.resources[this.type.surveyResources[c]] && this.location.hasSurveyed.p1[r] !== true) {
 					resources.push(r);
 				};
@@ -765,6 +783,8 @@ function Unit(owner,startLoc,type) {
 		this.surveyPotentials = [];
 		this.surveyComplete = undefined;
 		model.options.paused = true;
+		view.focus.unit = this;
+		view.displayUnit(this);
 	};
 
 	this.cancelRoute = function() {
@@ -799,11 +819,11 @@ function Unit(owner,startLoc,type) {
 	this.makeTrade = function() {
 		
 		// Move Goods, Adjust Site Values
-		for (i in this.currentTrade.unitStuff) {
+		for (var i in this.currentTrade.unitStuff) {
 			this.commodities.splice(this.commodities.indexOf(this.currentTrade.unitStuff[i]),1);
 			this.location.commodities[this.currentTrade.unitStuff[i].commodity] *= 0.95;
 		};
-		for (i in this.currentTrade.siteStuff) {
+		for (var i in this.currentTrade.siteStuff) {
 			this.commodities.push(this.currentTrade.siteStuff[i]);
 			this.location.commodities[this.currentTrade.siteStuff[i].commodity] *= 1;
 		};
@@ -837,18 +857,18 @@ function Unit(owner,startLoc,type) {
 		var result = false;
 		var trading = this.location.trading();
 		var unitsAtSite = [];
-		for (u in units) {
+		for (var u in units) {
 			if (units[u].location == this.location) {
 				unitsAtSite.push(units[u]);
 			};
 		};
 		var outstanding = {};
-		for (c in buildCost) {
+		for (var c in buildCost) {
 			outstanding[c] = buildCost[c];
 		};
 		// Count up cargo that can be used
-		for (u in unitsAtSite) {
-			for (c in unitsAtSite[u].commodities) {
+		for (var u in unitsAtSite) {
+			for (var c in unitsAtSite[u].commodities) {
 				var commodity = unitsAtSite[u].commodities[c].commodity;
 				if (outstanding[commodity] > 0) {
 					outstanding[commodity] -= unitsAtSite[u].commodities[c].qty / 100;
@@ -857,7 +877,7 @@ function Unit(owner,startLoc,type) {
 		};
 		// Convert remaining requirements to reputation
 		var repCost = 0;
-		for (c in outstanding) {
+		for (var c in outstanding) {
 			if (trading[c] !== undefined) {
 				repCost += outstanding[c] * this.location.commodities[c] * 100;
 			} else if (outstanding[c] > 0) {
