@@ -318,7 +318,7 @@ function Site() {
 	
 	this.hasVisited = {};
 	
-	this.population = Math.random() * Math.random() * 1000 << 0;
+	this.population = 4 + Math.random() * Math.random() * 496 << 0;
 	this.wages = Math.random() * Math.random();
 	
 	this.commodities = {};

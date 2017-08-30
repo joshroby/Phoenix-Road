@@ -264,7 +264,7 @@ var data = {
 			jobs: 3,
 		},
 		hovels: {
-			name: 'Hovels and Shacks',
+			name: 'Hovels & Shacks',
 			visible: false,
 			housing: 4,
 		},

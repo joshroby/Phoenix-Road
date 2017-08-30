@@ -35,6 +35,12 @@ div:after {
 	height: 75vw;
 	}
 
+#introDiv {
+	width:50vw;
+	margin-left: 25vw;
+	margin-top: 10vw;
+	}
+
 #detailsUnitDiv {
 	float: left;
 	width: 22vw;

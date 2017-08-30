@@ -34,6 +34,7 @@ var view = {
 	},
 	
 	clearDetailsDivs: function() {
+		document.getElementById('introDiv').style.display = 'none';
 		document.getElementById('detailsUnitDiv').innerHTML = '&nbsp;';
 		document.getElementById('detailsSiteDiv').innerHTML = '&nbsp;';
 	},
