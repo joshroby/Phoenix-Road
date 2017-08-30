@@ -8,6 +8,8 @@ var data = {
 			baseValue: 10,
 			stability: 6,
 			cargo: true,
+			icon: 'cutlery',
+			iconColor: 'grey',
 		},
 		
 		water: {
@@ -16,6 +18,8 @@ var data = {
 			baseValue: 5,
 			stability: 3,
 			cargo: true,
+			icon: 'tint',
+			iconColor: 'blue',
 		},
 		
 		fiber: {
@@ -24,6 +28,8 @@ var data = {
 			baseValue: 20,
 			stability: 3,
 			cargo: true,
+			icon: 'pagelines',
+			iconColor: 'gold',
 		},
 		
 		lumber: {
@@ -32,6 +38,8 @@ var data = {
 			baseValue: 30,
 			stability: 4,
 			cargo: true,
+			icon: 'tree',
+			iconColor: 'green',
 		},
 		
 		stone: {
@@ -40,7 +48,9 @@ var data = {
 			baseValue: 40,
 			stability: 5,
 			cargo: true,
-		},
+			icon: 'institution',
+			iconColor: 'darkgrey',
+			},
 		
 		clothing: {
 			name: 'Clothing',
@@ -48,14 +58,17 @@ var data = {
 			baseValue: 70,
 			stability: 2,
 			cargo: true,
+			icon: 'black-tie',
 		},
 		
 		tack: {
-			name: 'Saddles and Tack',
+			name: 'Saddles & Tack',
 			common: true,
 			baseValue: 80,
 			stability: 3,
 			cargo: true,
+			icon: 'link',
+			iconColor: 'saddlebrown',
 		},
 		
 		fuel: {
@@ -64,6 +77,8 @@ var data = {
 			baseValue: 100,
 			stability: 1,
 			cargo: true,
+			icon: 'tint',
+			iconColor: 'olive',
 		},
 		
 		crudeOil: {
@@ -72,6 +87,7 @@ var data = {
 			baseValue: 80,
 			stability: 2,
 			cargo: true,
+			icon: 'tint',
 		},
 		
 		ore: {
@@ -80,6 +96,8 @@ var data = {
 			baseValue: 40,
 			stability: 6,
 			cargo: true,
+			icon: 'cloud',
+			iconColor: 'grey',
 		},
 		
 		metals: {
@@ -88,6 +106,8 @@ var data = {
 			baseValue: 100,
 			stability: 4,
 			cargo: true,
+			icon: 'steam',
+			iconColor: 'grey',
 		},
 		
 		cloth: {
@@ -96,6 +116,8 @@ var data = {
 			baseValue: 60,
 			stability: 3,
 			cargo: true,
+			icon: 'map-o',
+			iconColor: 'cyan',
 		},
 		
 		hides: {
@@ -104,6 +126,8 @@ var data = {
 			baseValue: 20,
 			stability: 2,
 			cargo: true,
+			icon: 'joomla',
+			iconColor: 'saddlebrown',
 		},
 		
 		leather: {
@@ -112,6 +136,8 @@ var data = {
 			baseValue: 50,
 			stability: 4,
 			cargo: true,
+			icon: 'ticket',
+			iconColor: 'saddlebrown',
 		},
 		
 		scrip: {

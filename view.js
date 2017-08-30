@@ -1,5 +1,22 @@
 var view = {
 
+	prettyList: function(list,andor) {
+		if (andor == undefined) {andor = 'and'};
+		var prettyList = '';
+		for (item in list) {
+			prettyList += ' ' + list[item];
+			if (item == list.length-1) {
+			} else if (list.length == 2) {
+				prettyList += ' ' + andor;
+			} else if (item == list.length-2) {
+				prettyList += ', ' + andor;
+			} else {
+				prettyList += ',';
+			};
+		};
+		return prettyList;
+	},
+
 	focus: {
 		unitPane: 0,
 	},
@@ -42,20 +59,20 @@ var view = {
 		clockSpan.innerHTML = 'Day ' + model.currentDay;
 		clockDiv.appendChild(clockSpan);
 		var clockSlowDownBtn = document.createElement('button');
-		clockSlowDownBtn.innerHTML = '<<';
+		clockSlowDownBtn.innerHTML = '<span class="fa fa-backward"></span>';
 		clockSlowDownBtn.setAttribute('onclick','handlers.clockSlowDown()');
 		clockDiv.appendChild(clockSlowDownBtn);
 		var clockPauseBtn = document.createElement('button');
 		clockPauseBtn.id = 'clockPauseBtn';
 		if (model.options.paused) {
-			clockPauseBtn.innerHTML = '>';
+			clockPauseBtn.innerHTML = '<span class="fa fa-play"></span>';
 		} else {
-			clockPauseBtn.innerHTML = '||';
+			clockPauseBtn.innerHTML = '<span class="fa fa-pause"></span>';
 		};
 		clockPauseBtn.setAttribute('onclick','handlers.clockPause()');
 		clockDiv.appendChild(clockPauseBtn);
 		var clockSpeedUpBtn = document.createElement('button');
-		clockSpeedUpBtn.innerHTML = '>>';
+		clockSpeedUpBtn.innerHTML = '<span class="fa fa-forward"></span>';
 		clockSpeedUpBtn.setAttribute('onclick','handlers.clockSpeedUp()');
 		clockDiv.appendChild(clockSpeedUpBtn);
 		mapDiv.appendChild(clockDiv);
@@ -406,7 +423,8 @@ var view = {
 				var siteCommoditiesItem = document.createElement('tr');
 				siteCommoditiesTable.appendChild(siteCommoditiesItem);
 				var siteCommoditiesNameCell = document.createElement('td');
-				siteCommoditiesNameCell.innerHTML = data.commodities[c].name;
+				var icon = view.commodityIcon(c);
+				siteCommoditiesNameCell.innerHTML = icon + ' ' + data.commodities[c].name;
 				siteCommoditiesItem.appendChild(siteCommoditiesNameCell);
 				var siteCommoditiesValueCell = document.createElement('td');
 				siteCommoditiesValueCell.innerHTML = Math.round(100 * site.commodities[c],0);
@@ -433,7 +451,7 @@ var view = {
 				if (unitPresent) {
 					var siteCommoditiesTradeCell = document.createElement('td');
 					var siteCommoditiesTradeBtn = document.createElement('button');
-					siteCommoditiesTradeBtn.innerHTML = "+";
+					siteCommoditiesTradeBtn.innerHTML = '<span class="fa fa-cart-plus"></span>';
 					siteCommoditiesTradeBtn.setAttribute('onclick','handlers.addFromSite("'+c+'")');
 					siteCommoditiesTradeCell.appendChild(siteCommoditiesTradeBtn);
 					siteCommoditiesItem.appendChild(siteCommoditiesTradeCell);
@@ -476,9 +494,10 @@ var view = {
 					buildBtn.setAttribute('onclick','handlers.buildUnit('+i+')');
 					buildBtn.innerHTML = 'Build';
 					infrastructureDiv.appendChild(buildBtn);
-					var buildInfoTable = document.createElement('table');
-					buildInfoTable.id = 'buildInfoTable_'+i;
-					infrastructureDiv.appendChild(buildInfoTable);
+					var buildInfoDiv = document.createElement('div');
+					buildInfoDiv.id = 'buildInfoDiv_'+i;
+					buildInfoDiv.className = 'buildInfoDiv';
+					infrastructureDiv.appendChild(buildInfoDiv);
 				} else if (site.infrastructure[i].upgrade !== undefined) {
 					var upgrade = site.infrastructure[i].upgrade;
 					var upgradeString = upgrade.charAt(0).toUpperCase() + upgrade.slice(1);
@@ -517,29 +536,56 @@ var view = {
 	},
 	
 	displayBuildUnit: function(i,unitName) {
-		var buildInfoTable = document.getElementById('buildInfoTable_' + i);
-		buildInfoTable.innerHTML = '';
-		buildInfoTable.className = 'buildInfoTable';
 		var unitType = data.units[unitName];
-		var stats = ['cargo','crew','speed','offroadSpeed','surveyResources','buildInfrastructures'];
-		for (var s in stats) {
-			var buildUnitStatP = document.createElement('tr');
-			buildUnitStatP.innerHTML = "<td class='buildInfoStatCell'>" + stats[s] + "</td><td>" + unitType[stats[s]] + "</td>";
-			buildInfoTable.appendChild(buildUnitStatP);
-		};
-		var costString = "<td class='buildInfoStatCell'>Build Cost</td><td>";
-		var costRep = 0;
-		for (var b in unitType.buildCost) {
-			costString += unitType.buildCost[b] + " " + b;
-			if (Object.keys(unitType.buildCost).indexOf(b) < Object.keys(unitType.buildCost).length-1) {
-				costString += ", ";
+		console.log(unitType);
+		var buildInfoDiv = document.getElementById('buildInfoDiv_' + i);
+		buildInfoDiv.innerHTML = '';
+		
+		var buildItem = document.createElement('li');
+		buildItem.className = 'narrowBuildInfoItem';
+		buildItem.innerHTML = "<strong>Crew:</strong> " + unitType.crew + " <span class='fa fa-users'></span> ";
+		buildInfoDiv.appendChild(buildItem);
+		var buildItem = document.createElement('li');
+		buildItem.className = 'narrowBuildInfoItem';
+		buildItem.innerHTML += "<strong>Cargo:</strong> " + unitType.cargo + " <span class='fa fa-cubes'></span> ";
+		buildInfoDiv.appendChild(buildItem);
+		var buildItem = document.createElement('li');
+		buildItem.className = 'narrowBuildInfoItem';
+		buildItem.innerHTML = "<strong>Speed:</strong> " + unitType.speed + " <span class='fa fa-tachometer'></span> ";
+		buildInfoDiv.appendChild(buildItem);
+		var buildItem = document.createElement('li');
+		buildItem.className = 'narrowBuildInfoItem';
+		buildItem.innerHTML += "<strong>Offroad:</strong> " + unitType.offroadSpeed + " <span class='fa fa-tachometer'></span> ";
+		buildInfoDiv.appendChild(buildItem);
+		
+		if (unitType.canBuild) {
+			var buildList = [];
+			for (var i in unitType.buildInfrastructures) {
+				buildList.push(data.infrastructure[unitType.buildInfrastructures[i]].name);
 			};
-			costRep += Math.round(100 * unitType.buildCost[b] * view.focus.unit.location.commodities[b],1);
+			var buildItem = document.createElement('li');
+			buildItem.innerHTML = "<strong>Builds:</strong> " + view.prettyList(buildList);
+			buildInfoDiv.appendChild(buildItem);
 		};
-		costString += " (~" + costRep + " reputation)</td>";
-		var buildCostP = document.createElement('tr');
-		buildCostP.innerHTML = costString;
-		buildInfoTable.appendChild(buildCostP);
+		
+		if (unitType.canSurvey) {
+			var surveyList = [];
+			for (var i in unitType.surveyResources) {
+				surveyList.push(data.resources[unitType.surveyResources[i]].name);
+			};
+			var buildItem = document.createElement('li');
+			buildItem.innerHTML = "<strong>Surveys for:</strong> " + view.prettyList(surveyList);
+			buildInfoDiv.appendChild(buildItem);
+		};
+		
+		var materialsList = [];
+		for (var i in unitType.buildCost) {
+			materialsList.push(unitType.buildCost[i] + " " + i);
+		};
+		var buildItem = document.createElement('li');
+		buildItem.innerHTML += "<strong>Materials:</strong> " + view.prettyList(materialsList);
+		buildInfoDiv.appendChild(buildItem);		
+		
 		
 		// Enable/disable the Build button
 		if (view.focus.unit.canAfford(unitType.buildCost)) {
@@ -628,7 +674,8 @@ var view = {
 				var unitCommoditiesItem = document.createElement('tr');
 				unitCommoditiesTable.appendChild(unitCommoditiesItem);
 				var unitCommoditiesNameCell = document.createElement('td');
-				unitCommoditiesNameCell.innerHTML = data.commodities[unit.commodities[c].commodity].name;
+				var icon = view.commodityIcon(unit.commodities[c].commodity);
+				unitCommoditiesNameCell.innerHTML = icon + ' ' + data.commodities[unit.commodities[c].commodity].name;
 				if (unit.commodities[c].commodity == 'food' || unit.commodities[c].commodity == 'water') {
 					unitCommoditiesNameCell.innerHTML += ' (' + unit.commodities[c].qty + '%)';
 				};
@@ -639,13 +686,13 @@ var view = {
 					unitCommoditiesItem.appendChild(unitCommoditiesValueCell);
 					var unitCommoditiesTradeCell = document.createElement('td');
 					var unitCommoditiesTradeBtn = document.createElement('button');
-					unitCommoditiesTradeBtn.innerHTML = "+";
+					unitCommoditiesTradeBtn.innerHTML = '<span class="fa fa-cart-arrow-down"></span>';
 					unitCommoditiesTradeBtn.setAttribute('onclick','handlers.addFromUnit('+u+',"'+c+'")');
 					unitCommoditiesTradeBtn.id = 'unitAddBtn_' + u + '_' + c;
 					unitCommoditiesTradeCell.appendChild(unitCommoditiesTradeBtn);
 					if (unit.commodities[c].commodity == 'food' || unit.commodities[c].commodity == 'water') {
 						var resupplyBtn = document.createElement('button');
-						resupplyBtn.innerHTML = 'R';
+						resupplyBtn.innerHTML = '<span class="fa fa-refresh"></span>';
 						resupplyBtn.setAttribute('onclick','handlers.resupply('+c+')');
 						var resupplyCost = (100 - unit.commodities[c].qty ) * unit.location.commodities[unit.commodities[c].commodity];
 						if (unit.commodities[c].qty == 100 || resupplyCost > unit.location.reputation.p1) {
@@ -794,10 +841,11 @@ var view = {
 		unitBuildPreviewDiv.appendChild(unitBuildPreviewDesc);
 		
 		var unitBuildCostP = document.createElement('p');
-		unitBuildCostP.innerHTML = 'Materials: ';
+		var buildCost = [];
 		for (var b in infrastructure.buildCost) {
-			unitBuildCostP.innerHTML += infrastructure.buildCost[b] + " " + b + ", ";
+			buildCost.push(infrastructure.buildCost[b] + " " + b);
 		};
+		unitBuildCostP.innerHTML = 'Materials: ' + view.prettyList(buildCost);
 		if (view.focus.unit.location !== undefined) {
 			unitBuildCostP.innerHTML += " (~" + Math.round(view.focus.unit.location.costInRep(infrastructure.buildCost),0) + " reputation)";
 		};
@@ -805,7 +853,7 @@ var view = {
 		
 		if (infrastructure.requiredResource !== undefined) {
 			var unitBuildRequirementP = document.createElement('p');
-			unitBuildRequirementP.innerHTML = 'Requires: ' + infrastructure.requiredResource;
+			unitBuildRequirementP.innerHTML = 'Requires: ' + view.prettyList(infrastructure.requiredResource);
 			unitBuildPreviewDiv.appendChild(unitBuildRequirementP);
 		};
 		
@@ -830,22 +878,10 @@ var view = {
 			string += 'Provides defense of ' + infrastructure.defense + '. ';
 		};
 		if (infrastructure.outputs !== undefined) {
-			string += 'Produces '
-		};
-		for (var p in infrastructure.outputs) {
-			string += infrastructure.outputs[p] + ' ';
-		};
-		if (infrastructure.outputs !== undefined) {
-			string += '. '
+			string += 'Produces ' + view.prettyList(infrastructure.outputs) + '. ';
 		};
 		if (infrastructure.inputs !== undefined) {
-			string += 'Increases value of '
-		};
-		for (var p in infrastructure.inputs) {
-			string += infrastructure.inputs[p] + ' ';
-		};
-		if (infrastructure.inputs !== undefined) {
-			string += '. '
+			string += 'Increases value of ' + view.prettyList(infrastructure.inputs) + '. ';
 		};
 		if (infrastructure.jobs !== undefined) {
 			string += 'Provides ' + infrastructure.jobs + ' jobs. ';
@@ -890,9 +926,10 @@ var view = {
 			unitStuffDiv.appendChild(unitStuffList);
 			for (var i in currentTrade.unitStuff) {
 				var unitStuffItem = document.createElement('li');
-				unitStuffItem.innerHTML = data.commodities[currentTrade.unitStuff[i].commodity].name + ' ';
+				var icon = view.commodityIcon(currentTrade.unitStuff[i].commodity);
+				unitStuffItem.innerHTML = icon + ' ' + data.commodities[currentTrade.unitStuff[i].commodity].name + ' ';
 				var unitStuffRemoveBtn = document.createElement('button');
-				unitStuffRemoveBtn.innerHTML = '-';
+				unitStuffRemoveBtn.innerHTML = '<span class="fa fa-times"></span>';
 				unitStuffRemoveBtn.setAttribute('onclick','handlers.removeUnitStuff('+i+')');
 				unitStuffItem.appendChild(unitStuffRemoveBtn);
 				unitStuffList.appendChild(unitStuffItem);
@@ -905,9 +942,10 @@ var view = {
 			siteStuffDiv.appendChild(siteStuffList);
 			for (var i in currentTrade.siteStuff) {
 				var siteStuffItem = document.createElement('li');
-				siteStuffItem.innerHTML = data.commodities[currentTrade.siteStuff[i].commodity].name + ' ';
+				var icon = view.commodityIcon(currentTrade.siteStuff[i].commodity);
+				siteStuffItem.innerHTML = icon + ' ' + data.commodities[currentTrade.siteStuff[i].commodity].name + ' ';
 				var siteStuffRemoveBtn = document.createElement('button');
-				siteStuffRemoveBtn.innerHTML = '-';
+				siteStuffRemoveBtn.innerHTML = '<span class="fa fa-times"></span>';
 				siteStuffRemoveBtn.setAttribute('onclick','handlers.removeSiteStuff('+i+')');
 				siteStuffItem.appendChild(siteStuffRemoveBtn);
 				siteStuffList.appendChild(siteStuffItem);
@@ -987,6 +1025,21 @@ var view = {
 		if (blue.length == 1) {blue = '0' + blue;};
 		var hexcode = '#' + red + green + blue;
 		return hexcode;
+	},
+	
+	commodityIcon: function(commodityKey) {
+		string = '<span ';
+		if (data.commodities[commodityKey].iconColor !== undefined) {
+			string += 'style="color:' + data.commodities[commodityKey].iconColor + '" ';
+		};
+		string += ' class="fa fa-fw ';
+		if (data.commodities[commodityKey].icon !== undefined) {
+			string += 'fa-'+data.commodities[commodityKey].icon;
+		} else {
+			string += 'fa-cubes';
+		};
+		string += '"></span>';
+		return string;
 	},
 
 };

@@ -2,39 +2,42 @@ Down the Phoenix Road To Do List
 
 
 
+
+IMMEDIATE
+
+
 NEAR FUTURE
-- infrastructure raises wages / provides jobs
-	- hunger ( wages / food cost )
-	- housing ( housing / population )
-	- safety ( defense / danger (currently static) )
+- Put everything into a 1200 x 900 ratio flexbox
+- starter commodity should be common
 - upgrades instead of standalone builds
 	- stone wall replaces pallisade & other such issues
 - mouseover on site infrastructure tells you what it does
+- prettify preview of units
+- fix infrastructure description
 - dump cargo when you can't sell it
-- build times?
-- Unit.moveStep() needs to check overburdened
+- build times
+- make Unit.eat() consume food/water/fuel differently for different units
+	- and fuel only when in transit
+- when you select a route, if all units have routes, then start clock
+- odd jobs button for units where in ten days you get half-loads of food and water and your rep there dips down the price of a full load of food and water.
+	- appears only when you have less than a week's provisions and no local rep
 
 IMMEDIATE FUTURE
 - zoom function's impression of where cursor is on map is always derived as if map is zoomed out
+- transfer cargo (besides selling and buying)
 - pathfinding for multi-step trips
 - draw functions for units
 - movement animation/transition
 - rejigger site labels for legibility… somehow
-- convert 'goodwill' from flat bonus into an everyday earn instead
-- make Unit.eat() consume food/water/fuel differently for different units
-	- and fuel only when in transit
-- when you select a route, if all units have routes, then start clock
-- unit tabs reflect inTransit and cargo capacity
+- a site with Pens and a Saddler but no Tannery should get a big upgrade if you build a tannery, completing the production pipeline.
 
 FAR FUTURE
+- fucking events
 - boats? terrain?
 - trailblazing
 - building outposts / new sites
 - hardholder territory
 - moving people
-- fucking events
-- transfer cargo (besides selling and buying)
-- visible progress on map (spreading carpet of green?)
 - warehousing
 - caravan
 - other only-findable infrastructures
@@ -44,4 +47,5 @@ FAR FUTURE
 EVENTS
 - plague event which slowly increases values and kills population, can deliver medicine commodities to cure them
 - your basic 'something happened to affect commodity prices' event
-- find a bike
+- find a bike (replaces Kid with a Bike)
+- consequences for suboptimal needs?

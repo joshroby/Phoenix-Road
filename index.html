@@ -3,6 +3,7 @@
 	<head>
 		<title>Down the Phoenix Road</title>
 		<link rel="stylesheet" href="style.css">
+		<link rel="stylesheet" href="font-awesome/css/font-awesome.min.css">
 		<script src="data.js"></script>
 		<script src="handlers.js"></script>
 		<script src="model.js"></script>
@@ -18,7 +19,7 @@
 			<button onclick = 'handlers.newGame()'>New Game</button>
 			<button id = 'saveButton' disabled onclick = 'handlers.saveGame()'>Save Game</button>
 			<button id = 'loadGameButton' disabled onclick = 'view.switchToIntroMode()'>Load Game</button>
-			<button disabled onclick='handlers.toggleOptions()' >Options</button>
+			<button disabled onclick='handlers.toggleOptions()' ><span class='fa fa-cogs' aria-hidden='true'></span></button>
 		
 		</div>
 					

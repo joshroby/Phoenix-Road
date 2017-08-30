@@ -25,8 +25,8 @@ var model = {
 		players = {p1:p1};
 		
 		var startUnit = new Unit(p1,undefined,data.units.donkeyCart);
-		var dowser = new Unit(p1,startUnit.location,data.units.dowser);
-// 		var tinker = new Unit(p1,startUnit.location,data.units.tinkersCart);
+// 		var dowser = new Unit(p1,startUnit.location,data.units.dowser);
+		var tinker = new Unit(p1,startUnit.location,data.units.tinkersCart);
 		startUnit.look();
 		startUnit.location.reputation.p1 = 100;
 		
@@ -41,6 +41,7 @@ var model = {
 		};
 		startUnit.commodities.push({commodity:startCargo,qty:100});
 		startUnit.location.reputation.p1 -= cheapestValue * 100;
+		startUnit.location.infrastructure.push(data.infrastructure.cartwright);
 		
 		var localArea = [startUnit.location];
 		for (var i=0;i<5;i++) {
