@@ -8,6 +8,7 @@ div:after {
   display: table;
   clear: both;
 }
+
 .narrowMargin {
 	margin: 2px;
 	}
@@ -52,8 +53,13 @@ div:after {
 	margin-top: 2vh;
 	text-align: center;
 	}
+	
 .unitActionsDiv button {
 	margin: 1vh;
+	}
+
+.buildBtn {
+	margin-left: 1vw;
 	}
 
 .unitBuildPreviewDiv {

@@ -57,9 +57,7 @@ var handlers = {
 	
 	buildInfrastructure:function(pane) {
 		var key = document.getElementById('unitBuildSelect_'+pane).value;
-		view.focus.unit.location.buildInfrastructure(key);
-		view.displaySiteDetails(view.focus.unit.location);
-		view.displayUnit(view.focus.unit)
+		view.focus.unit.build(data.infrastructure[key]);
 	},
 	
 	switchUnitPane: function(unitIndex,paneIndex) {

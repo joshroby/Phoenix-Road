@@ -25,10 +25,10 @@ var model = {
 		players = {p1:p1};
 		
 		var startUnit = new Unit(p1,undefined,data.units.donkeyCart);
-// 		var dowser = new Unit(p1,startUnit.location,data.units.dowser);
+		var dowser = new Unit(p1,startUnit.location,data.units.dowser);
 		var tinker = new Unit(p1,startUnit.location,data.units.tinkersCart);
 		startUnit.look();
-		startUnit.location.reputation.p1 = 100;
+		startUnit.location.reputation.p1 = 10000;
 		
 		var startCargo = undefined;
 		var cheapestValue = Infinity;
@@ -513,8 +513,7 @@ function Site() {
 		return cost;
 	};
 	
-	this.buildInfrastructure = function(key) {
-		var infrastructure = data.infrastructure[key];
+	this.buildInfrastructure = function(infrastructure) {
 		for (var c in infrastructure.inputs) {
 			this.commodities[infrastructure.inputs[c]] /= 0.8;
 		};
@@ -529,7 +528,6 @@ function Site() {
 			};
 		};
 		this.goodwill.p1 += infrastructure.goodwill;
-		this.useCommodities(infrastructure.buildCost);
 		this.infrastructure.push(infrastructure);
 	};
 	
@@ -651,7 +649,7 @@ function Unit(owner,startLoc,type) {
 			};
 		};
 				
-		if ((this.location.neighbors.indexOf(site) !== -1 || this.offroad == true) && waterStore >= waterDrank && foodStore >= foodEaten && cargo <= this.type.cargo && !this.isSurveying) {
+		if ((this.location.neighbors.indexOf(site) !== -1 || this.offroad == true) && waterStore >= waterDrank && foodStore >= foodEaten && cargo <= this.type.cargo && !this.isBuilding && !this.isSurveying) {
 			var diffX = site.x - this.location.x;
 			var diffY = site.y - this.location.y;
 			if (this.offroad) {
@@ -676,6 +674,8 @@ function Unit(owner,startLoc,type) {
 			view.displayError('Not enough food!');
 		} else if (cargo > this.type.cargo) {
 			view.displayError('Overburdened!');
+		} else if (this.isBuilding) {
+			view.displayError('Busy building!');
 		} else if (this.isSurveying) {
 			view.displayError('Busy surveying!');
 		} else {
@@ -786,13 +786,32 @@ function Unit(owner,startLoc,type) {
 		var foundResource = this.surveyPotentials[Math.random() * this.surveyPotentials.length << 0];
 		if (foundResource !== -1) {
 			this.location.hasSurveyed.p1[foundResource] = true;
-			view.displayNotification('You found a ' + this.location.resources[foundResource].name + " in " + this.location.name);
+			view.displayNotification(this.name + ' found a ' + this.location.resources[foundResource].name + " in " + this.location.name);
 			view.displaySiteDetails(this.location);
 		} else {
-			view.displayError('You found nothing in ' + this.location.name + '.');
+			view.displayError(this.name + ' found nothing in ' + this.location.name + '.');
 		};
 		this.surveyPotentials = [];
 		this.surveyComplete = undefined;
+		model.options.paused = true;
+		view.focus.unit = this;
+		view.displayUnit(this);
+	};
+	
+	this.build = function(infrastructure) {
+		this.isBuilding = true;
+		this.buildProject = infrastructure;
+		this.buildComplete = model.currentDay + infrastructure.buildTime;
+		this.location.useCommodities(infrastructure.buildCost);
+		view.displayUnit(this);
+	};
+	
+	this.buildResult = function() {
+		this.location.buildInfrastructure(this.buildProject);
+		view.displayNotification(this.name + ' built a ' + this.buildProject.name + " in " + this.location.name);
+		this.isBuilding = false;
+		this.buildProject = undefined;
+		this.buildComplete = undefined;
 		model.options.paused = true;
 		view.focus.unit = this;
 		view.displayUnit(this);

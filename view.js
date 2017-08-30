@@ -491,6 +491,7 @@ var view = {
 					infrastructureDiv.appendChild(buildSelect);
 					var buildBtn = document.createElement('button');
 					buildBtn.id = 'siteBuildBtn';
+					buildBtn.className = 'buildBtn';
 					buildBtn.setAttribute('onclick','handlers.buildUnit('+i+')');
 					buildBtn.innerHTML = 'Build';
 					infrastructureDiv.appendChild(buildBtn);
@@ -723,6 +724,12 @@ var view = {
 					unitPane.appendChild(cancelRouteBtn);
 				};
 			};
+			if (unit.isSurveying) {
+				var surveyingP = document.createElement('p');
+				var eta = unit.surveyComplete - model.currentDay;
+				surveyingP.innerHTML = "Surveying (" + eta + " days)";
+				unitPane.appendChild(surveyingP);
+			};
 		
 			// Action Buttons
 			var unitActionsDiv = document.createElement('div');
@@ -757,7 +764,15 @@ var view = {
 			if (unit.type.canBuild && unit.location !== undefined) {
 				var unitBuildHead = document.createElement('h3');
 				unitBuildHead.innerHTML = 'Build';
+				unitBuildHead.className = 'infrastructureHead';
 				unitPane.appendChild(unitBuildHead);
+				
+				if (unit.isBuilding) {
+					var unitBuildProjectP = document.createElement('p');
+					var eta = unit.buildComplete - model.currentDay;
+					unitBuildProjectP.innerHTML = 'Currently building ' + unit.buildProject.name + ' (' + eta + ' days)';
+					unitPane.appendChild(unitBuildProjectP);
+				};
 				
 				var unitBuildSelect = document.createElement('select');
 				unitBuildSelect.id = 'unitBuildSelect_' + u;
@@ -772,7 +787,8 @@ var view = {
 					var requirements = data.infrastructure[unit.type.buildInfrastructures[b]].requiredResource;
 					var requirementsFulfilled = false;
 					for (var r in requirements) {
-						if (unit.location.resources.indexOf(data.resources[requirements[r]]) !== -1) {
+						var index = unit.location.resources.indexOf(data.resources[requirements[r]])
+						if (index !== -1 && (unit.location.hasSurveyed.p1[index] || unit.location.resources[index].visible)) {
 							requirementsFulfilled = true;
 						};
 					};
@@ -787,7 +803,9 @@ var view = {
 				
 				var unitBuildBtn = document.createElement('button');
 				unitBuildBtn.id = 'unitBuildBtn_' + u;
+				unitBuildBtn.className = 'buildBtn';
 				unitBuildBtn.innerHTML = 'Build';
+				unitBuildBtn.disabled = true;
 				unitBuildBtn.setAttribute('onclick','handlers.buildInfrastructure('+u+')');
 				unitPane.appendChild(unitBuildBtn);
 				
@@ -811,8 +829,13 @@ var view = {
 				unitTab.setAttribute('onclick','handlers.switchUnitPane('+units.indexOf(unitsAtSite[u])+','+u+')');
 				if (unitsAtSite[u].inTransit) {
 					unitTab.style.backgroundColor = '#AAAA00';
+					unitTab.innerHTML += ' <span class="fa-stack"><span class="fa fa-circle-o fa-stack-2x fa-spin"></span><span class="fa fa-arrows-alt fa-stack-1x fa-spin"></span></span>';
+				} else if (unitsAtSite[u].isBuilding) {
+					unitTab.style.backgroundColor = '#F0E68C';
+					unitTab.innerHTML += ' <span class="fa fa-2x fa-cog fa-spin"></span>';
 				} else if (unitsAtSite[u].isSurveying) {
 					unitTab.style.backgroundColor = '#AFEEEE';
+					unitTab.innerHTML += ' <span class="fa fa-2x fa-spinner fa-pulse"></span>';
 				};
 				unitTabsDiv.appendChild(unitTab);
 			};
@@ -846,6 +869,10 @@ var view = {
 		};
 		unitBuildPreviewDiv.appendChild(unitBuildCostP);
 		
+		var unitBuildTimeP = document.createElement('p');
+		unitBuildTimeP.innerHTML = '<strong>Construction Time:</strong> ' + infrastructure.buildTime + ' days';
+		unitBuildPreviewDiv.appendChild(unitBuildTimeP);
+		
 		if (infrastructure.requiredResource !== undefined) {
 			var unitBuildRequirementP = document.createElement('p');
 			unitBuildRequirementP.innerHTML = '<strong>Requires:</strong> ' + view.prettyList(infrastructure.requiredResource,'or');
@@ -864,7 +891,7 @@ var view = {
 			console.log(unitBuildReplaceP);
 		};
 		
-		if (view.focus.unit.canAfford(infrastructure.buildCost)) {
+		if (view.focus.unit.canAfford(infrastructure.buildCost) && !view.focus.unit.isBuilding && !view.focus.unit.inTransit) {
 			document.getElementById('unitBuildBtn_'+pane).disabled = false;
 		} else {
 			document.getElementById('unitBuildBtn_'+pane).disabled = true;
