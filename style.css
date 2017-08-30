@@ -3,6 +3,11 @@ body {
 	padding-top: 5vw;
 	}
 
+div:after {
+  content: "";
+  display: table;
+  clear: both;
+}
 .narrowMargin {
 	margin: 2px;
 	}
@@ -22,6 +27,11 @@ body {
 #titleHead {
 	display: inline;
 	padding-right: 15vw;
+	}
+
+#gameDiv {
+	width: 100vw;
+	height: 75vw;
 	}
 
 #detailsUnitDiv {

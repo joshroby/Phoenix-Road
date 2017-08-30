@@ -34,14 +34,14 @@ var model = {
 		var cheapestValue = Infinity;
 		var tradingHere = startUnit.location.trading();
 		for (c in startUnit.location.commodities) {
-			if (startUnit.location.commodities[c] < cheapestValue && tradingHere[c] !== undefined && c !== 'food' && c !== 'water') {
+			if (startUnit.location.commodities[c] < cheapestValue && data.commodities[c].common && c !== 'food' && c !== 'water') {
 				startCargo = c;
 				cheapestValue = startUnit.location.commodities[c];
 			};
 		};
 		startUnit.commodities.push({commodity:startCargo,qty:100});
 		startUnit.location.reputation.p1 -= cheapestValue * 100;
-		startUnit.location.infrastructure.push(data.infrastructure.cartwright);
+// 		startUnit.location.infrastructure.push(data.infrastructure.cartwright);
 		
 		var localArea = [startUnit.location];
 		for (var i=0;i<5;i++) {
@@ -377,6 +377,9 @@ function Site() {
 	} else if (this.commodities.lumber + this.commodities.stone < 0.6) {
 		this.infrastructure.push(data.infrastructure.manorHouse);
 	};
+	if (this.commodities.stone >= 0.5 && this.commodities.lumber >= 0.1) {
+		this.infrastructure.push(data.infrastructure.hovels);
+	};
 	
 	// Basic Industry
 	if (Math.random() < 0.2) {
@@ -517,6 +520,13 @@ function Site() {
 		};
 		for (var c in infrastructure.outputs) {
 			this.commodities[infrastructure.outputs[c]] *= 0.8;
+		};
+		for (var i in infrastructure.replaces) {
+			for (b in this.infrastructure) {
+				if (this.infrastructure[b] == data.infrastructure[infrastructure.replaces[i]]) {
+					this.infrastructure.splice(b,1);
+				};
+			};
 		};
 		this.goodwill.p1 += infrastructure.goodwill;
 		this.useCommodities(infrastructure.buildCost);

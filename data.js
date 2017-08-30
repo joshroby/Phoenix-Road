@@ -231,6 +231,7 @@ var data = {
 		fortress: {
 			name:'Fortress',
 			buildCost: {stone:8,lumber:8,fiber:2,cloth:2},
+			replaces: ['bunker'],
 			goodwill: 5,
 			visible: true,
 			defense:10,
@@ -242,6 +243,11 @@ var data = {
 			buildUnits: ['zeppelin'],
 			inputs: ['metals','fiber','fuel'],
 			jobs: 3,
+		},
+		hovels: {
+			name: 'Hovels and Shacks',
+			visible: false,
+			housing: 4,
 		},
 		loom: {
 			name: 'Loom',
@@ -272,7 +278,7 @@ var data = {
 			buildCost: {stone:2,lumber:2,cloth:4},
 			goodwill: 1,
 			visible: false,
-			housing:50,
+			housing:20,
 			jobs: 2,
 		},
 		mechanic: {
@@ -336,6 +342,13 @@ var data = {
 			outputs: ['fuel'],
 			jobs: 15,
 		},
+		rowhouses: {
+			name: 'Rowhouses',
+			buildCost: {stone: 4,lumber: 2, cloth: 2 },
+			replaces: ['hovels'],
+			visible: false,
+			housing: 100,
+		},
 		saddler: {
 			name: 'Saddler',
 			buildCost: {lumber:1,fiber:1,leather:1},
@@ -357,6 +370,7 @@ var data = {
 		stoneWall: {
 			name:'Stone Wall',
 			buildCost: {stone:8,lumber:2},
+			replaces: ['woodenPallisade'],
 			goodwill: 2,
 			visible: true,
 			defense:5,
@@ -373,6 +387,7 @@ var data = {
 		tenements: {
 			name:'Tenements',
 			buildCost: {stone:8,lumber:4,cloth:2},
+			replaces: ['hovels'],
 			goodwill: 5,
 			visible: true,
 			housing:200,

@@ -19,35 +19,39 @@
 			<button onclick = 'handlers.newGame()'>New Game</button>
 			<button id = 'saveButton' disabled onclick = 'handlers.saveGame()'>Save Game</button>
 			<button id = 'loadGameButton' disabled onclick = 'view.switchToIntroMode()'>Load Game</button>
-			<button disabled onclick='handlers.toggleOptions()' ><span class='fa fa-cogs' aria-hidden='true'></span></button>
+			<button disabled onclick='handlers.toggleOptions()' >Options</span></button>
 		
 		</div>
+		
+		<div id='gameDiv'>
 					
-		<div id='detailsUnitDiv'>
-			&nbsp;
-		</div>
-		
-		<div id='mapDiv'>
-		
-			<svg id='mapSVG'>
-		
-			</svg>
-		
-		</div>
-			
-		<div id='detailsSiteDiv'>
-			&nbsp;
-		</div>
-		
-		<div id='tradeDiv'>
-			<div id='unitStuffDiv' class='tradeDiv'></div>
-			<div id='tradeControlsDiv' class='tradeDiv'>
-				<div id='balanceDiv'>
-				</div>
-				<button id='tradeBtn' onclick='handlers.makeTrade()' disabled>Trade</button>
-				<button onclick='handlers.clearTrade()'>Clear</button>
+			<div id='detailsUnitDiv'>
+				&nbsp;
 			</div>
-			<div id='siteStuffDiv' class='tradeDiv'></div>
+		
+			<div id='mapDiv'>
+		
+				<svg id='mapSVG'>
+		
+				</svg>
+		
+			</div>
+			
+			<div id='detailsSiteDiv'>
+				&nbsp;
+			</div>
+		
+			<div id='tradeDiv'>
+				<div id='unitStuffDiv' class='tradeDiv'></div>
+				<div id='tradeControlsDiv' class='tradeDiv'>
+					<div id='balanceDiv'>
+					</div>
+					<button id='tradeBtn' onclick='handlers.makeTrade()' disabled>Trade</button>
+					<button onclick='handlers.clearTrade()'>Clear</button>
+				</div>
+				<div id='siteStuffDiv' class='tradeDiv'></div>
+			</div>
+			
 		</div>
 	
 	</body>

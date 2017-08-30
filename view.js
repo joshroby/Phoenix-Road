@@ -537,7 +537,6 @@ var view = {
 	
 	displayBuildUnit: function(i,unitName) {
 		var unitType = data.units[unitName];
-		console.log(unitType);
 		var buildInfoDiv = document.getElementById('buildInfoDiv_' + i);
 		buildInfoDiv.innerHTML = '';
 		
@@ -690,7 +689,7 @@ var view = {
 					unitCommoditiesTradeBtn.setAttribute('onclick','handlers.addFromUnit('+u+',"'+c+'")');
 					unitCommoditiesTradeBtn.id = 'unitAddBtn_' + u + '_' + c;
 					unitCommoditiesTradeCell.appendChild(unitCommoditiesTradeBtn);
-					if (unit.commodities[c].commodity == 'food' || unit.commodities[c].commodity == 'water') {
+					if (unit.commodities[c].qty < 100) {
 						var resupplyBtn = document.createElement('button');
 						resupplyBtn.innerHTML = '<span class="fa fa-refresh"></span>';
 						resupplyBtn.setAttribute('onclick','handlers.resupply('+c+')');
@@ -832,10 +831,6 @@ var view = {
 		var unitBuildPreviewDiv = document.getElementById('unitBuildPreviewDiv_' + pane);
 		unitBuildPreviewDiv.innerHTML = '';
 		
-		var unitBuildPreviewHead = document.createElement('h4');
-		unitBuildPreviewHead.innerHTML = infrastructure.name;
-		unitBuildPreviewDiv.appendChild(unitBuildPreviewHead);
-		
 		var unitBuildPreviewDesc = document.createElement('p');
 		unitBuildPreviewDesc.innerHTML = view.infrastructureDescription(key);
 		unitBuildPreviewDiv.appendChild(unitBuildPreviewDesc);
@@ -845,7 +840,7 @@ var view = {
 		for (var b in infrastructure.buildCost) {
 			buildCost.push(infrastructure.buildCost[b] + " " + b);
 		};
-		unitBuildCostP.innerHTML = 'Materials: ' + view.prettyList(buildCost);
+		unitBuildCostP.innerHTML = '<strong>Materials:</strong> ' + view.prettyList(buildCost);
 		if (view.focus.unit.location !== undefined) {
 			unitBuildCostP.innerHTML += " (~" + Math.round(view.focus.unit.location.costInRep(infrastructure.buildCost),0) + " reputation)";
 		};
@@ -853,8 +848,20 @@ var view = {
 		
 		if (infrastructure.requiredResource !== undefined) {
 			var unitBuildRequirementP = document.createElement('p');
-			unitBuildRequirementP.innerHTML = 'Requires: ' + view.prettyList(infrastructure.requiredResource);
+			unitBuildRequirementP.innerHTML = '<strong>Requires:</strong> ' + view.prettyList(infrastructure.requiredResource,'or');
 			unitBuildPreviewDiv.appendChild(unitBuildRequirementP);
+		};
+		
+		if (infrastructure.replaces !== undefined) {
+			console.log('replaces');
+			var replaceList = [];
+			for (var i in infrastructure.replaces) {
+				replaceList.push(data.infrastructure[infrastructure.replaces[i]].name);
+			};
+			var unitBuildReplaceP = document.createElement('p');
+			unitBuildReplaceP.innerHTML = "<strong>Replaces:</strong> " + view.prettyList(replaceList);
+			unitBuildPreviewDiv.appendChild(unitBuildReplaceP);
+			console.log(unitBuildReplaceP);
 		};
 		
 		if (view.focus.unit.canAfford(infrastructure.buildCost)) {
