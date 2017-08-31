@@ -92,7 +92,7 @@ var handlers = {
 	
 	addFromUnit: function(paneIndex,commodityIndex) {
 		view.focus.unit.addFromUnit(commodityIndex);
-		view.disableUnitAddBtn(paneIndex,commodityIndex);
+		view.displayUnit(view.focus.unit);
 		view.updateTradeDiv();
 	},
 	
@@ -109,6 +109,7 @@ var handlers = {
 	removeUnitStuff: function(tradeIndex) {
 		view.focus.unit.removeUnitStuff(tradeIndex);
 		view.updateTradeDiv();
+		view.displayUnit(view.focus.unit);
 	},
 	
 	removeSiteStuff: function(tradeIndex) {
@@ -142,8 +143,8 @@ var handlers = {
 	
 	clearTrade: function() {
 		view.focus.unit.clearTrade();
-		view.enableUnitAddBtns();
 		view.hideTradeDiv();
+		view.displayUnit(view.focus.unit);
 	},
 	
 	resupply: function(commodityIndex) {

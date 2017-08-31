@@ -465,10 +465,8 @@ var view = {
 				};
 				if (unitPresent) {
 					var siteCommoditiesTradeCell = document.createElement('td');
-					var siteCommoditiesTradeBtn = document.createElement('button');
-					siteCommoditiesTradeBtn.innerHTML = '<span class="fa fa-cart-plus"></span>';
-					siteCommoditiesTradeBtn.setAttribute('onclick','handlers.addFromSite("'+c+'")');
-					siteCommoditiesTradeCell.appendChild(siteCommoditiesTradeBtn);
+					siteCommoditiesTradeCell.innerHTML = '<span class="fa fa-cart-plus"></span>';
+					siteCommoditiesTradeCell.setAttribute('onclick','handlers.addFromSite("'+c+'")');
 					siteCommoditiesItem.appendChild(siteCommoditiesTradeCell);
 				} else {
 					var siteCommoditiesTradeCell = document.createElement('td');
@@ -712,6 +710,7 @@ var view = {
 				var unitCommoditiesItem = document.createElement('tr');
 				unitCommoditiesTable.appendChild(unitCommoditiesItem);
 				var unitCommoditiesNameCell = document.createElement('td');
+				unitCommoditiesNameCell.className = 'unitCommoditiesNameCell';
 				var icon = view.commodityIcon(unit.commodities[c].commodity);
 				unitCommoditiesNameCell.innerHTML = icon + ' ' + data.commodities[unit.commodities[c].commodity].name;
 				if (unit.commodities[c].qty < 100) {
@@ -722,30 +721,40 @@ var view = {
 					var unitCommoditiesValueCell = document.createElement('td');
 					unitCommoditiesValueCell.innerHTML = Math.round(100 * unit.location.commodities[unit.commodities[c].commodity],0);
 					unitCommoditiesItem.appendChild(unitCommoditiesValueCell);
+					
 					var unitCommoditiesTradeCell = document.createElement('td');
-					var unitCommoditiesTradeBtn = document.createElement('button');
-					unitCommoditiesTradeBtn.id = 'unitAddBtn_' + u + '_' + c;
-					unitCommoditiesTradeBtn.innerHTML = '<span class="fa fa-cart-arrow-down"></span>';
-					unitCommoditiesTradeBtn.setAttribute('onclick','handlers.addFromUnit('+u+',"'+c+'")');
-					unitCommoditiesTradeCell.appendChild(unitCommoditiesTradeBtn);
-					var unitCommoditiesTrashBtn = document.createElement('button');
-					unitCommoditiesTrashBtn.innerHTML = '<span class="fa fa-trash"></span>';
-					unitCommoditiesTrashBtn.setAttribute('onclick','handlers.trashFromUnit('+u+',"'+c+'")');
-					unitCommoditiesTradeCell.appendChild(unitCommoditiesTrashBtn);
-					if (unit.commodities[c].qty < 100) {
-						var resupplyBtn = document.createElement('button');
-						resupplyBtn.innerHTML = '<span class="fa fa-refresh"></span>';
-						resupplyBtn.setAttribute('onclick','handlers.resupply('+c+')');
-						var resupplyCost = (100 - unit.commodities[c].qty ) * unit.location.commodities[unit.commodities[c].commodity];
-						if (unit.commodities[c].qty == 100 || resupplyCost > unit.location.reputation.p1) {
-							resupplyBtn.disabled = true;
-						} else {
-							resupplyBtn.disabled = false;
-						};
-						unitCommoditiesTradeCell.appendChild(resupplyBtn);
-					};
+					unitCommoditiesTradeCell.id = 'unitAddBtn_' + u + '_' + c;
+					unitCommoditiesTradeCell.innerHTML = '<span class="fa fa-cart-arrow-down"></span>';
+					if (unit.currentTrade.unitStuff.indexOf(unit.commodities[c]) == -1) {
+						unitCommoditiesTradeCell.setAttribute('onclick','handlers.addFromUnit('+u+',"'+c+'")');
+					} else {
+						unitCommoditiesTradeCell.style.color = 'lightgrey';
+					}
 					unitCommoditiesItem.appendChild(unitCommoditiesTradeCell);
+					
+					var resupplyCell = document.createElement('td');
+					if (unit.commodities[c].qty < 100 && unit.commodities[c].qty * unit.location.commodities[c] < unit.location.reputation.p1) {
+						resupplyCell.innerHTML = '<span class="fa fa-refresh"></span>';
+						resupplyCell.setAttribute('onclick','handlers.resupply('+c+')');
+					} else if (unit.commodities[c].qty < 100) {
+						resupplyCell.innerHTML = '<span class="fa fa-refresh"></span>';
+						resupplyCell.style.color = 'lightgrey';
+					};
+					unitCommoditiesItem.appendChild(resupplyCell);
+					
+				} else {
+					var cell = document.createElement('td');
+					unitCommoditiesItem.appendChild(cell);
+					var cell = document.createElement('td');
+					unitCommoditiesItem.appendChild(cell);
+					var cell = document.createElement('td');
+					unitCommoditiesItem.appendChild(cell);
 				};
+				var unitCommoditiesTrashCell = document.createElement('td');
+				unitCommoditiesTrashCell.innerHTML = '<span class="fa fa-trash"></span>';
+				unitCommoditiesTrashCell.setAttribute('onclick','handlers.trashFromUnit('+u+',"'+c+'")');
+				unitCommoditiesItem.appendChild(unitCommoditiesTrashCell);
+					
 				if (data.commodities[unit.commodities[c].commodity].cargo) {
 					cargo++;
 				};
@@ -1045,27 +1054,6 @@ var view = {
 	
 	hideTradeDiv: function() {
 		document.getElementById('tradeDiv').style.display = 'hidden';
-	},
-	
-	disableUnitAddBtn: function(paneIndex,commodityIndex) {
-		document.getElementById('unitAddBtn_' + paneIndex + '_' + commodityIndex).disabled = true;
-	},
-	
-	enableUnitAddBtn: function(commodityIndex) {
-// 		console.log('unitAddBtn_' + view.focus.unitPane + '_' + commodityIndex);
-		document.getElementById('unitAddBtn_' + view.focus.unitPane + '_' + commodityIndex).disabled = false;
-	},
-	
-	enableUnitAddBtns: function() {
-		var trading = undefined;
-		if (view.focus.unit.location !== undefined) {
-			trading = view.focus.unit.location.trading();
-		};
-		for (var i in view.focus.unit.commodities) {
-			if (trading[view.focus.unit.commodities[i].commodity] !== undefined) {
-				document.getElementById('unitAddBtn_' + view.focus.unitPane + '_' + i).disabled = false;
-			};
-		};
 	},
 	
 	displayError: function(message) {

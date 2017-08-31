@@ -877,7 +877,6 @@ function Unit(owner,startLoc,type) {
 	
 	this.removeUnitStuff = function(tradeIndex) {
 		var commodityIndex = this.commodities.indexOf(this.currentTrade.unitStuff[tradeIndex]);
-		view.enableUnitAddBtn(commodityIndex);
 		this.currentTrade.unitStuff.splice(tradeIndex,1);
 	};
 	

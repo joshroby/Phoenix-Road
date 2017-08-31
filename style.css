@@ -230,27 +230,24 @@ a.tipAnchor:hover span.tooltip {
 	}
 
 .commoditiesTable tr {
-	height: 1.9vh;
 	}
 
 .commoditiesTable td {
-	font-size: 1.3vh;
 	white-space: nowrap;
 	}
 	
-.commoditiesTable button {
-/* 	font-size: 0.4em; */
-	height: 1.4vh;
-	}
-	
 .commoditiesTable caption {
-	font-size: 0.9em;
+	font-size: 1.2em;
 	font-weight: bold;
 	text-align: left;
 	}
 
 .commoditiesTable td {
-	width: 30%;
+	width: 15%;
+	}
+
+.unitCommoditiesNameCell {
+	width: 40%;
 	}
 
 .addBtn {
