@@ -96,6 +96,16 @@ var handlers = {
 		view.updateTradeDiv();
 	},
 	
+	trashFromUnit: function(paneIndex,commodityIndex) {
+		view.focus.unit.trashFromUnit(commodityIndex);
+		view.displayUnit(view.focus.unit);
+	},
+	
+	pickupTrash: function(trashIndex) {
+		view.focus.unit.pickup(trashIndex);
+		view.displayUnit(view.focus.unit);
+	},
+	
 	removeUnitStuff: function(tradeIndex) {
 		view.focus.unit.removeUnitStuff(tradeIndex);
 		view.updateTradeDiv();

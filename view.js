@@ -351,32 +351,34 @@ var view = {
 		sitePopulationP.innerHTML = site.population + " souls";
 		sitePopulationP.className = 'narrowMargin';
 		siteCharacterDiv.appendChild(sitePopulationP);
-		var siteNeedsDiv = document.createElement('div');
-		siteNeedsDiv.id = 'siteNeedsDiv';
-		siteCharacterDiv.appendChild(siteNeedsDiv);
-		var siteNeeds = site.needs();
-		for (var i in siteNeeds) {
-			var siteNeedDiv = document.createElement('div');
-			siteNeedDiv.className = 'siteNeedDiv';
-			var siteNeedsBar = document.createElement('div');
-			siteNeedsBar.className = 'progressBar';
-			var siteNeedsBarDone = document.createElement('div');
-			siteNeedsBarDone.className = 'progressBarDone';
-			var width = siteNeeds[i].completion * 100;
-			siteNeedsBarDone.style.width = width + "%";
-			siteNeedsBarDone.style.backgroundColor = view.progressColor(width);
-// 			siteNeedsBarDone.innerHTML = siteNeeds[i].label;
-			var siteNeedsBarLabel = document.createElement('a');
-			siteNeedsBarLabel.className = 'tipAnchor';
-			siteNeedsBarLabel.innerHTML = siteNeeds[i].label;
-			siteNeedsBarDone.appendChild(siteNeedsBarLabel);
-			var tooltipSpan = document.createElement('span');
-			tooltipSpan.className = 'tooltip';
-			tooltipSpan.innerHTML = siteNeeds[i].desc;
-			siteNeedsBarLabel.prepend(tooltipSpan);
-			siteNeedsBar.appendChild(siteNeedsBarDone);
-			siteNeedDiv.appendChild(siteNeedsBar);
-			siteNeedsDiv.appendChild(siteNeedDiv);
+		if (site.hasVisited.p1) {
+			var siteNeedsDiv = document.createElement('div');
+			siteNeedsDiv.id = 'siteNeedsDiv';
+			siteCharacterDiv.appendChild(siteNeedsDiv);
+			var siteNeeds = site.needs();
+			for (var i in siteNeeds) {
+				var siteNeedDiv = document.createElement('div');
+				siteNeedDiv.className = 'siteNeedDiv';
+				var siteNeedsBar = document.createElement('div');
+				siteNeedsBar.className = 'progressBar';
+				var siteNeedsBarDone = document.createElement('div');
+				siteNeedsBarDone.className = 'progressBarDone';
+				var width = siteNeeds[i].completion * 100;
+				siteNeedsBarDone.style.width = width + "%";
+				siteNeedsBarDone.style.backgroundColor = view.progressColor(width);
+	// 			siteNeedsBarDone.innerHTML = siteNeeds[i].label;
+				var siteNeedsBarLabel = document.createElement('a');
+				siteNeedsBarLabel.className = 'tipAnchor';
+				siteNeedsBarLabel.innerHTML = siteNeeds[i].label;
+				siteNeedsBarDone.appendChild(siteNeedsBarLabel);
+				var tooltipSpan = document.createElement('span');
+				tooltipSpan.className = 'tooltip';
+				tooltipSpan.innerHTML = siteNeeds[i].desc;
+				siteNeedsBarLabel.prepend(tooltipSpan);
+				siteNeedsBar.appendChild(siteNeedsBarDone);
+				siteNeedDiv.appendChild(siteNeedsBar);
+				siteNeedsDiv.appendChild(siteNeedDiv);
+			};
 		};
 		var siteFeatureList = document.createElement('ul');
 		siteFeatureList.id = 'siteFeatureList';
@@ -545,6 +547,29 @@ var view = {
 				};
 			};
 		};
+		
+		// Trash Pile
+		var unitPresent = true;
+		if (site.trash.length > 0 && unitPresent) {
+			var trashHead = document.createElement('h3');
+			trashHead.innerHTML = "Trash Pile";
+			siteInfrastructureDiv.appendChild(trashHead);
+			var trashTable = document.createElement('table');
+			trashTable.className = 'commoditiesTable';
+			siteInfrastructureDiv.appendChild(trashTable);
+			for (var i in site.trash) {
+				var trashRow = document.createElement('tr');
+				trashTable.appendChild(trashRow);
+				var trashNameCell = document.createElement('td');
+				var icon = view.commodityIcon(site.trash[i].commodity);
+				trashNameCell.innerHTML = icon + ' ' + data.commodities[site.trash[i].commodity].name;
+				trashRow.appendChild(trashNameCell);
+				var trashPickupCell = document.createElement('td');
+				trashPickupCell.innerHTML = '<span class="fa fa-hand-paper-o fa-rotate-90"></span>';
+				trashPickupCell.setAttribute('onclick','handlers.pickupTrash('+i+')');
+				trashRow.appendChild(trashPickupCell);
+			};
+		};
 			
 		view.displayMap();
 	},
@@ -689,7 +714,7 @@ var view = {
 				var unitCommoditiesNameCell = document.createElement('td');
 				var icon = view.commodityIcon(unit.commodities[c].commodity);
 				unitCommoditiesNameCell.innerHTML = icon + ' ' + data.commodities[unit.commodities[c].commodity].name;
-				if (unit.commodities[c].commodity == 'food' || unit.commodities[c].commodity == 'water') {
+				if (unit.commodities[c].qty < 100) {
 					unitCommoditiesNameCell.innerHTML += ' (' + unit.commodities[c].qty + '%)';
 				};
 				unitCommoditiesItem.appendChild(unitCommoditiesNameCell);
@@ -699,10 +724,14 @@ var view = {
 					unitCommoditiesItem.appendChild(unitCommoditiesValueCell);
 					var unitCommoditiesTradeCell = document.createElement('td');
 					var unitCommoditiesTradeBtn = document.createElement('button');
+					unitCommoditiesTradeBtn.id = 'unitAddBtn_' + u + '_' + c;
 					unitCommoditiesTradeBtn.innerHTML = '<span class="fa fa-cart-arrow-down"></span>';
 					unitCommoditiesTradeBtn.setAttribute('onclick','handlers.addFromUnit('+u+',"'+c+'")');
-					unitCommoditiesTradeBtn.id = 'unitAddBtn_' + u + '_' + c;
 					unitCommoditiesTradeCell.appendChild(unitCommoditiesTradeBtn);
+					var unitCommoditiesTrashBtn = document.createElement('button');
+					unitCommoditiesTrashBtn.innerHTML = '<span class="fa fa-trash"></span>';
+					unitCommoditiesTrashBtn.setAttribute('onclick','handlers.trashFromUnit('+u+',"'+c+'")');
+					unitCommoditiesTradeCell.appendChild(unitCommoditiesTrashBtn);
 					if (unit.commodities[c].qty < 100) {
 						var resupplyBtn = document.createElement('button');
 						resupplyBtn.innerHTML = '<span class="fa fa-refresh"></span>';

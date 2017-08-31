@@ -336,6 +336,8 @@ function Site() {
 	this.reputation = {p1:0};
 	this.goodwill = {p1:0};
 	
+	this.trash = [];
+	
 	this.resources = [];
 	this.hasSurveyed = {};
 	this.hasSurveyed.p1 = [];
@@ -854,6 +856,18 @@ function Unit(owner,startLoc,type) {
 	
 	this.addFromUnit = function(commodityIndex) {
 		this.currentTrade.unitStuff.push(this.commodities[commodityIndex]);
+	};
+	
+	this.trashFromUnit = function(commodityIndex) {
+		if (this.location !== undefined) {
+			this.location.trash.push(this.commodities[commodityIndex]);
+		};
+		this.commodities.splice(commodityIndex,1);
+	};
+	
+	this.pickup = function(trashIndex) {
+		this.commodities.push(this.location.trash[trashIndex]);
+		this.location.trash.splice(trashIndex,1);
 	};
 	
 	this.clearTrade = function(commodity) {

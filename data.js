@@ -148,6 +148,15 @@ var data = {
 			cargo: false,
 		},
 		
+		passengers: {
+			name: 'Passengers',
+			common: false,
+			baseValue: 0,
+			stability: 0,
+			cargo: true,
+			icon: 'users'
+		},
+		
 	},
 	
 	infrastructure: {
@@ -395,6 +404,7 @@ var data = {
 			buildTime: 1,
 			goodwill: 1,
 			visible: false,
+			requiredResource: ['river'],
 			outputs: ['food'],
 			jobs: 4,
 		},
