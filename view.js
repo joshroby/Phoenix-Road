@@ -733,7 +733,7 @@ var view = {
 					unitCommoditiesItem.appendChild(unitCommoditiesTradeCell);
 					
 					var resupplyCell = document.createElement('td');
-					if (unit.commodities[c].qty < 100 && unit.commodities[c].qty * unit.location.commodities[c] < unit.location.reputation.p1) {
+					if (unit.commodities[c].qty < 100 && unit.commodities[c].qty * unit.location.commodities[unit.commodities[c].commodity] < unit.location.reputation.p1) {
 						resupplyCell.innerHTML = '<span class="fa fa-refresh"></span>';
 						resupplyCell.setAttribute('onclick','handlers.resupply('+c+')');
 					} else if (unit.commodities[c].qty < 100) {
