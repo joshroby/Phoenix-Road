@@ -332,20 +332,24 @@ var view = {
 	displaySiteDetails: function(site) {
 		var detailsSiteDiv = document.getElementById('detailsSiteDiv');
 		detailsSiteDiv.innerHTML = '';
-		var siteHead = document.createElement('h2');
-		siteHead.innerHTML = site.name;
-		siteHead.className = 'siteHead';
-		detailsSiteDiv.appendChild(siteHead);
 
 		var siteCharacterDiv = document.createElement('div');
 		siteCharacterDiv.id = 'siteCharacterDiv';
+		siteCharacterDiv.className = 'sidebarTop';
 		detailsSiteDiv.appendChild(siteCharacterDiv);
 		var siteCommoditiesDiv = document.createElement('div');
 		siteCommoditiesDiv.id = 'siteCommoditiesDiv';
+		siteCommoditiesDiv.className = 'sidebarMiddle';
 		detailsSiteDiv.appendChild(siteCommoditiesDiv);
 		var siteInfrastructureDiv = document.createElement('div');
 		siteInfrastructureDiv.id = 'siteInfrastructureDiv';
+		siteInfrastructureDiv.className = 'sidebarBottom';
 		detailsSiteDiv.appendChild(siteInfrastructureDiv);
+
+		var siteHead = document.createElement('h2');
+		siteHead.innerHTML = site.name;
+		siteHead.className = 'siteHead';
+		siteCharacterDiv.appendChild(siteHead);
 
 		var sitePopulationP = document.createElement('p');
 		sitePopulationP.innerHTML = site.population + " souls";
@@ -549,12 +553,12 @@ var view = {
 		// Trash Pile
 		var unitPresent = true;
 		if (site.trash.length > 0 && unitPresent) {
-			var trashHead = document.createElement('h3');
-			trashHead.innerHTML = "Trash Pile";
-			siteInfrastructureDiv.appendChild(trashHead);
 			var trashTable = document.createElement('table');
 			trashTable.className = 'commoditiesTable';
 			siteInfrastructureDiv.appendChild(trashTable);
+			var trashHead = document.createElement('caption');
+			trashHead.innerHTML = "Trash Pile";
+			trashTable.appendChild(trashHead);
 			for (var i in site.trash) {
 				var trashRow = document.createElement('tr');
 				trashTable.appendChild(trashRow);
@@ -654,16 +658,27 @@ var view = {
 			unitPane.style.display = 'none';
 			detailsUnitDiv.appendChild(unitPane);
 			
+			var unitHeaderDiv = document.createElement('div');
+			unitHeaderDiv.className = 'unitHeaderDiv sidebarTop';
+			unitPane.appendChild(unitHeaderDiv);
+			var unitCargoDiv = document.createElement('div');
+			unitCargoDiv.className = 'unitCargoDiv sidebarMiddle';
+			unitPane.appendChild(unitCargoDiv);
+			var unitActionsDiv = document.createElement('div');
+			unitActionsDiv.className = 'unitActionsDiv';
+			unitPane.appendChild(unitActionsDiv);
+			
 			var unitHead = document.createElement('h2');
 			unitHead.id = 'unitHead_'+u;
+			unitHead.className = 'unitHead';
 			unitHead.innerHTML = unit.name;
 			unitHead.setAttribute('onclick','handlers.revealRename()');
-			unitPane.appendChild(unitHead);
+			unitHeaderDiv.appendChild(unitHead);
 		
 			var unitRenameDiv = document.createElement('div');
 			unitRenameDiv.id = 'unitRenameDiv_'+u;
 			unitRenameDiv.style.display = 'none';
-			unitPane.appendChild(unitRenameDiv);
+			unitHeaderDiv.appendChild(unitRenameDiv);
 			var unitRenameInput = document.createElement('input');
 			unitRenameInput.setAttribute('type','text');
 			unitRenameInput.id = 'unitRenameInput_' + u;
@@ -679,10 +694,10 @@ var view = {
 			} else {
 				unitModelP.innerHTML = unit.type.crew + " Crew, Speed " + unit.type.speed;
 			};
-			unitPane.appendChild(unitModelP);
+			unitHeaderDiv.appendChild(unitModelP);
 		
 			var unitProvisionsP = document.createElement('p');
-			unitPane.appendChild(unitProvisionsP);
+			unitHeaderDiv.appendChild(unitProvisionsP);
 			var provisionsFood = 0;
 			var provisionsWater = 0;
 			for (var c in unit.commodities) {
@@ -697,7 +712,7 @@ var view = {
 		
 			var unitCommoditiesTable = document.createElement('table');
 			unitCommoditiesTable.className = 'commoditiesTable';
-			unitPane.appendChild(unitCommoditiesTable);
+			unitCargoDiv.appendChild(unitCommoditiesTable);
 			var unitCommoditiesTableTitle = document.createElement('caption');
 			unitCommoditiesTable.appendChild(unitCommoditiesTableTitle);
 			var cargo = 0;
@@ -783,9 +798,6 @@ var view = {
 			};
 		
 			// Action Buttons
-			var unitActionsDiv = document.createElement('div');
-			unitActionsDiv.className = 'unitActionsDiv';
-			unitPane.appendChild(unitActionsDiv);
 		
 			var unitOffroadButton = document.createElement('button');
 			if (unit.offroad == false) {

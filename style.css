@@ -53,6 +53,18 @@ a.tipAnchor:hover span.tooltip {
 	height: 75vw;
 	}
 
+.sidebarTop {
+	height: 14vw;
+	}
+
+.sidebarMiddle {
+	height: 22vw;
+	}
+	
+.sidebarBottom {
+	height: 18vw;
+	}
+
 #introDiv {
 	width:50vw;
 	margin-left: 25vw;
@@ -68,11 +80,27 @@ a.tipAnchor:hover span.tooltip {
 	}
 
 .unitPane {
-	height: 40vw;
-	min-height: 40vw;
+	height: 45vw;
+	min-height: 45vw;
 	overflow-y: auto;
 	}
 
+.unitHeadererDiv {
+	}
+
+.unitHeaderDiv p {
+	margin-left: 1vw;
+	}
+
+.unitHead {
+	margin-bottom: 0;
+	width: 100%;
+	border-bottom: 1px solid slategray;
+	}
+
+.unitCargoDiv {
+	}
+		
 .unitActionsDiv {
 	margin-top: 2vh;
 	text-align: center;
@@ -93,7 +121,7 @@ a.tipAnchor:hover span.tooltip {
 
 #unitTabsDiv {
 	margin-top: 5vh;
-	height: 10vh;
+	height: 9vh;
 	}
 
 .unitTab {
@@ -180,7 +208,6 @@ a.tipAnchor:hover span.tooltip {
 	}
 
 #siteCharacterDiv {
-	height: 25%;
 	overflow-y: auto;
 	}
 
@@ -191,12 +218,10 @@ a.tipAnchor:hover span.tooltip {
 	}
 
 #siteCommoditiesDiv {
-	height: 40%;
 	overflow-y: auto;
 	}
 
 #siteInfrastructureDiv {
-	height: 30%;
 	overflow-y: auto;
 	}
 
