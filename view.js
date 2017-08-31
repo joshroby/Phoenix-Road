@@ -662,7 +662,7 @@ var view = {
 			unitHeaderDiv.className = 'unitHeaderDiv sidebarTop';
 			unitPane.appendChild(unitHeaderDiv);
 			var unitCargoDiv = document.createElement('div');
-			unitCargoDiv.className = 'unitCargoDiv sidebarMiddle';
+			unitCargoDiv.className = 'unitCargoDiv';
 			unitPane.appendChild(unitCargoDiv);
 			var unitActionsDiv = document.createElement('div');
 			unitActionsDiv.className = 'unitActionsDiv';
@@ -918,7 +918,7 @@ var view = {
 		unitBuildPreviewDiv.innerHTML = '';
 		
 		var unitBuildPreviewDesc = document.createElement('p');
-		unitBuildPreviewDesc.innerHTML = view.infrastructureDescription(data.infrastructure(key));
+		unitBuildPreviewDesc.innerHTML = view.infrastructureDescription(data.infrastructure[key]);
 		unitBuildPreviewDiv.appendChild(unitBuildPreviewDesc);
 		
 		var unitBuildCostP = document.createElement('p');

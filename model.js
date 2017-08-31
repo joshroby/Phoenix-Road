@@ -15,6 +15,7 @@ var model = {
 
 	newGame: function() {
 		model.currentDay = 1;
+		model.options.paused = true;
 		model.newMap();
 		units = [];
 		p1 = {};
@@ -240,6 +241,9 @@ var model = {
 		for (var s in sites) {
 			for (var g in sites[s].goodwill) {
 				sites[s].reputation[g] += sites[s].goodwill[g]/20;
+			};
+			if (sites[s].trash.length > 0 && Math.random() < 0.05) {
+				sites[s].trash.splice(sites[s].trash.length * Math.random() >> 0,1);
 			};
 		};
 		
