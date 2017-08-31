@@ -1,3 +1,4 @@
+var map = {};
 var sites = [];
 var landmarks = [];
 var units = [];
@@ -64,11 +65,12 @@ var model = {
 		view.displayMap();
 	},
 
-	newMap: function(totalSites,minDist,maxDist,minAngle) {
+	newMap: function(totalSites,minDist,maxDist,minAngle,totalThreats) {
 		if (totalSites == undefined) { totalSites = 50 };
 		if (minDist == undefined) {  minDist = 30 };
 		if (maxDist == undefined) {  maxDist = 2.6 };
 		if (minAngle == undefined) {  minAngle = 30 };
+		if (totalThreats == undefined) {totalThreats = 5};
 	
 		sites = [];
 		for (var i=0;i<totalSites*3;i++) {
@@ -171,6 +173,28 @@ var model = {
 			};
 		};
 		
+		// Threats
+		var threats = [];
+		for (var i=0;i<totalThreats;i++) {
+			threats.push({x:-100 + Math.random() * 1200 >> 0,y:-100 + Math.random() * 1200 >> 0});
+		};
+		for (var s in sites) {
+			var nearestThreat = Infinity;
+			var distance;
+			for (var t in threats) {
+				distance = Math.pow(Math.pow(threats[t].x - sites[s].x,2) + Math.pow(threats[t].y - sites[s].y,2) ,0.5)
+				if (distance < nearestThreat) {
+					nearestThreat = distance;
+				};
+			};
+			sites[s].danger = Math.round(5000 / distance,0);
+		};
+		
+		// Pile into Map Object
+		map.sites = sites;
+		map.landmarks = landmarks;
+		map.threats = threats;
+		
 	},
 	
 	siteName: function() {
@@ -244,6 +268,25 @@ var model = {
 			};
 			if (sites[s].trash.length > 0 && Math.random() < 0.05) {
 				sites[s].trash.splice(sites[s].trash.length * Math.random() >> 0,1);
+			};
+			if (Object.keys(sites[s].adjustment).length > 0) {
+				for (var a in sites[s].adjustment) {
+					var magnitude = 0.99;
+					for (var i in sites[s].infrastructure) {
+						if (sites[s].infrastructure[i].outputs.indexOf(a) !== -1) {
+							magnitude = 0.995;
+						};
+					};
+					if (sites[s].adjustment[a] > 0.09) {
+						sites[s].adjustment[a] -= 0.1;
+						sites[s].commodities[a] /= magnitude;
+					} else if (sites[s].adjustment[a] < -0.09) {
+						sites[s].adjustment[a] += 0.1;
+						sites[s].commodities[a] *= magnitude;
+					} else {
+						delete sites[s].adjustment[a];
+					};
+				};
 			};
 		};
 		
@@ -336,6 +379,7 @@ function Site() {
 		randomFactor = 2 * randomFactor / data.commodities[c].stability;
 		this.commodities[c] *= randomFactor / 100;
 	};
+	this.adjustment = {};
 	
 	this.reputation = {p1:0};
 	this.goodwill = {p1:0};
@@ -376,7 +420,31 @@ function Site() {
 		this.infrastructure.push(data.infrastructure.fields);
 	};
 
-	
+	// Basic Industry
+	if (Math.random() < 0.9) {
+		var industry = undefined;
+		if (this.commodities.stone < 0.3 && this.resources.indexOf(data.resources.outcropping) == -1 && Math.random() < 0.1) {
+			industry = data.infrastructure.quarry;
+		};
+		if (this.commodities.ore < 0.3 && this.resources.indexOf(data.resources.mineralVein) == -1 && Math.random() < 0.1 && industry == undefined) {
+			industry = data.infrastructure.mine;
+		};
+		if (this.commodities.crudeOil < 0.6 && this.resources.indexOf(data.resources.oilReservoir) == -1 && Math.random() < 0.05 && industry == undefined) {
+			industry = data.infrastructure.oilWell;
+		};
+		if (industry == undefined) {
+			var buildings = ['cartwright','foundry','loom','refinery','saddler','seamstress','tannery'];
+			industry = data.infrastructure[buildings[Math.random() * buildings.length << 0]];
+			for (c in industry.inputs) {
+				this.commodities[industry.inputs[c]] /= 0.8;
+			};
+			for (c in industry.outputs) {
+				this.commodities[industry.outputs[c]] *= 0.8;
+			};
+		};
+		this.infrastructure.push(industry);
+	};
+
 	// Basic Housing and Defense
 	if (this.commodities.stone < 0.5) {
 		this.infrastructure.push(data.infrastructure.bunker);
@@ -400,34 +468,7 @@ function Site() {
 	if (this.commodities.stone >= 0.5 && this.commodities.lumber >= 0.1) {
 		this.infrastructure.push(data.infrastructure.hovels);
 	};
-	
-	// Basic Industry
-	if (Math.random() < 0.2) {
-		var industry = undefined;
-		if (this.commodities.stone < 0.3 && this.resources.indexOf(data.resources.outcropping) == -1 && Math.random() < 0.1) {
-			industry = data.infrastructure.mine;
-		};
-		if (this.commodities.ore < 0.3 && this.resources.indexOf(data.resources.mineralVein) == -1 && Math.random() < 0.1 && industry == undefined) {
-			industry = data.infrastructure.mine;
-		};
-		if (this.commodities.crudeOil < 0.6 && this.resources.indexOf(data.resources.oilReservoir) == -1 && Math.random() < 0.05 && industry == undefined) {
-			industry = data.infrastructure.oilWell;
-		};
-		if (industry == undefined) {
-			var buildings = ['cartwright','foundry','loom','refinery','saddler','seamstress','tannery'];
-			industry = data.infrastructure[buildings[Math.random() * buildings.length << 0]];
-			for (c in industry.inputs) {
-				this.commodities[industry.inputs[c]] /= 0.8;
-			};
-			for (c in industry.outputs) {
-				this.commodities[industry.outputs[c]] *= 0.8;
-			};
-		};
-		if (industry !== undefined) {
-			this.infrastructure.push(industry);
-		}
-	};
-	
+		
 	this.needs = function() {
 		var housing = 0;
 		var defense = 0;
@@ -585,6 +626,14 @@ function Site() {
 			if (outstanding) {
 				view.focus.unit.location.reputation.p1 -= view.focus.unit.location.commodities[flatList[c]] * 100 ;
 			};
+		};
+	};
+	
+	this.logTransaction = function(commodityKey,adjustment) {
+		if (this.adjustment[commodityKey] !== undefined) {
+			this.adjustment[commodityKey] += adjustment;
+		} else {
+			this.adjustment[commodityKey] = adjustment;
 		};
 	};
 	
@@ -890,14 +939,14 @@ function Unit(owner,startLoc,type) {
 	
 	this.makeTrade = function() {
 		
-		// Move Goods, Adjust Site Values
+		// Move Goods, Log Transactions
 		for (var i in this.currentTrade.unitStuff) {
 			this.commodities.splice(this.commodities.indexOf(this.currentTrade.unitStuff[i]),1);
-			this.location.commodities[this.currentTrade.unitStuff[i].commodity] *= 0.95;
+			this.location.logTransaction(this.currentTrade.unitStuff[i].commodity,-1);
 		};
 		for (var i in this.currentTrade.siteStuff) {
 			this.commodities.push(this.currentTrade.siteStuff[i]);
-			this.location.commodities[this.currentTrade.siteStuff[i].commodity] *= 1;
+			this.location.logTransaction(this.currentTrade.siteStuff[i].commodity,1);
 		};
 		
 		this.location.reputation.p1 += this.currentTrade.balance;
@@ -922,6 +971,7 @@ function Unit(owner,startLoc,type) {
 			};
 		};
 		units.splice(units.indexOf(this),1);
+		view.focus.unit = units[0];
 		view.displayUnit(units[0]);
 	};
 	

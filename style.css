@@ -48,22 +48,12 @@ a.tipAnchor:hover span.tooltip {
 	padding-right: 15vw;
 	}
 
+/* 
 #gameDiv {
 	width: 100vw;
 	height: 75vw;
 	}
-
-.sidebarTop {
-	height: 14vw;
-	}
-
-.sidebarMiddle {
-	height: 22vw;
-	}
-	
-.sidebarBottom {
-	height: 18vw;
-	}
+ */
 
 #introDiv {
 	width:50vw;
@@ -94,6 +84,7 @@ a.tipAnchor:hover span.tooltip {
 
 .unitHead {
 	margin-bottom: 0;
+	margin-top: 2.5vw;
 	width: 100%;
 	border-bottom: 1px solid slategray;
 	}
@@ -208,20 +199,24 @@ a.tipAnchor:hover span.tooltip {
 	}
 
 #siteCharacterDiv {
+	height: 18vw;
 	overflow-y: auto;
 	}
 
 .siteHead {
 	margin-bottom: 0;
+	margin-top: 2.5vw;
 	width: 100%;
 	border-bottom: 1px solid slategray;
 	}
 
 #siteCommoditiesDiv {
+	height: 22vw;
 	overflow-y: auto;
 	}
 
 #siteInfrastructureDiv {
+	height: 14vw;
 	overflow-y: auto;
 	}
 

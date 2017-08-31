@@ -315,7 +315,7 @@ var data = {
 		mechanic: {
 			name:'Mechanic',
 			visible: false,
-			buildUnits: ['bicycle','constructionCrew'],
+			buildUnits: ['bicycle','bus','constructionCrew'],
 			inputs: ['metals','fuel'],
 			jobs: 4,
 		},
@@ -627,6 +627,16 @@ var data = {
 			speed: 15,
 			offroadSpeed: 5,
 			buildCost: {metals:1,food:1,water:1},
+		},
+		
+		bus: {
+			name: 'Bus',
+			cargo: 6,
+			crew: 2,
+			speed: 25,
+			offroadSpeed: 5,
+			buildCost: {metals:4,fuel:2,food:1,water:1},
+			canPassenger: true,
 		},
 		
 		zeppelin: {
