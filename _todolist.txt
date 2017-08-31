@@ -2,46 +2,48 @@ Down the Phoenix Road To Do List
 
 
 
+- display travel time to mouseover'd site for focus unit
 
 IMMEDIATE
 
 
 NEAR FUTURE
-- Put everything into a 1200 x 900 ratio flexbox
-- starter commodity should be common
-- upgrades instead of standalone builds
-	- stone wall replaces pallisade & other such issues
-- mouseover on site infrastructure tells you what it does
-- prettify preview of units
-- fix infrastructure description
-- dump cargo when you can't sell it
-- build times
+
 - make Unit.eat() consume food/water/fuel differently for different units
 	- and fuel only when in transit
-- when you select a route, if all units have routes, then start clock
-- odd jobs button for units where in ten days you get half-loads of food and water and your rep there dips down the price of a full load of food and water.
-	- appears only when you have less than a week's provisions and no local rep
 
 IMMEDIATE FUTURE
 - zoom function's impression of where cursor is on map is always derived as if map is zoomed out
-- transfer cargo (besides selling and buying)
+- stacking notifications
 - pathfinding for multi-step trips
 - draw functions for units
 - movement animation/transition
 - rejigger site labels for legibility… somehow
 - a site with Pens and a Saddler but no Tannery should get a big upgrade if you build a tannery, completing the production pipeline.
+- Options
+	- turn off model.checkClock()
+	- new game sliders (in Options or outside?)
+- shading on landmarks
 
 FAR FUTURE
 - fucking events
+- ghost towns (0 pop, no trading)
 - boats? terrain?
 - trailblazing
 - building outposts / new sites
 - hardholder territory
-- moving people
+- moving people (commodity 'Passengers')
 - warehousing
 - caravan
 - other only-findable infrastructures
 	- some kind of cult?
+- responsive design in the CSS
+- what do you do that starts passively spreading civilization / greening needs?
+
+MOTHBALLS
+- odd jobs button for units where in ten days you get half-loads of food and water and your rep there dips down the price of a full load of food and water.
+	- appears only when you have less than a week's provisions and no local rep
+
 
 
 EVENTS

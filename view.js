@@ -479,6 +479,30 @@ var view = {
 				};
 			};
 		};
+		
+		if (view.focus.unit.location !== undefined && view.focus.unit.location.neighbors.indexOf(site) !== -1 && view.focus.unit.type.speed > 0) {
+			var travelMeansString = ' days by road';
+			var speed = view.focus.unit.type.speed;
+			var unitX = view.focus.unit.location.x;
+			var unitY = view.focus.unit.location.y;
+		} else {
+			var travelMeansString = ' days offroad';
+			var speed = view.focus.unit.type.offroadSpeed;
+			if (view.focus.unit.location !== undefined) {
+				var unitX = view.focus.unit.location.x;
+				var unitY = view.focus.unit.location.y;
+			} else {
+				var unitX = view.focus.unit.route[0].x;
+				var unitY = view.focus.unit.route[0].y;
+			};
+		};
+		var travelTime = Math.round(Math.pow(Math.pow(unitX - site.x,2) + Math.pow(unitY - site.y,2),0.5) / speed,0);
+		if (view.focus.unit.location !== site) {
+			var travelTimeP = document.createElement('p');
+			travelTimeP.innerHTML = '<strong>Travel Time:</strong> ' + travelTime + travelMeansString;
+			siteInfrastructureDiv.appendChild(travelTimeP);
+		};
+		
 			
 		if (site.hasVisited.p1) {
 			for (var i in site.infrastructure) {
