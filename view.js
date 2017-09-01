@@ -278,9 +278,11 @@ var view = {
 		var mapRect = mapSVG.getBoundingClientRect();
 		var viewbox = view.zoom.viewbox;
 		
+		// coordinates relative to map contents
 		var relX = (e.pageX - mapRect.left)/mapRect.width;
 		var relY = (e.pageY - mapRect.top)/mapRect.height;
 		
+		// coordinates relative to viewbox / map borders
 		var viewX = 1000*relX;
 		var viewY = 1000*relY;
 		
@@ -291,8 +293,8 @@ var view = {
 // 		console.log('map',mapX,mapY);
 // 		console.log('zoom',view.zoom.z);
 				
-		viewbox.minX = Math.min(1000-view.zoom.z,Math.max(0,viewX - view.zoom.z / 2));
-		viewbox.minY = Math.min(1000-view.zoom.z,Math.max(0,viewY - view.zoom.z / 2));
+		viewbox.minX = Math.min(1000-view.zoom.z,Math.max(0,mapX - view.zoom.z / 2));
+		viewbox.minY = Math.min(1000-view.zoom.z,Math.max(0,mapY - view.zoom.z / 2));
 		viewbox.width = view.zoom.z;
 		viewbox.height = view.zoom.z;
 
