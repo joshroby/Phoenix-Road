@@ -239,20 +239,24 @@ var model = {
 	
 	knownValues: function() {
 		var knownValues = {};
-		var totalSites = 0;
+		var totalSites = {};
 		for (var c in data.commodities) {
 			knownValues[c] = 0;
+			totalSites[c] = 0;
 		};
 		for (var s in p1.knownSites) {
 			if (p1.knownSites[s].hasVisited.p1) {
-				totalSites++;
 				for (var c in knownValues) {
-					knownValues[c] += p1.knownSites[s].commodities[c];
+					var traded = p1.knownSites[s].trading();
+					if (traded[c] !== undefined) {
+						totalSites[c]++;
+						knownValues[c] += p1.knownSites[s].commodities[c];
+					};
 				};
 			};
 		};
 		for (var c in knownValues) {
-			knownValues[c] /= totalSites;
+			knownValues[c] /= totalSites[c];
 		};
 		return knownValues;
 	},

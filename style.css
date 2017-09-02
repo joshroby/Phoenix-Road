@@ -63,8 +63,9 @@ a.tipAnchor:hover span.tooltip {
 
 #detailsUnitDiv {
 	float: left;
-	width: 22vw;
+	width: 20vw;
 	padding-left: 2vw;
+	padding-right: 2vw;
 	height: 55vw;
 	overflow-y: auto;
 	}

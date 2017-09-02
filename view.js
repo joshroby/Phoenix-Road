@@ -350,6 +350,8 @@ var view = {
 			};
 			sitePopulationP.className = 'narrowMargin';
 			siteCharacterDiv.appendChild(sitePopulationP);
+		};
+		if (site.hasVisited.p1 && site.population > 0) {
 			var siteNeedsDiv = document.createElement('div');
 			siteNeedsDiv.id = 'siteNeedsDiv';
 			siteCharacterDiv.appendChild(siteNeedsDiv);
@@ -377,7 +379,7 @@ var view = {
 				siteNeedDiv.appendChild(siteNeedsBar);
 				siteNeedsDiv.appendChild(siteNeedDiv);
 			};
-		} else {
+		} else if (!site.hasVisited.p1) {
 			var sitePopulationP = document.createElement('p');
 			sitePopulationP.innerHTML = 'From a distance, you can see:';
 			siteCharacterDiv.appendChild(sitePopulationP);
