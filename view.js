@@ -525,7 +525,7 @@ var view = {
 					};
 					infrastructureDiv.appendChild(buildSelect);
 					var buildBtn = document.createElement('button');
-					buildBtn.id = 'siteBuildBtn';
+					buildBtn.id = 'siteBuildBtn_'+i;
 					buildBtn.className = 'buildBtn';
 					buildBtn.setAttribute('onclick','handlers.buildUnit('+i+')');
 					buildBtn.innerHTML = 'Build';
@@ -599,9 +599,9 @@ var view = {
 		view.displayMap();
 	},
 	
-	displayBuildUnit: function(i,unitName) {
+	displayBuildUnit: function(infrastructureIndex,unitName) {
 		var unitType = data.units[unitName];
-		var buildInfoDiv = document.getElementById('buildInfoDiv_' + i);
+		var buildInfoDiv = document.getElementById('buildInfoDiv_' + infrastructureIndex);
 		buildInfoDiv.innerHTML = '';
 		
 		var buildItem = document.createElement('li');
@@ -655,10 +655,11 @@ var view = {
 		
 		
 		// Enable/disable the Build button
+		console.log(infrastructureIndex);
 		if (view.focus.unit.canAfford(unitType.buildCost)) {
-			document.getElementById('siteBuildBtn').disabled = false;
+			document.getElementById('siteBuildBtn_'+infrastructureIndex).disabled = false;
 		} else {
-			document.getElementById('siteBuildBtn').disabled = true;
+			document.getElementById('siteBuildBtn_'+infrastructureIndex).disabled = true;
 		};
 	},
 	
@@ -727,14 +728,28 @@ var view = {
 			unitHeaderDiv.appendChild(unitProvisionsP);
 			var provisionsFood = 0;
 			var provisionsWater = 0;
+			var provisionsFuel = 0;
 			for (var c in unit.commodities) {
 				if (unit.commodities[c].commodity == 'food') {
 					provisionsFood += unit.commodities[c].qty;
 				} else if (unit.commodities[c].commodity == 'water') {
 					provisionsWater += unit.commodities[c].qty;
+				} else if (unit.commodities[c].commodity == 'fuel') {
+					provisionsFuel += unit.commodities[c].qty;
 				};
 			};
-			var provisions = Math.floor(Math.min(provisionsFood/unit.type.crew,provisionsWater/unit.type.crew));
+			provisionsWater /= unit.type.crew;
+			if (unit.type.fuel.water == undefined) {
+				provisionsWater = Infinity
+			} else {
+				provisionsWater /= unit.type.fuel.water;
+			};
+			if (unit.type.fuel.fuel == undefined) {
+				provisionsFuel = Infinity
+			} else {
+				provisionsFuel /= unit.type.fuel.fuel;
+			};
+			var provisions = Math.floor(Math.min(provisionsFood,provisionsWater,provisionsFuel));
 			unitProvisionsP.innerHTML = provisions + " days provisions";
 		
 			var unitCommoditiesTable = document.createElement('table');

@@ -737,8 +737,8 @@ function Unit(owner,startLoc,type) {
 		var foodEaten = distance / speed * this.type.crew;
 		var waterDrank = 0;
 		var fuelBurned = 0;
-		if (this.type.fuel.water !== undefined) {waterDrank += this.type.fuel.water};
-		if (this.type.fuel.fuel !== undefined) {waterDrank += this.type.fuel.fuel};
+		if (this.type.fuel.water !== undefined) {waterDrank = distance / speed * this.type.fuel.water};
+		if (this.type.fuel.fuel !== undefined) {fuelBurned = distance / speed * this.type.fuel.fuel};
 		var foodStore = 0;
 		var waterStore = 0;
 		var fuelStore = 0;
@@ -771,10 +771,10 @@ function Unit(owner,startLoc,type) {
 			model.checkClock();
 		} else if (this.location.neighbors.indexOf(site) == -1 && this.offroad == false) {
 			gamen.displayPassage(new Passage('No path from ' + this.name + ' to ' + site.name + ". You'll have to go offroad."));
-		} else if (waterStore < waterDrank) {
-			gamen.displayPassage(new Passage(this.name + " needs "+Math.ceil(waterDrank)+"% load of water for the " + Math.round(steps,0) + "-day trip to " + site.name + "!"));
 		} else if (foodStore < foodEaten) {
 			gamen.displayPassage(new Passage(this.name + " needs "+Math.ceil(foodEaten)+"% load of food for the " + Math.round(steps,0) + "-day trip to " + site.name + "!"));
+		} else if (waterStore < waterDrank) {
+			gamen.displayPassage(new Passage(this.name + " needs "+Math.ceil(waterDrank)+"% load of water for the " + Math.round(steps,0) + "-day trip to " + site.name + "!"));
 		} else if (fuelStore < fuelBurned) {
 			gamen.displayPassage(new Passage(this.name + " needs "+Math.ceil(fuelBurned)+"% load of fuel for the " + Math.round(steps,0) + "-day trip to " + site.name + "!"));
 		} else if (cargo > this.type.cargo) {
