@@ -341,11 +341,15 @@ var view = {
 		siteHead.className = 'siteHead';
 		siteCharacterDiv.appendChild(siteHead);
 
-		var sitePopulationP = document.createElement('p');
-		sitePopulationP.innerHTML = site.population + " souls";
-		sitePopulationP.className = 'narrowMargin';
-		siteCharacterDiv.appendChild(sitePopulationP);
-		if (site.hasVisited.p1) {
+		if (site.hasVisited.p1 && site.population > 0) {
+			var sitePopulationP = document.createElement('p');
+			if (site.population > 0) {
+				sitePopulationP.innerHTML = site.population + " souls";
+			} else {
+				sitePopulationP.innerHTML = "Ghost Town";
+			};
+			sitePopulationP.className = 'narrowMargin';
+			siteCharacterDiv.appendChild(sitePopulationP);
 			var siteNeedsDiv = document.createElement('div');
 			siteNeedsDiv.id = 'siteNeedsDiv';
 			siteCharacterDiv.appendChild(siteNeedsDiv);
@@ -565,7 +569,12 @@ var view = {
 		};
 		
 		// Trash Pile
-		var unitPresent = true;
+		var unitPresent = false;
+		for (var u in units) {
+			if (units[u].location == site && units[u].owner == p1) {
+				unitPresent = true;
+			};
+		};
 		if (site.trash.length > 0 && unitPresent) {
 			var trashTable = document.createElement('table');
 			trashTable.className = 'commoditiesTable';

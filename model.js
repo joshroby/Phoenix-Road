@@ -69,12 +69,13 @@ var model = {
 		
 	},
 
-	newMap: function(totalSites,minDist,maxDist,minAngle,totalThreats) {
+	newMap: function(totalSites,minDist,maxDist,minAngle,totalThreats,ghostTowns) {
 		if (totalSites == undefined) { totalSites = 50 };
 		if (minDist == undefined) {  minDist = 30 };
 		if (maxDist == undefined) {  maxDist = 2.6 };
 		if (minAngle == undefined) {  minAngle = 30 };
 		if (totalThreats == undefined) {totalThreats = 5};
+		if (ghostTowns == undefined) {ghostTowns = 2};
 	
 		sites = [];
 		for (var i=0;i<totalSites*3;i++) {
@@ -192,6 +193,23 @@ var model = {
 				};
 			};
 			sites[s].danger = Math.round(5000 / distance,0);
+		};
+		
+		// Ghost Towns
+		for (var i=0;i<ghostTowns;i++) {
+			var ghostTown = sites[Math.random() * sites.length << 0];
+			ghostTown.population = 0;
+			var production = ['water'];
+			for (var i in ghostTown.infrastructure) {
+				if (ghostTown.infrastructure[i].outputs !== undefined) {
+					production = production.concat(ghostTown.infrastructure[i].outputs);
+				};
+			};
+			var abandoned = Math.random() * 5 << 0;
+			for (var a=0;a<abandoned;a++) {
+				ghostTown.trash.push({commodity:production[Math.random() * production.length << 0],qty:100});
+			};
+			console.log(ghostTown);
 		};
 		
 		// Pile into Map Object
@@ -529,20 +547,22 @@ function Site() {
 	
 	this.trading = function() {
 		var commodities = {};
-		var industrial = [];
-		for (var b in this.infrastructure) {
-			industrial = industrial.concat(this.infrastructure[b].inputs);
-			industrial = industrial.concat(this.infrastructure[b].outputs);
-		};
-		for (var d in this.commodities) {
-			errors.v426 = d;
-			if (data.commodities[d].common) {
-				commodities[d] = this.commodities[d];
+		if (this.population > 0) {
+			var industrial = [];
+			for (var b in this.infrastructure) {
+				industrial = industrial.concat(this.infrastructure[b].inputs);
+				industrial = industrial.concat(this.infrastructure[b].outputs);
 			};
-		};
-		for (var d in this.commodities) {
-			if (industrial.indexOf(d) !== -1) {
-				commodities[d] = this.commodities[d];
+			for (var d in this.commodities) {
+				errors.v426 = d;
+				if (data.commodities[d].common) {
+					commodities[d] = this.commodities[d];
+				};
+			};
+			for (var d in this.commodities) {
+				if (industrial.indexOf(d) !== -1) {
+					commodities[d] = this.commodities[d];
+				};
 			};
 		};
 		return commodities;

@@ -137,7 +137,6 @@ function Clock(start) {
 	
 	this.go = function() {
 		if (this.running && !this.paused) {
-// 			console.log(this.time);
 			this.time = new Date(this.time.getTime() + this.timeStep);
 			var timedEvent = setTimeout(this.go.bind(this),this.tick);
 		
