@@ -46,7 +46,8 @@ var model = {
 		};
 		startUnit.commodities.push({commodity:startCargo,qty:100});
 		startUnit.location.reputation.p1 -= cheapestValue * 100;
-// 		startUnit.location.infrastructure.push(data.infrastructure.cartwright);
+		startUnit.location.infrastructure.push(data.infrastructure.cartwright);
+		startUnit.location.infrastructure.push(data.infrastructure.mechanic);
 		
 		var localArea = [startUnit.location];
 		for (var i=0;i<5;i++) {
@@ -209,7 +210,6 @@ var model = {
 			for (var a=0;a<abandoned;a++) {
 				ghostTown.trash.push({commodity:production[Math.random() * production.length << 0],qty:100});
 			};
-			console.log(ghostTown);
 		};
 		
 		// Pile into Map Object
@@ -703,8 +703,10 @@ function Unit(owner,startLoc,type) {
 	
 	this.commodities = [
 		{commodity:'food',qty:100},
-		{commodity:'water',qty:100}
 	];
+	for (var f in type.fuel) {
+		this.commodities.push({commodity:f,qty:100});
+	};
 	
 	this.currentTrade = {
 		unitStuff: [],
@@ -733,9 +735,13 @@ function Unit(owner,startLoc,type) {
 		};
 		var distance = Math.pow(Math.pow(this.location.x - site.x,2) + Math.pow(this.location.y - site.y,2),.5);
 		var foodEaten = distance / speed * this.type.crew;
-		var waterDrank = distance / speed * this.type.crew;
+		var waterDrank = 0;
+		var fuelBurned = 0;
+		if (this.type.fuel.water !== undefined) {waterDrank += this.type.fuel.water};
+		if (this.type.fuel.fuel !== undefined) {waterDrank += this.type.fuel.fuel};
 		var foodStore = 0;
 		var waterStore = 0;
+		var fuelStore = 0;
 		var cargo = 0;
 		var steps = distance / speed;
 		for (var i in this.commodities) {
@@ -743,13 +749,15 @@ function Unit(owner,startLoc,type) {
 				foodStore += this.commodities[i].qty;
 			} else if (this.commodities[i].commodity == 'water') {
 				waterStore += this.commodities[i].qty;
+			} else if (this.commodities[i].commodity == 'fuel') {
+				fuelStore += this.commodities[i].qty;
 			};
 			if (data.commodities[this.commodities[i].commodity].cargo) {
 				cargo++;
 			};
 		};
 				
-		if ((this.location.neighbors.indexOf(site) !== -1 || this.offroad == true) && waterStore >= waterDrank && foodStore >= foodEaten && cargo <= this.type.cargo && !this.isBuilding && !this.isSurveying) {
+		if ((this.location.neighbors.indexOf(site) !== -1 || this.offroad == true) && waterStore >= waterDrank && foodStore >= foodEaten && fuelStore >= fuelBurned && cargo <= this.type.cargo && !this.isBuilding && !this.isSurveying) {
 			var diffX = site.x - this.location.x;
 			var diffY = site.y - this.location.y;
 			this.route = [];
@@ -764,9 +772,11 @@ function Unit(owner,startLoc,type) {
 		} else if (this.location.neighbors.indexOf(site) == -1 && this.offroad == false) {
 			gamen.displayPassage(new Passage('No path from ' + this.name + ' to ' + site.name + ". You'll have to go offroad."));
 		} else if (waterStore < waterDrank) {
-			gamen.displayPassage(new Passage(this.name + " doesn't have enough water for the " + Math.round(steps,0) + "-day trip to " + site.name + "!"));
+			gamen.displayPassage(new Passage(this.name + " needs "+Math.ceil(waterDrank)+"% load of water for the " + Math.round(steps,0) + "-day trip to " + site.name + "!"));
 		} else if (foodStore < foodEaten) {
-			gamen.displayPassage(new Passage(this.name + " doesn't have enough food for the " + Math.round(steps,0) + "-day trip to " + site.name + "!"));
+			gamen.displayPassage(new Passage(this.name + " needs "+Math.ceil(foodEaten)+"% load of food for the " + Math.round(steps,0) + "-day trip to " + site.name + "!"));
+		} else if (fuelStore < fuelBurned) {
+			gamen.displayPassage(new Passage(this.name + " needs "+Math.ceil(fuelBurned)+"% load of fuel for the " + Math.round(steps,0) + "-day trip to " + site.name + "!"));
 		} else if (cargo > this.type.cargo) {
 			gamen.displayPassage(new Passage(this.name + ' is overburdened and cannot travel.'));
 		} else if (this.isBuilding) {
@@ -815,7 +825,10 @@ function Unit(owner,startLoc,type) {
 	
 	this.eat = function() {
 		var foodEaten = this.type.crew;
-		var waterDrank = this.type.crew;
+		var waterDrank = 0;
+		if (this.type.fuel.water !== undefined && this.inTransit) {waterDrank += this.type.fuel.water};
+		var fuelBurned = 0;
+		if (this.type.fuel.fuel !== undefined && this.inTransit) {fuelBurned += this.type.fuel.fuel};
 		for (var i in this.commodities) {
 			if (this.commodities[i].commodity == 'food') {
 				var temp = this.commodities[i].qty;
@@ -828,6 +841,13 @@ function Unit(owner,startLoc,type) {
 				var temp = this.commodities[i].qty;
 				this.commodities[i].qty = Math.round(Math.max(this.commodities[i].qty - waterDrank,0),0);
 				waterDrank = Math.max(waterDrank - temp,0);
+				if (this.commodities[i].qty == 0) {
+					this.commodities.splice(i,1);
+				};
+			} else if (this.commodities[i].commodity == 'fuel') {
+				var temp = this.commodities[i].qty;
+				this.commodities[i].qty = Math.round(Math.max(this.commodities[i].qty - fuelBurned,0),0);
+				waterDrank = Math.max(fuelBurned - temp,0);
 				if (this.commodities[i].qty == 0) {
 					this.commodities.splice(i,1);
 				};

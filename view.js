@@ -610,7 +610,7 @@ var view = {
 		buildInfoDiv.appendChild(buildItem);
 		var buildItem = document.createElement('li');
 		buildItem.className = 'narrowBuildInfoItem';
-		buildItem.innerHTML += "<strong>Cargo:</strong> " + unitType.cargo + " <span class='fa fa-cubes'></span> ";
+		buildItem.innerHTML = "<strong>Uses:</strong> " + view.displayCommodityList(unitType.fuel);
 		buildInfoDiv.appendChild(buildItem);
 		var buildItem = document.createElement('li');
 		buildItem.className = 'narrowBuildInfoItem';
@@ -619,6 +619,10 @@ var view = {
 		var buildItem = document.createElement('li');
 		buildItem.className = 'narrowBuildInfoItem';
 		buildItem.innerHTML += "<strong>Offroad:</strong> " + unitType.offroadSpeed + " <span class='fa fa-tachometer'></span> ";
+		buildInfoDiv.appendChild(buildItem);
+		var buildItem = document.createElement('li');
+		buildItem.className = 'narrowBuildInfoItem';
+		buildItem.innerHTML += "<strong>Cargo:</strong> " + unitType.cargo + " <span class='fa fa-cubes'></span> ";
 		buildInfoDiv.appendChild(buildItem);
 		
 		if (unitType.canBuild) {
@@ -643,7 +647,7 @@ var view = {
 		
 		var materialsList = [];
 		for (var i in unitType.buildCost) {
-			materialsList.push(unitType.buildCost[i] + " " + i);
+			materialsList.push(unitType.buildCost[i] + " " + data.commodities[i].name);
 		};
 		var buildItem = document.createElement('li');
 		buildItem.innerHTML += "<strong>Materials:</strong> " + gamen.prettyList(materialsList);
@@ -1104,7 +1108,7 @@ var view = {
 	},
 	
 	commodityIcon: function(commodityKey) {
-		string = '<span ';
+		var string = '<span ';
 		if (data.commodities[commodityKey].iconColor !== undefined) {
 			string += 'style="color:' + data.commodities[commodityKey].iconColor + '" ';
 		};
@@ -1116,6 +1120,16 @@ var view = {
 		};
 		string += '"></span>';
 		return string;
+	},
+	
+	displayCommodityList: function(list) {
+		var iconList = '';
+		for (var c in list) {
+			for (var i=0;i<list[c];i++) {
+				iconList += view.commodityIcon(c);
+			};
+		};
+		return iconList;
 	},
 
 };
