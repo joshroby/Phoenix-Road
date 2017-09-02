@@ -660,6 +660,12 @@ var view = {
 		};
 		var buildItem = document.createElement('li');
 		buildItem.innerHTML += "<strong>Materials:</strong> " + gamen.prettyList(materialsList);
+		var repCost = view.focus.unit.canAfford(unitType.buildCost,'rep');
+		if (repCost == Infinity) {
+			buildItem.innerHTML += "<br />(requires exotic materials you do not have)";
+		} else {
+			buildItem.innerHTML += "<br />(" + repCost + " reputation beyond your materials)";
+		};
 		buildInfoDiv.appendChild(buildItem);		
 		
 		
@@ -997,11 +1003,16 @@ var view = {
 		var unitBuildCostP = document.createElement('p');
 		var buildCost = [];
 		for (var b in infrastructure.buildCost) {
-			buildCost.push(infrastructure.buildCost[b] + " " + b);
+			buildCost.push(infrastructure.buildCost[b] + " " + data.commodities[b].name);
 		};
 		unitBuildCostP.innerHTML = '<strong>Materials:</strong> ' + gamen.prettyList(buildCost);
 		if (view.focus.unit.location !== undefined) {
-			unitBuildCostP.innerHTML += " (~" + Math.round(view.focus.unit.location.costInRep(infrastructure.buildCost),0) + " reputation)";
+			var repCost = view.focus.unit.canAfford(infrastructure.buildCost,'rep')
+			if (repCost == Infinity) {
+				unitBuildCostP.innerHTML += "<br />(requires exotic materials you do not have)";
+			} else {
+				unitBuildCostP.innerHTML += "<br />(" + repCost + " reputation beyond your materials)";
+			};
 		};
 		unitBuildPreviewDiv.appendChild(unitBuildCostP);
 		

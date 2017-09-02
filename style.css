@@ -66,12 +66,12 @@ a.tipAnchor:hover span.tooltip {
 	width: 20vw;
 	padding-left: 2vw;
 	padding-right: 2vw;
-	height: 55vw;
+	height: 65vw;
 	overflow-y: auto;
 	}
 
 .unitPane {
-	height: 45vw;
+	height: 54vw;
 	min-height: 45vw;
 	overflow-y: auto;
 	}
@@ -110,7 +110,7 @@ a.tipAnchor:hover span.tooltip {
 	}
 	
 .unitActionsDiv button {
-	margin: 1vh;
+	margin: 0.5vh;
 	}
 
 .buildBtn {
@@ -119,11 +119,11 @@ a.tipAnchor:hover span.tooltip {
 
 .unitBuildPreviewDiv {
 	margin-left: 1vh;
-	font-size: 0.6em;
+	font-size: 1.4vh;
 	}
 
 #unitTabsDiv {
-	margin-top: 5vh;
+	margin-top: 1vh;
 	height: 9vh;
 	}
 
@@ -132,13 +132,17 @@ a.tipAnchor:hover span.tooltip {
 	font-size: 0.5em;
 	background-color: lightgrey;
 	padding: 0.5vw;
-	margin: 0.5vw;
+	margin: 0.25vw;
 	border: 0.5px solid darkgrey;
+	}
+	
+#centerColumn {
+	width: 50vw;
+	float: left;
 	}
 	
 #mapDiv {
 	width: 50vw;
-	float: left;
 	}
 
 #clockDiv {
@@ -185,7 +189,7 @@ a.tipAnchor:hover span.tooltip {
 	width: 20vw;
 	float: left;
 	padding-left: 2vw;
-	height: 55vw;
+	height: 65vw;
 	}
 
 #siteCharacterDiv {
@@ -276,7 +280,7 @@ a.tipAnchor:hover span.tooltip {
 	}
 
 .buildSelect {
-	width: 15vw;
+	width: 12vw;
 	}
 
 .buildInfoDiv li {
@@ -291,10 +295,8 @@ a.tipAnchor:hover span.tooltip {
 	}
 
 #tradeDiv {
-	clear:both;
-	margin-top: 5vh;
+	margin-top: 2vh;
 	display: none;
-	margin-left: 24vw;
 	width: 50vw;
 	}
 

@@ -1,49 +1,49 @@
 Down the Phoenix Road To Do List
 
-
-
-- display travel time to mouseover'd site for focus unit
+- knownValues() (++) and (--) checks trading()
 
 IMMEDIATE
 
 
 NEAR FUTURE
+- smarter canAfford() that can optionally return how much reputation is required
 
-- make Unit.eat() consume food/water/fuel differently for different units
-	- and fuel only when in transit
+
+
 
 IMMEDIATE FUTURE
-- zoom function's impression of where cursor is on map is always derived as if map is zoomed out
-- stacking notifications
 - pathfinding for multi-step trips
-- draw functions for units
-- movement animation/transition
-- rejigger site labels for legibility… somehow
-- a site with Pens and a Saddler but no Tannery should get a big upgrade if you build a tannery, completing the production pipeline.
+- caravan
+	- link units together so that changing one's destination changes them all
+- completing a production pipeline
+	- when you decrease the price of a commodity, check for infr that take it as inputs
+	- decrease the price of that infr's outputs as well
+- SVG tinkering
+	- draw functions for units
+	- movement animation/transition
+	- shading on landmarks
 - Options
 	- turn off model.checkClock()
 	- new game sliders (in Options or outside?)
-- shading on landmarks
+- Zoom is still wonky
+
+GAMEN
+	index.html content setup/injection
+	color palette
 
 FAR FUTURE
+- moving people (commodity 'Passengers')
+- rejigger site labels for legibility… somehow
 - fucking events
-- ghost towns (0 pop, no trading)
 - boats? terrain?
 - trailblazing
 - building outposts / new sites
 - hardholder territory
-- moving people (commodity 'Passengers')
-- warehousing
-- caravan
+- warehousing?
 - other only-findable infrastructures
 	- some kind of cult?
 - responsive design in the CSS
 - what do you do that starts passively spreading civilization / greening needs?
-
-MOTHBALLS
-- odd jobs button for units where in ten days you get half-loads of food and water and your rep there dips down the price of a full load of food and water.
-	- appears only when you have less than a week's provisions and no local rep
-
 
 
 EVENTS
@@ -51,3 +51,15 @@ EVENTS
 - your basic 'something happened to affect commodity prices' event
 - find a bike (replaces Kid with a Bike)
 - consequences for suboptimal needs?
+
+
+
+
+
+MOTHBALLS
+- odd jobs button
+	- in ten days you get half-loads of food and water
+	- your rep there dips down the price of a full load of food and water.
+	- appears only when you have less than a week's provisions and no local rep
+- make Unit.eat() consume food/water/fuel differently for different units
+	- and fuel only when in transit

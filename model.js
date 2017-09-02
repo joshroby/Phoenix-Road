@@ -46,7 +46,7 @@ var model = {
 		};
 		startUnit.commodities.push({commodity:startCargo,qty:100});
 		startUnit.location.reputation.p1 -= cheapestValue * 100;
-// 		startUnit.location.infrastructure.push(data.infrastructure.cartwright);
+		startUnit.location.infrastructure.push(data.infrastructure.cartwright);
 // 		startUnit.location.infrastructure.push(data.infrastructure.mechanic);
 		
 		var localArea = [startUnit.location];
@@ -1016,7 +1016,7 @@ function Unit(owner,startLoc,type) {
 		view.displayUnit(units[0]);
 	};
 	
-	this.canAfford = function(buildCost) {
+	this.canAfford = function(buildCost,output) {
 		var result = false;
 		var trading = this.location.trading();
 		var unitsAtSite = [];
@@ -1051,7 +1051,11 @@ function Unit(owner,startLoc,type) {
 			result = true;
 		}
 		
-		return result;
+		if (output == 'bool' || output == undefined) {
+			return result;
+		} else if (output == 'rep') {
+			return Math.ceil(repCost);
+		};
 	};
 	
 	units.push(this);

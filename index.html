@@ -38,29 +38,31 @@
 			<div id='detailsUnitDiv'>
 				&nbsp;
 			</div>
+			
+			<div id='centerColumn'>
 		
-			<div id='mapDiv'>
-		
-				<svg id='mapSVG'>
-		
-				</svg>
-		
+				<div id='mapDiv'>
+					<svg id='mapSVG'>
+					</svg>
+				</div>
+				
+				<div id='tradeDiv'>
+					<div id='unitStuffDiv' class='tradeDiv'></div>
+					<div id='tradeControlsDiv' class='tradeDiv'>
+						<div id='balanceDiv'>
+						</div>
+						<button id='tradeBtn' onclick='handlers.makeTrade()' disabled>Trade</button>
+						<button onclick='handlers.clearTrade()'>Clear</button>
+					</div>
+					<div id='siteStuffDiv' class='tradeDiv'></div>
+				</div>
+			
 			</div>
 			
 			<div id='detailsSiteDiv'>
 				&nbsp;
 			</div>
 		
-			<div id='tradeDiv'>
-				<div id='unitStuffDiv' class='tradeDiv'></div>
-				<div id='tradeControlsDiv' class='tradeDiv'>
-					<div id='balanceDiv'>
-					</div>
-					<button id='tradeBtn' onclick='handlers.makeTrade()' disabled>Trade</button>
-					<button onclick='handlers.clearTrade()'>Clear</button>
-				</div>
-				<div id='siteStuffDiv' class='tradeDiv'></div>
-			</div>
 			
 		</div>
 		
