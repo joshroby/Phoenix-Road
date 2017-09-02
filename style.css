@@ -75,11 +75,22 @@ a.tipAnchor:hover span.tooltip {
 	overflow-y: auto;
 	}
 
-.unitHeadererDiv {
+.unitHeaderDiv {
+	height: 18vw;
 	}
 
-.unitHeaderDiv p {
-	margin-left: 1vw;
+.unitHeaderDiv p.stat {
+	margin-left: 2vw;
+	margin-bottom: 0;
+	float: left;
+	}
+	
+.perDiem {
+	clear: both;
+	margin-top: 0;
+	margin-bottom: 1vh;
+	margin-left: 2vw;
+	font-size: 0.8em;
 	}
 
 .unitHead {

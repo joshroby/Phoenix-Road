@@ -341,7 +341,7 @@ var view = {
 		siteHead.className = 'siteHead';
 		siteCharacterDiv.appendChild(siteHead);
 
-		if (site.hasVisited.p1 && site.population > 0) {
+		if (site.hasVisited.p1) {
 			var sitePopulationP = document.createElement('p');
 			if (site.population > 0) {
 				sitePopulationP.innerHTML = site.population + " souls";
@@ -377,6 +377,10 @@ var view = {
 				siteNeedDiv.appendChild(siteNeedsBar);
 				siteNeedsDiv.appendChild(siteNeedDiv);
 			};
+		} else {
+			var sitePopulationP = document.createElement('p');
+			sitePopulationP.innerHTML = 'From a distance, you can see:';
+			siteCharacterDiv.appendChild(sitePopulationP);
 		};
 		var siteFeatureList = document.createElement('ul');
 		siteFeatureList.id = 'siteFeatureList';
@@ -417,8 +421,11 @@ var view = {
 		} else if (site.reputation.p1 < 0) {
 			siteReputationP.innerHTML += 'You reputation here: ' + Math.round(site.reputation.p1,0);
 			siteReputationP.className = 'negative';
-		} else {
+		} else if (site.hasVisited.p1) {
 			siteReputationP.innerHTML += 'You have no reputation here.';
+			siteReputationP.className = '';
+		} else {
+			siteReputationP.innerHTML += 'You have no reputation there.';
 			siteReputationP.className = '';
 		};
 		siteCommoditiesDiv.appendChild(siteReputationP);
@@ -655,7 +662,6 @@ var view = {
 		
 		
 		// Enable/disable the Build button
-		console.log(infrastructureIndex);
 		if (view.focus.unit.canAfford(unitType.buildCost)) {
 			document.getElementById('siteBuildBtn_'+infrastructureIndex).disabled = false;
 		} else {
@@ -703,7 +709,8 @@ var view = {
 			unitHead.setAttribute('onclick','handlers.revealRename()');
 			unitHeaderDiv.appendChild(unitHead);
 		
-			var unitRenameDiv = document.createElement('div');
+			var unitRenameDiv = document.createElement('h2');
+			unitHead.className = 'unitHead';
 			unitRenameDiv.id = 'unitRenameDiv_'+u;
 			unitRenameDiv.style.display = 'none';
 			unitHeaderDiv.appendChild(unitRenameDiv);
@@ -717,14 +724,21 @@ var view = {
 			unitRenameDiv.appendChild(unitRenameBtn);
 		
 			var unitModelP = document.createElement('p');
+			unitModelP.className = 'stat';
 			if (unit.offroad) {
-				unitModelP.innerHTML = unit.type.crew + " Crew, Offroad Speed " + unit.type.offroadSpeed;
+				unitModelP.innerHTML = "Offroad Speed " + unit.type.offroadSpeed;
 			} else {
-				unitModelP.innerHTML = unit.type.crew + " Crew, Speed " + unit.type.speed;
+				unitModelP.innerHTML = "Speed " + unit.type.speed;
 			};
+			unitModelP.innerHTML += ' <span class="fa fa-tachometer"></span> ';
+			unitHeaderDiv.appendChild(unitModelP);
+			unitModelP = document.createElement('p');
+			unitModelP.className = 'stat';
+			unitModelP.innerHTML += "Cargo: " + unit.type.cargo + " <span class='fa fa-cubes'></span>"
 			unitHeaderDiv.appendChild(unitModelP);
 		
 			var unitProvisionsP = document.createElement('p');
+			unitProvisionsP.className = 'stat';
 			unitHeaderDiv.appendChild(unitProvisionsP);
 			var provisionsFood = 0;
 			var provisionsWater = 0;
@@ -752,6 +766,21 @@ var view = {
 			var provisions = Math.floor(Math.min(provisionsFood,provisionsWater,provisionsFuel));
 			unitProvisionsP.innerHTML = provisions + " days provisions";
 		
+			var unitConsumesP = document.createElement('p');
+			unitConsumesP.className = 'perDiem';
+			unitConsumesP.innerHTML = "( ";
+			for (var i=0;i<unit.type.crew;i++) {
+				unitConsumesP.innerHTML += view.commodityIcon('food');
+			};
+			for (var i=0;i<unit.type.fuel.water;i++) {
+				unitConsumesP.innerHTML += view.commodityIcon('water');
+			};
+			for (var i=0;i<unit.type.fuel.fuel;i++) {
+				unitConsumesP.innerHTML += view.commodityIcon('fuel');
+			};
+			unitConsumesP.innerHTML += " / day )";
+			unitHeaderDiv.appendChild(unitConsumesP);
+
 			var unitCommoditiesTable = document.createElement('table');
 			unitCommoditiesTable.className = 'commoditiesTable';
 			unitCargoDiv.appendChild(unitCommoditiesTable);

@@ -46,8 +46,8 @@ var model = {
 		};
 		startUnit.commodities.push({commodity:startCargo,qty:100});
 		startUnit.location.reputation.p1 -= cheapestValue * 100;
-		startUnit.location.infrastructure.push(data.infrastructure.cartwright);
-		startUnit.location.infrastructure.push(data.infrastructure.mechanic);
+// 		startUnit.location.infrastructure.push(data.infrastructure.cartwright);
+// 		startUnit.location.infrastructure.push(data.infrastructure.mechanic);
 		
 		var localArea = [startUnit.location];
 		for (var i=0;i<5;i++) {
