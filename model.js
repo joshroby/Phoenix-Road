@@ -15,8 +15,11 @@ var model = {
 	},
 
 	newGame: function() {
-		model.currentDay = 1;
-		model.options.paused = true;
+		
+		model.clock = new Clock(new Date(new Date().getTime() + 3.154e+12 + 3.154e+12 * Math.random() ));
+		model.clock.timeStep = 8.64e+7;
+		model.clock.logEventIn(8.64e+7,model.eachDay);
+		
 		model.newMap();
 		units = [];
 		p1 = {};
@@ -63,6 +66,7 @@ var model = {
 		sites[Math.random() * sites.length << 0].infrastructure.push(data.infrastructure.hangar);
 		view.focus.unit = startUnit;
 		view.displayMap();
+		
 	},
 
 	newMap: function(totalSites,minDist,maxDist,minAngle,totalThreats) {
@@ -242,22 +246,21 @@ var model = {
 				allBusy = false;
 			};
 		};
-		if (allBusy && model.options.paused) {
-			model.options.paused = false;
-			model.advanceClock();
+		if (allBusy && !model.clock.running) {
+			model.clock.running = true;
+			model.clock.go();
 		};
 	},
 	
-	advanceClock: function() {
-		model.currentDay++;
+	eachDay: function() {
 		
 		for (var q in units) {
 			units[q].eat();
 			if (units[q].inTransit) {
 				units[q].moveStep();
-			} else if (units[q].surveyComplete == model.currentDay) {
+			} else if (units[q].surveyComplete <= model.clock.time) {
 				units[q].surveyResult();
-			} else if (units[q].buildComplete == model.currentDay) {
+			} else if (units[q].buildComplete <= model.clock.time) {
 				units[q].buildResult();
 			};
 		};
@@ -273,7 +276,7 @@ var model = {
 				for (var a in sites[s].adjustment) {
 					var magnitude = 0.99;
 					for (var i in sites[s].infrastructure) {
-						if (sites[s].infrastructure[i].outputs.indexOf(a) !== -1) {
+						if (sites[s].infrastructure[i].outputs !== undefined && sites[s].infrastructure[i].outputs.indexOf(a) !== -1) {
 							magnitude = 0.995;
 						};
 					};
@@ -293,9 +296,8 @@ var model = {
 		view.displayUnit(view.focus.unit);
 		view.displayMap();
 		
-		if (!model.options.paused) {
-			var timedEvent = setTimeout(model.advanceClock,model.options.dayLength);
-		};
+		model.clock.logEventIn(8.64e+7,model.eachDay);
+		
 	},
 	
 	buildUnit: function(index,unitType) {
@@ -715,6 +717,7 @@ function Unit(owner,startLoc,type) {
 		var foodStore = 0;
 		var waterStore = 0;
 		var cargo = 0;
+		var steps = distance / speed;
 		for (var i in this.commodities) {
 			if (this.commodities[i].commodity == 'food') {
 				foodStore += this.commodities[i].qty;
@@ -729,12 +732,6 @@ function Unit(owner,startLoc,type) {
 		if ((this.location.neighbors.indexOf(site) !== -1 || this.offroad == true) && waterStore >= waterDrank && foodStore >= foodEaten && cargo <= this.type.cargo && !this.isBuilding && !this.isSurveying) {
 			var diffX = site.x - this.location.x;
 			var diffY = site.y - this.location.y;
-			if (this.offroad) {
-				var speed = this.type.offroadSpeed;
-			} else {
-				var speed = this.type.speed;
-			};
-			var steps = distance / speed;
 			this.route = [];
 			this.inTransit = true;
 			this.departed = false;
@@ -745,17 +742,17 @@ function Unit(owner,startLoc,type) {
 			this.route.push(site);
 			model.checkClock();
 		} else if (this.location.neighbors.indexOf(site) == -1 && this.offroad == false) {
-			view.displayError('No path to ' + site.name + '.');
+			gamen.displayPassage(new Passage('No path from ' + this.name + ' to ' + site.name + ". You'll have to go offroad."));
 		} else if (waterStore < waterDrank) {
-			view.displayError('Not enough water!');
+			gamen.displayPassage(new Passage(this.name + " doesn't have enough water for the " + Math.round(steps,0) + "-day trip to " + site.name + "!"));
 		} else if (foodStore < foodEaten) {
-			view.displayError('Not enough food!');
+			gamen.displayPassage(new Passage(this.name + " doesn't have enough food for the " + Math.round(steps,0) + "-day trip to " + site.name + "!"));
 		} else if (cargo > this.type.cargo) {
-			view.displayError('Overburdened!');
+			gamen.displayPassage(new Passage(this.name + ' is overburdened and cannot travel.'));
 		} else if (this.isBuilding) {
-			view.displayError('Busy building!');
+			gamen.displayPassage(new Passage(this.name + ' is busy building.'));
 		} else if (this.isSurveying) {
-			view.displayError('Busy surveying!');
+			gamen.displayPassage(new Passage(this.name + ' is busy surveying.'));
 		} else {
 			console.log(this.location.neighbors.indexOf(site),this.offroad,waterStore,waterDrank,foodStore,foodEaten,cargo,this.type.cargo);
 		};
@@ -764,7 +761,7 @@ function Unit(owner,startLoc,type) {
 	
 	this.moveStep = function() {
 		if (load > this.type.cargo) {
-			view.displayError(this.name + ' is overburdened!');
+			gamen.displayPassage(new Passage(this.name + ' is overburdened and cannot travel.'));
 			view.focus.unit = this;
 			view.displayUnit(this);
 		} else {
@@ -787,8 +784,8 @@ function Unit(owner,startLoc,type) {
 				this.inTransit = false;
 				this.departed = false;
 				this.look();
-				model.options.paused = true;
-				document.getElementById('clockPauseBtn').innerHTML = '>';
+				model.clock.running = false;
+				document.getElementById('clockPauseBtn').innerHTML = '<span class="fa fa-play"></span>';
 				view.focus.unit = this;
 				view.displayUnit(this);
 			};
@@ -855,7 +852,7 @@ function Unit(owner,startLoc,type) {
 		resources.push(-1);
 		
 		this.surveyPotentials = resources;
-		this.surveyComplete = model.currentDay + this.type.surveyTime;
+		this.surveyComplete = new Date(model.clock.time.getTime() + (this.type.surveyTime * 8.64e+7));
 		view.displayUnit(this);
 		model.checkClock();
 	};
@@ -865,14 +862,14 @@ function Unit(owner,startLoc,type) {
 		var foundResource = this.surveyPotentials[Math.random() * this.surveyPotentials.length << 0];
 		if (foundResource !== -1) {
 			this.location.hasSurveyed.p1[foundResource] = true;
-			view.displayNotification(this.name + ' found a ' + this.location.resources[foundResource].name + " in " + this.location.name);
+			gamen.displayPassage(new Passage(this.name + ' found a ' + this.location.resources[foundResource].name + " in " + this.location.name));
 			view.displaySiteDetails(this.location);
 		} else {
-			view.displayError(this.name + ' found nothing in ' + this.location.name + '.');
+			gamen.displayPassage(new Passage(this.name + ' found nothing in ' + this.location.name + '.'));
 		};
 		this.surveyPotentials = [];
 		this.surveyComplete = undefined;
-		model.options.paused = true;
+		model.clock.running = false;
 		view.focus.unit = this;
 		view.displayUnit(this);
 	};
@@ -880,7 +877,7 @@ function Unit(owner,startLoc,type) {
 	this.build = function(infrastructure) {
 		this.isBuilding = true;
 		this.buildProject = infrastructure;
-		this.buildComplete = model.currentDay + infrastructure.buildTime;
+		this.buildComplete = new Date(model.clock.time.getTime() + (infrastructure.buildTime * 8.64e+7));
 		this.location.useCommodities(infrastructure.buildCost);
 		view.displayUnit(this);
 		model.checkClock();
@@ -888,11 +885,11 @@ function Unit(owner,startLoc,type) {
 	
 	this.buildResult = function() {
 		this.location.buildInfrastructure(this.buildProject);
-		view.displayNotification(this.name + ' built a ' + this.buildProject.name + " in " + this.location.name);
+		gamen.displayPassage(new Passage(this.name + ' built a ' + this.buildProject.name + " in " + this.location.name));
 		this.isBuilding = false;
 		this.buildProject = undefined;
 		this.buildComplete = undefined;
-		model.options.paused = true;
+		model.clock.running = false;
 		view.focus.unit = this;
 		view.displayUnit(this);
 	};

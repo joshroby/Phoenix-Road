@@ -6,31 +6,31 @@ var handlers = {
 	},
 	
 	clockPause: function() {
-		if (model.options.paused) {
-			model.options.paused = false;
-			document.getElementById('clockPauseBtn').innerHTML = '||';
-			model.advanceClock();
+		if (model.clock.running) {
+			model.clock.running = false;
+			document.getElementById('clockPauseBtn').innerHTML = '<span class="fa fa-play"></span>';
 		} else {
-			model.options.paused = true;
-			document.getElementById('clockPauseBtn').innerHTML = '>';
+			model.clock.running = true;
+			document.getElementById('clockPauseBtn').innerHTML = '<span class="fa fa-pause"></span>';
+			model.clock.go();
 		};
 	},
 	
 	clockSpeedUp: function() {
-		model.options.dayLength = Math.max(model.options.dayLength / 2,100);
-		if (model.options.paused) {
-			model.options.paused = false;
-			document.getElementById('clockPauseBtn').innerHTML = '||';
-			model.advanceClock();
+		model.clock.tick = Math.max(model.clock.tick / 2,100);
+		if (!model.clock.running) {
+			model.clock.running = true;
+			document.getElementById('clockPauseBtn').innerHTML = '<span class="fa fa-pause"></span>';
+			model.clock.go();
 		};
 	},
 	
 	clockSlowDown: function() {
-		model.options.dayLength = Math.min(model.options.dayLength * 2,2500);
-		if (model.options.paused) {
-			model.options.paused = false;
-			document.getElementById('clockPauseBtn').innerHTML = '||';
-			model.advanceClock();
+		model.clock.tick = Math.min(model.clock.tick * 2,4000);
+		if (!model.clock.running) {
+			model.clock.running = true;
+			document.getElementById('clockPauseBtn').innerHTML = '<span class="fa fa-pause"></span>';
+			model.clock.go();
 		};
 	},
 	

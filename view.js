@@ -1,22 +1,5 @@
 var view = {
 
-	prettyList: function(list,andor) {
-		if (andor == undefined) {andor = 'and'};
-		var prettyList = '';
-		for (item in list) {
-			prettyList += ' ' + list[item];
-			if (item == list.length-1) {
-			} else if (list.length == 2) {
-				prettyList += ' ' + andor;
-			} else if (item == list.length-2) {
-				prettyList += ', ' + andor;
-			} else {
-				prettyList += ',';
-			};
-		};
-		return prettyList;
-	},
-
 	focus: {
 		unitPane: 0,
 	},
@@ -38,6 +21,13 @@ var view = {
 		document.getElementById('detailsUnitDiv').innerHTML = '&nbsp;';
 		document.getElementById('detailsSiteDiv').innerHTML = '&nbsp;';
 	},
+	
+	refreshGameDisplay: function() {
+		view.displayMap();
+		view.displayUnit(view.focus.unit);
+// 		view.displaySiteDetails(view.focus.unit.location);
+		model.clock.logEventIn(8.64e+7,view.refreshGameDisplay);
+	},
 
 	displayMap: function() {
 		
@@ -46,18 +36,14 @@ var view = {
 		
 		var clockDiv = document.createElement('div');
 		clockDiv.id = 'clockDiv';
-		var notifySpan = document.createElement('span');
-		notifySpan.id = 'notifySpan';
-		notifySpan.innerHTML = view.errorMessage;
-		if (view.errorMessage !== '') {
-			notifySpan.className = 'errorMessage';
-		} else {
-			notifySpan.className = 'empty';
-		};
-		clockDiv.appendChild(notifySpan);
 		var clockSpan = document.createElement('span');
 		clockSpan.id = 'clockSpan';
-		clockSpan.innerHTML = 'Day ' + model.currentDay;
+		clockSpan.innerHTML =
+			['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'][model.clock.time.getDay()] + ', ' +
+			['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][model.clock.time.getMonth()] + ' ' +
+			model.clock.time.getDate() + ', ' + 
+			model.clock.time.getFullYear()
+			;
 		clockDiv.appendChild(clockSpan);
 		var clockSlowDownBtn = document.createElement('button');
 		clockSlowDownBtn.innerHTML = '<span class="fa fa-backward"></span>';
@@ -65,10 +51,10 @@ var view = {
 		clockDiv.appendChild(clockSlowDownBtn);
 		var clockPauseBtn = document.createElement('button');
 		clockPauseBtn.id = 'clockPauseBtn';
-		if (model.options.paused) {
-			clockPauseBtn.innerHTML = '<span class="fa fa-play"></span>';
-		} else {
+		if (model.clock.running) {
 			clockPauseBtn.innerHTML = '<span class="fa fa-pause"></span>';
+		} else {
+			clockPauseBtn.innerHTML = '<span class="fa fa-play"></span>';
 		};
 		clockPauseBtn.setAttribute('onclick','handlers.clockPause()');
 		clockDiv.appendChild(clockPauseBtn);
@@ -332,6 +318,8 @@ var view = {
 	},
 	
 	displaySiteDetails: function(site) {
+		view.focus.site = site;
+		
 		var detailsSiteDiv = document.getElementById('detailsSiteDiv');
 		detailsSiteDiv.innerHTML = '';
 
@@ -630,7 +618,7 @@ var view = {
 				buildList.push(data.infrastructure[unitType.buildInfrastructures[i]].name);
 			};
 			var buildItem = document.createElement('li');
-			buildItem.innerHTML = "<strong>Builds:</strong> " + view.prettyList(buildList);
+			buildItem.innerHTML = "<strong>Builds:</strong> " + gamen.prettyList(buildList);
 			buildInfoDiv.appendChild(buildItem);
 		};
 		
@@ -640,7 +628,7 @@ var view = {
 				surveyList.push(data.resources[unitType.surveyResources[i]].name);
 			};
 			var buildItem = document.createElement('li');
-			buildItem.innerHTML = "<strong>Surveys for:</strong> " + view.prettyList(surveyList);
+			buildItem.innerHTML = "<strong>Surveys for:</strong> " + gamen.prettyList(surveyList);
 			buildInfoDiv.appendChild(buildItem);
 		};
 		
@@ -649,7 +637,7 @@ var view = {
 			materialsList.push(unitType.buildCost[i] + " " + i);
 		};
 		var buildItem = document.createElement('li');
-		buildItem.innerHTML += "<strong>Materials:</strong> " + view.prettyList(materialsList);
+		buildItem.innerHTML += "<strong>Materials:</strong> " + gamen.prettyList(materialsList);
 		buildInfoDiv.appendChild(buildItem);		
 		
 		
@@ -818,7 +806,7 @@ var view = {
 			};
 			if (unit.isSurveying) {
 				var surveyingP = document.createElement('p');
-				var eta = unit.surveyComplete - model.currentDay;
+				var eta = Math.round(( unit.surveyComplete.getTime() - model.clock.time.getTime() ) / 8.64e+7,0);
 				surveyingP.innerHTML = "Surveying (" + eta + " days)";
 				unitPane.appendChild(surveyingP);
 			};
@@ -858,7 +846,7 @@ var view = {
 				
 				if (unit.isBuilding) {
 					var unitBuildProjectP = document.createElement('p');
-					var eta = unit.buildComplete - model.currentDay;
+					var eta = Math.round((unit.buildComplete.getTime() - model.clock.time.getTime() ) / 8.64e+7,0);
 					unitBuildProjectP.innerHTML = 'Currently building ' + unit.buildProject.name + ' (' + eta + ' days)';
 					unitPane.appendChild(unitBuildProjectP);
 				};
@@ -952,7 +940,7 @@ var view = {
 		for (var b in infrastructure.buildCost) {
 			buildCost.push(infrastructure.buildCost[b] + " " + b);
 		};
-		unitBuildCostP.innerHTML = '<strong>Materials:</strong> ' + view.prettyList(buildCost);
+		unitBuildCostP.innerHTML = '<strong>Materials:</strong> ' + gamen.prettyList(buildCost);
 		if (view.focus.unit.location !== undefined) {
 			unitBuildCostP.innerHTML += " (~" + Math.round(view.focus.unit.location.costInRep(infrastructure.buildCost),0) + " reputation)";
 		};
@@ -964,7 +952,7 @@ var view = {
 		
 		if (infrastructure.requiredResource !== undefined) {
 			var unitBuildRequirementP = document.createElement('p');
-			unitBuildRequirementP.innerHTML = '<strong>Requires:</strong> ' + view.prettyList(infrastructure.requiredResource,'or');
+			unitBuildRequirementP.innerHTML = '<strong>Requires:</strong> ' + gamen.prettyList(infrastructure.requiredResource,'or');
 			unitBuildPreviewDiv.appendChild(unitBuildRequirementP);
 		};
 		
@@ -975,7 +963,7 @@ var view = {
 				replaceList.push(data.infrastructure[infrastructure.replaces[i]].name);
 			};
 			var unitBuildReplaceP = document.createElement('p');
-			unitBuildReplaceP.innerHTML = "<strong>Replaces:</strong> " + view.prettyList(replaceList);
+			unitBuildReplaceP.innerHTML = "<strong>Replaces:</strong> " + gamen.prettyList(replaceList);
 			unitBuildPreviewDiv.appendChild(unitBuildReplaceP);
 			console.log(unitBuildReplaceP);
 		};
@@ -1000,10 +988,10 @@ var view = {
 			string += 'Provides defense of ' + infrastructure.defense + '. ';
 		};
 		if (infrastructure.outputs !== undefined) {
-			string += 'Produces ' + view.prettyList(infrastructure.outputs) + '. ';
+			string += 'Produces ' + gamen.prettyList(infrastructure.outputs) + '. ';
 		};
 		if (infrastructure.inputs !== undefined) {
-			string += 'Increases value of ' + view.prettyList(infrastructure.inputs) + '. ';
+			string += 'Increases value of ' + gamen.prettyList(infrastructure.inputs) + '. ';
 		};
 		if (infrastructure.jobs !== undefined) {
 			string += 'Provides ' + infrastructure.jobs + ' jobs. ';
@@ -1093,29 +1081,7 @@ var view = {
 	hideTradeDiv: function() {
 		document.getElementById('tradeDiv').style.display = 'hidden';
 	},
-	
-	displayError: function(message) {
-		console.log('error:',message);
-		document.getElementById('notifySpan').innerHTML = message;
-		document.getElementById('notifySpan').className = 'errorMessage';
-		view.errorMessage = message;
-		var timedEvent = setTimeout(view.clearError,5000);
-	},
-	
-	clearError: function() {
-		document.getElementById('notifySpan').innerHTML = '';
-		document.getElementById('notifySpan').className = 'empty';
-		view.errorMessage = '';
-	},
-	
-	displayNotification: function(message) {
-		console.log('notification:',message);
-		document.getElementById('notifySpan').innerHTML = message;
-		document.getElementById('notifySpan').className = 'notifyMessage';
-		view.errorMessage = message;
-		var timedEvent = setTimeout(view.clearError,5000);
-	},
-	
+		
 	progressColor: function(percentage) {
 		var red = Math.round(255 - (percentage*2.55)/2,0);
 		var green = Math.round(107 + (percentage*2.55)/2,0);
