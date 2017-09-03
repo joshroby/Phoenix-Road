@@ -1,17 +1,21 @@
 Down the Phoenix Road To Do List
 
-- knownValues() (++) and (--) checks trading()
+- Passengers
+- victory progress does not count ghost towns
+
 
 IMMEDIATE
+- can build things that get replaced by stuff that's already there.
+	- should not be able to build a pallisade where there's a stone wall
+
+- Construction and Surveying require food
+- display reputation earn rate (even as mouseover popup)
+
+- 'you found nothing on survey' should have a 'survey again' button
+
 
 
 NEAR FUTURE
-- smarter canAfford() that can optionally return how much reputation is required
-
-
-
-
-IMMEDIATE FUTURE
 - pathfinding for multi-step trips
 - caravan
 	- link units together so that changing one's destination changes them all
@@ -26,12 +30,19 @@ IMMEDIATE FUTURE
 	- turn off model.checkClock()
 	- new game sliders (in Options or outside?)
 - Zoom is still wonky
+- Units without food eventually "find a place in the community"
+	- popup when food hits 0, 'doing odd jobs'
+	- add Crew to population
+	- last unit lost triggers endgame?
 
 GAMEN
 	index.html content setup/injection
 	color palette
 
 FAR FUTURE
+- save game
+- how do you affect wages?
+	- meeting house?
 - moving people (commodity 'Passengers')
 - rejigger site labels for legibility… somehow
 - fucking events
@@ -49,6 +60,7 @@ FAR FUTURE
 EVENTS
 - plague event which slowly increases values and kills population, can deliver medicine commodities to cure them
 - your basic 'something happened to affect commodity prices' event
+- increasing / decreasing danger
 - find a bike (replaces Kid with a Bike)
 - consequences for suboptimal needs?
 

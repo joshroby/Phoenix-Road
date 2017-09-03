@@ -122,6 +122,13 @@ a.tipAnchor:hover span.tooltip {
 	font-size: 1.4vh;
 	}
 
+.unitPassengersDiv {
+	}
+	
+.unitPassengersDiv button {
+	margin-left: 2vw;
+	}
+
 #unitTabsDiv {
 	margin-top: 1vh;
 	height: 9vh;

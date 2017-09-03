@@ -654,6 +654,12 @@ var view = {
 			buildInfoDiv.appendChild(buildItem);
 		};
 		
+		if (unitType.canPassenger) {
+			var buildItem = document.createElement('li');
+			buildItem.innerHTML = "Can take passengers";
+			buildInfoDiv.appendChild(buildItem);
+		};
+		
 		var materialsList = [];
 		for (var i in unitType.buildCost) {
 			materialsList.push(unitType.buildCost[i] + " " + data.commodities[i].name);
@@ -760,7 +766,7 @@ var view = {
 					provisionsFuel += unit.commodities[c].qty;
 				};
 			};
-			provisionsWater /= unit.type.crew;
+			provisionsFood /= unit.type.crew;
 			if (unit.type.fuel.water == undefined) {
 				provisionsWater = Infinity
 			} else {
@@ -955,6 +961,55 @@ var view = {
 				unitBuildPreviewDiv.id = 'unitBuildPreviewDiv_' + u;
 				unitBuildPreviewDiv.className = 'unitBuildPreviewDiv';
 				unitPane.appendChild(unitBuildPreviewDiv);
+			};
+			
+			// Passengers
+			if (unit.type.canPassenger && unit.location !== undefined) {
+				unitPassengersDiv = document.createElement('div');
+				unitPassengersDiv.className = 'unitPassengersDiv';
+				unitPane.appendChild(unitPassengersDiv);
+				
+// 				var localNeeds = unit.location.needs();
+// 				var pasture = 0;
+// 				for (var n in localNeeds) {
+// 					pasture += localNeeds[n].completion;
+// 				};
+// 				pasture /= localNeeds.length;
+// 				if (unit.location.population == 0) {
+// 					pasture = 0.3;
+// 				};
+// 				console.log(pasture);
+// 				var takePassengersCost = Math.max(0,(500 - unit.location.population) * pasture * pasture,0);
+// 				var dropPassengersCost = Math.max(0,(500 - unit.location.population) * pasture * pasture * 0.8,0);
+				
+				var takePassengersCost = unit.location.desirability();
+				var dropPassengersCost = takePassengersCost * 0.8;
+				
+				if (unit.location.population == 0) {takePassengersCost = 0};
+				
+				unitPassengersHead = document.createElement('h3');
+				unitPassengersHead.innerHTML = 'Passengers';
+				unitPassengersDiv.appendChild(unitPassengersHead);
+				
+				unitTakePassengersBtn = document.createElement('button');
+				unitTakePassengersBtn.innerHTML = 'Take On ( -' + Math.round(takePassengersCost,0) + ' rep )';
+				unitTakePassengersBtn.setAttribute('onclick','handlers.takePassengers(' + takePassengersCost + ')');
+				if (takePassengersCost > unit.location.reputation.p1 || unit.location.population == 0) {
+					unitTakePassengersBtn.disabled = true;
+				};
+				unitPassengersDiv.appendChild(unitTakePassengersBtn);
+				
+				unitTakePassengersBtn = document.createElement('button');
+				unitTakePassengersBtn.innerHTML = 'Drop Off ( +'+ Math.round(dropPassengersCost,0)+' rep )';
+				unitTakePassengersBtn.setAttribute('onclick','handlers.dropPassengers('+dropPassengersCost+')');
+				unitPassengersDiv.appendChild(unitTakePassengersBtn);
+				var hasPassengers = false;
+				for (var c in unit.commodities) {
+					if (unit.commodities[c].commodity == 'passengers') {hasPassengers = true;};
+				};
+				if (!hasPassengers) {
+					unitTakePassengersBtn.disabled = true;
+				};
 			};
 		
 		};

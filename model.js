@@ -46,8 +46,9 @@ var model = {
 		};
 		startUnit.commodities.push({commodity:startCargo,qty:100});
 		startUnit.location.reputation.p1 -= cheapestValue * 100;
-		startUnit.location.infrastructure.push(data.infrastructure.cartwright);
-// 		startUnit.location.infrastructure.push(data.infrastructure.mechanic);
+// 		startUnit.location.infrastructure.push(data.infrastructure.cartwright);
+		startUnit.location.infrastructure.push(data.infrastructure.mechanic);
+// 		startUnit.location.infrastructure.push(data.infrastructure.bank);
 		
 		var localArea = [startUnit.location];
 		for (var i=0;i<5;i++) {
@@ -296,10 +297,10 @@ var model = {
 			};
 			if (Object.keys(sites[s].adjustment).length > 0) {
 				for (var a in sites[s].adjustment) {
-					var magnitude = 0.99;
+					var magnitude = 0.995;
 					for (var i in sites[s].infrastructure) {
 						if (sites[s].infrastructure[i].outputs !== undefined && sites[s].infrastructure[i].outputs.indexOf(a) !== -1) {
-							magnitude = 0.995;
+							magnitude = 0.997;
 						};
 					};
 					if (sites[s].adjustment[a] > 0.09) {
@@ -360,14 +361,18 @@ var model = {
 	victoryProgress: function() {
 		var count = 0;
 		var num = 0;
+		var populatedSites = 0;
 		for (s in sites) {
-			var needs = sites[s].needs();
-			for (var n in needs) {
-				count += needs[n].completion;
+			if (sites[s].population > 0) {
+				var needs = sites[s].needs();
+				for (var n in needs) {
+					count += needs[n].completion;
+				};
+				num = needs.length;
+				populatedSites++;
 			};
-			num = needs.length;
 		};
-		return count / (sites.length * num);
+		return count / (populatedSites * num);
 	},
 	
 	recruit: function(infrastructure) {
@@ -434,7 +439,7 @@ function Site() {
 	} else if (this.commodities.food < 0.1) {
 		foodInfrastructure = 1;
 	};
-	var foodList = ['pens','fields','orchards'];
+	var foodList = ['corral','fields','orchards'];
 	for (var f=0;f<foodInfrastructure;f++) {
 		var num = Math.random() * foodList.length << 0;
 		this.infrastructure.push(data.infrastructure[foodList[num]]);
@@ -663,6 +668,32 @@ function Site() {
 		};
 	};
 	
+	this.desirability = function() {
+
+		var localNeeds = this.needs();
+		var desirability = 0;
+		for (var n in localNeeds) {
+			desirability += localNeeds[n].completion;
+		};
+		desirability /= localNeeds.length;
+		
+		desirability *= desirability * 2;
+
+		desirability = Math.max(0,(500 - this.population) * desirability,0);
+
+		if (this.population == 0) {
+			desirability = 0;
+			for (var n in this.infrastructure) {
+				if (this.infrastructure[n].goodwill !== undefined) {
+					desirability += this.infrastructure[n].goodwill;
+				};
+			};
+			desirability *= 50;
+		};
+	
+		return desirability;
+	};
+	
 	sites.push(this);
 };
 
@@ -851,7 +882,7 @@ function Unit(owner,startLoc,type) {
 			} else if (this.commodities[i].commodity == 'fuel') {
 				var temp = this.commodities[i].qty;
 				this.commodities[i].qty = Math.round(Math.max(this.commodities[i].qty - fuelBurned,0),0);
-				waterDrank = Math.max(fuelBurned - temp,0);
+				fuelBurned = Math.max(fuelBurned - temp,0);
 				if (this.commodities[i].qty == 0) {
 					this.commodities.splice(i,1);
 				};
@@ -1014,6 +1045,30 @@ function Unit(owner,startLoc,type) {
 		units.splice(units.indexOf(this),1);
 		view.focus.unit = units[0];
 		view.displayUnit(units[0]);
+	};
+	
+	this.takePassengers = function(repCost) {
+		var passengerQty;
+		if (this.location.population > 10) {
+			passengerQty = 100;
+		} else {
+			passengerQty = this.location.population * 10;
+		};
+		this.commodities.push({commodity:'passengers',qty:passengerQty});
+		this.location.population -= passengerQty/10;
+		this.location.reputation.p1 -= repCost;
+	};
+	
+	this.dropPassengers = function(repCost) {
+		var commodityIndex;
+		for (var c in this.commodities) {
+			if (this.commodities[c].commodity == 'passengers') {
+				commodityIndex = c;
+			};
+		};
+		this.location.population += this.commodities[commodityIndex].qty / 10;
+		this.commodities.splice(commodityIndex,1);
+		this.location.reputation.p1 += repCost;
 	};
 	
 	this.canAfford = function(buildCost,output) {

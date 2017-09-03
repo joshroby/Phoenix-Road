@@ -78,6 +78,18 @@ var handlers = {
 		view.focus.unit.scuttle();
 	},
 	
+	takePassengers: function(repCost) {
+		view.focus.unit.takePassengers(repCost);
+		view.displayUnit(view.focus.unit);
+		view.displaySiteDetails(view.focus.unit.location);
+	},
+	
+	dropPassengers: function(repCost) {
+		view.focus.unit.dropPassengers(repCost);
+		view.displayUnit(view.focus.unit);
+		view.displaySiteDetails(view.focus.unit.location);
+	},
+	
 	selectSite: function(siteIndex) {
 		site = sites[siteIndex];
 		if (view.focus.unit !== undefined && view.focus.unit.location !== undefined) {
