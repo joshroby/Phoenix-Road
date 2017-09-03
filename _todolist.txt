@@ -1,11 +1,5 @@
 Down the Phoenix Road To Do List
 
-- Units without food eventually "find a place in the community"
-	- popup when food hits 0, 'doing odd jobs'
-	- add Crew to population
-	- last unit lost triggers endgame
-
-- win state
 
 IMMEDIATE
 
@@ -16,7 +10,14 @@ IMMEDIATE
 NEAR FUTURE
 - pathfinding for multi-step trips
 - caravan
-	- link units together so that changing one's destination changes them all
+	- create Caravan button just makes all unitsAtSite into one caravan
+		- inCaravan = true
+		- caravan = {Unit,Unit,Unit}
+	- leave Caravan button drops a unit out of its caravan
+	- Unit.move() checks for caravans, then:
+		- caravans move at slowest Unit speed
+		- caravans share food/water/fuel
+	- Cancel Route works how?
 - completing a production pipeline
 	- when you decrease the price of a commodity, check for infr that take it as inputs
 	- decrease the price of that infr's outputs as well
@@ -40,10 +41,9 @@ FAR FUTURE
 - moving people (commodity 'Passengers')
 - rejigger site labels for legibility… somehow
 - fucking events
-- boats? terrain?
 - trailblazing
 - building outposts / new sites
-- hardholder territory
+- warlord territory
 - warehousing?
 - other only-findable infrastructures
 	- some kind of cult?
@@ -71,3 +71,4 @@ MOTHBALLS
 	- and fuel only when in transit
 - Construction and Surveying require food
 	(replaced by 'join the community' consequences)
+- boats? terrain?

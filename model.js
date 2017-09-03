@@ -700,6 +700,31 @@ function Site() {
 		return desirability;
 	};
 	
+	this.pathTo = function(destinationSite) {
+		var startKey = this.x + '_' + this.y;
+		var routes = {};
+		routes[startKey] = {site:this,route:[{x:this.x,y:this.y}],distance:0};
+		for (var i=0;i<10;i++) {
+			for (var s in routes) {
+				for (n in routes[s].site.neighbors) {
+					var destination = routes[s].site.neighbors[n];
+					var destinationKey = destination.x + '_' + destination.y;
+					var newRoute = [];
+					for (var r in routes[s].route) {
+						newRoute.push(routes[s].route[r]);
+					};
+					newRoute.push({x:destination.x,y:destination.y});
+					var distance = routes[s].distance + Math.pow(Math.pow(destination.x - routes[s].site.x,2) + Math.pow(destination.y - routes[s].site.y,2),0.5);
+					if (routes[destinationKey] == undefined || distance < routes[destinationKey].distance) {
+						routes[destinationKey] = {site:destination,route:newRoute,distance:distance};
+					};
+				};
+			};
+		};
+		var destinationKey = destinationSite.x + '_' + destinationSite.y;
+		return routes[destinationKey];
+	};
+	
 	sites.push(this);
 };
 
