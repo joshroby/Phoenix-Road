@@ -415,8 +415,12 @@ var view = {
 			siteFeatureItem.prepend(siteFeatureItemTooltip);
 		};
 	
-		var siteReputationP = document.createElement('p');
+		var siteReputationP = document.createElement('a');
 		siteReputationP.id = 'siteReputationP';
+		var siteReputationTooltip = document.createElement('span');
+		siteReputationTooltip.className = 'tooltip';
+		siteReputationTooltip.innerHTML = Math.round(site.reputation.p1,4) + '<br />You earn ' + site.goodwill.p1 + ' reputation here each fortnight.';
+		siteReputationP.appendChild(siteReputationTooltip);
 		if (site.reputation.p1 > 0) {
 			siteReputationP.innerHTML += 'Your reputation here: +' + Math.round(site.reputation.p1,0);
 			siteReputationP.className = 'positive';
@@ -430,6 +434,7 @@ var view = {
 			siteReputationP.innerHTML += 'You have no reputation there.';
 			siteReputationP.className = '';
 		};
+		siteReputationP.className += ' tipAnchor';
 		siteCommoditiesDiv.appendChild(siteReputationP);
 	
 		if (site.hasVisited.p1) {
@@ -915,6 +920,7 @@ var view = {
 				unitBuildHead.className = 'infrastructureHead';
 				unitPane.appendChild(unitBuildHead);
 				
+				// Busy Building Countdown
 				if (unit.isBuilding) {
 					var unitBuildProjectP = document.createElement('p');
 					var eta = Math.round((unit.buildComplete.getTime() - model.clock.time.getTime() ) / 8.64e+7,0);
@@ -940,7 +946,13 @@ var view = {
 							requirementsFulfilled = true;
 						};
 					};
-					if ((requirements == undefined || requirementsFulfilled) && unit.location.infrastructure.indexOf(data.infrastructure[unit.type.buildInfrastructures[b]]) == -1) {
+					var replaced = false;
+					for (var r in unit.location.infrastructure) {
+						if (unit.location.infrastructure[r].replaces !== undefined && unit.location.infrastructure[r].replaces.indexOf(unit.type.buildInfrastructures[b]) !== -1) {
+							replaced = true;
+						};
+					};
+					if ((requirements == undefined || requirementsFulfilled) && !replaced && unit.location.infrastructure.indexOf(data.infrastructure[unit.type.buildInfrastructures[b]]) == -1) {
 						var unitBuildOption = document.createElement('option');
 						unitBuildOption.innerHTML = data.infrastructure[unit.type.buildInfrastructures[b]].name;
 						unitBuildOption.value = unit.type.buildInfrastructures[b];
@@ -968,19 +980,6 @@ var view = {
 				unitPassengersDiv = document.createElement('div');
 				unitPassengersDiv.className = 'unitPassengersDiv';
 				unitPane.appendChild(unitPassengersDiv);
-				
-// 				var localNeeds = unit.location.needs();
-// 				var pasture = 0;
-// 				for (var n in localNeeds) {
-// 					pasture += localNeeds[n].completion;
-// 				};
-// 				pasture /= localNeeds.length;
-// 				if (unit.location.population == 0) {
-// 					pasture = 0.3;
-// 				};
-// 				console.log(pasture);
-// 				var takePassengersCost = Math.max(0,(500 - unit.location.population) * pasture * pasture,0);
-// 				var dropPassengersCost = Math.max(0,(500 - unit.location.population) * pasture * pasture * 0.8,0);
 				
 				var takePassengersCost = unit.location.desirability();
 				var dropPassengersCost = takePassengersCost * 0.8;

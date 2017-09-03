@@ -689,7 +689,6 @@ var data = {
 			speed: 20,
 			offroadSpeed: 20,
 			buildCost: {metals:3,fuel:1,food:1},
-			canPassenger: true,
 		},
 		
 		wagon: {
@@ -711,7 +710,6 @@ var data = {
 			speed: 25,
 			offroadSpeed: 12,
 			buildCost: {metals:4,fuel:2,food:1},
-			canPassenger: true,
 		},
 		
 		bus: {
@@ -733,7 +731,6 @@ var data = {
 			speed: 20,
 			offroadSpeed: 5,
 			buildCost: {metals:8,fuel:2,food:1},
-			canPassenger: true,
 		},
 		
 		zeppelin: {

@@ -47,8 +47,7 @@ var model = {
 		startUnit.commodities.push({commodity:startCargo,qty:100});
 		startUnit.location.reputation.p1 -= cheapestValue * 100;
 // 		startUnit.location.infrastructure.push(data.infrastructure.cartwright);
-		startUnit.location.infrastructure.push(data.infrastructure.mechanic);
-// 		startUnit.location.infrastructure.push(data.infrastructure.bank);
+// 		startUnit.location.infrastructure.push(data.infrastructure.mechanic);
 		
 		var localArea = [startUnit.location];
 		for (var i=0;i<5;i++) {
@@ -935,12 +934,14 @@ function Unit(owner,startLoc,type) {
 	this.surveyResult = function() {
 		this.isSurveying = false;
 		var foundResource = this.surveyPotentials[Math.random() * this.surveyPotentials.length << 0];
+		var choiceArray = [new Choice(),new Choice('Survey Again!',this.survey.bind(this))];
 		if (foundResource !== -1) {
 			this.location.hasSurveyed.p1[foundResource] = true;
-			gamen.displayPassage(new Passage(this.name + ' found a ' + this.location.resources[foundResource].name + " in " + this.location.name));
+			gamen.displayPassage(new Passage(this.name + ' found a ' + this.location.resources[foundResource].name + " in " + this.location.name,choiceArray));
 			view.displaySiteDetails(this.location);
 		} else {
-			gamen.displayPassage(new Passage(this.name + ' found nothing in ' + this.location.name + '.'));
+			
+			gamen.displayPassage(new Passage(this.name + ' found nothing in ' + this.location.name + '.',choiceArray));
 		};
 		this.surveyPotentials = [];
 		this.surveyComplete = undefined;

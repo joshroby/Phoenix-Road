@@ -1,17 +1,12 @@
 Down the Phoenix Road To Do List
 
-- Passengers
-- victory progress does not count ghost towns
-
+- displays reputation earn rate as mouseover tooltip
+- 'you found nothing on survey' should have a 'survey again' button
+- can no longer build things that got replaced by other things (ie pallisade and stone wall)
 
 IMMEDIATE
-- can build things that get replaced by stuff that's already there.
-	- should not be able to build a pallisade where there's a stone wall
 
-- Construction and Surveying require food
-- display reputation earn rate (even as mouseover popup)
 
-- 'you found nothing on survey' should have a 'survey again' button
 
 
 
@@ -75,3 +70,5 @@ MOTHBALLS
 	- appears only when you have less than a week's provisions and no local rep
 - make Unit.eat() consume food/water/fuel differently for different units
 	- and fuel only when in transit
+- Construction and Surveying require food
+	(replaced by 'join the community' consequences)
