@@ -68,6 +68,8 @@ var model = {
 		view.focus.unit = startUnit;
 		view.displayMap();
 		
+		model.startScore = model.victoryProgress();
+		
 	},
 
 	newMap: function(totalSites,minDist,maxDist,minAngle,totalThreats,ghostTowns) {
@@ -313,6 +315,11 @@ var model = {
 					};
 				};
 			};
+		};
+		
+		if (model.victoryProgress() > .99) {
+			model.clock.running = false;
+			gamen.displayPassage(new Passage("Holy shit, you won the game!"));
 		};
 		
 		view.displayUnit(view.focus.unit);
@@ -887,6 +894,23 @@ function Unit(owner,startLoc,type) {
 				};
 			};
 		};
+		if (foodEaten > 0) {
+			if (!this.isOddJobbing) {
+				gamen.displayPassage(new Passage(this.name + ' has run out of food.  The crew has taken on odd jobs in ' + this.location.name + ' to put food in their mouths.</p><p>If they are not resupplied soon, they might just settle down!'));
+				this.isOddJobbing = true;
+				model.clock.running = false;
+			};
+			if (Math.random() < 0.01) {
+				gamen.displayPassage(new Passage('The crew of ' + this.name + ' have found sweethearts in ' + this.location.name + ".  They've been accepted into the families there and have put the road behind them.  </p><p>" + this.name + " has been scuttled."));
+				this.scuttle();
+				if (units.length == 0) {
+					var rebuildScore = Math.round((model.victoryProgress() - model.startScore) * 100,0);
+					gamen.displayPassage(new Passage("As your last crew leaves the road behind them, you find yourself a place out among the scattered towns to live out the rest of your life.</p><p><strong>Final Score:</strong> You rebuilt " + rebuildScore + "% of Civilization." ));
+				};
+			};
+		} else {
+			this.isOddJobbing = false;
+		};
 	};
 
 	this.look = function() {
@@ -1042,10 +1066,11 @@ function Unit(owner,startLoc,type) {
 			for (c in this.commodities) {
 				this.location.reputation.p1 += this.location.commodities[this.commodities[c].commodity] * this.commodities[c].qty;
 			};
+			this.location.population += this.type.crew;
 		};
 		units.splice(units.indexOf(this),1);
-		view.focus.unit = units[0];
-		view.displayUnit(units[0]);
+		view.focus.unit = undefined;
+		view.clearDetailsDivs();
 	};
 	
 	this.takePassengers = function(repCost) {

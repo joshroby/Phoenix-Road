@@ -91,7 +91,6 @@ window.onclick = function(event) {
 	var dialogueBacksplash = document.getElementById('gamenModalBacksplash');
 	if (event.target == dialogueBacksplash) {
 		gamen.dismissPassage();
-		console.log('Upgrade this to switch between dismiss and continue');
 	};
 };
 

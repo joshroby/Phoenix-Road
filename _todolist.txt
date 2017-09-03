@@ -1,8 +1,11 @@
 Down the Phoenix Road To Do List
 
-- displays reputation earn rate as mouseover tooltip
-- 'you found nothing on survey' should have a 'survey again' button
-- can no longer build things that got replaced by other things (ie pallisade and stone wall)
+- Units without food eventually "find a place in the community"
+	- popup when food hits 0, 'doing odd jobs'
+	- add Crew to population
+	- last unit lost triggers endgame
+
+- win state
 
 IMMEDIATE
 
@@ -25,10 +28,6 @@ NEAR FUTURE
 	- turn off model.checkClock()
 	- new game sliders (in Options or outside?)
 - Zoom is still wonky
-- Units without food eventually "find a place in the community"
-	- popup when food hits 0, 'doing odd jobs'
-	- add Crew to population
-	- last unit lost triggers endgame?
 
 GAMEN
 	index.html content setup/injection
