@@ -66,6 +66,16 @@ var handlers = {
 		view.updateTradeDiv();
 	},
 	
+	createCaravan: function() {
+		view.focus.unit.createCaravan();
+		view.displayUnit(view.focus.unit);
+	},
+	
+	leaveCaravan: function() {
+		view.focus.unit.leaveCaravan();
+		view.displayUnit(view.focus.unit);
+	},
+	
 	toggleRoad: function() {
 		view.focus.unit.toggleRoad();
 	},

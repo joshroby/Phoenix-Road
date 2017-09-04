@@ -799,6 +799,38 @@ var view = {
 			};
 			unitConsumesP.innerHTML += " / day )";
 			unitHeaderDiv.appendChild(unitConsumesP);
+			
+			if (unitsAtSite.length > 1) {
+				var unitCaravanDiv = document.createElement('div');
+				unitCaravanDiv.className = 'unitCaravanDiv';
+				unitHeaderDiv.appendChild(unitCaravanDiv);
+				
+				if (unit.caravan == undefined) {
+					var unitCreateCaravanBtn = document.createElement('button');
+					unitCreateCaravanBtn.innerHTML = 'Create Caravan';
+					unitCreateCaravanBtn.setAttribute('onclick','handlers.createCaravan()');
+					unitCaravanDiv.appendChild(unitCreateCaravanBtn);
+				};
+				
+				if (unit.caravan !== undefined) {
+					var unitCaravanP = document.createElement('p');
+					unitCaravanP.innerHTML = 'In Caravan with';
+					var caravanNamesList = [];
+					for (var u in unit.caravan) {
+						if (unit.caravan[u] !== unit) {
+							caravanNamesList.push(unit.caravan[u].name);
+						};
+					};
+					unitCaravanP.innerHTML = 'In Caravan with' + gamen.prettyList(caravanNamesList);
+					unitCaravanDiv.appendChild(unitCaravanP);
+					
+					var unitLeaveCaravanBtn = document.createElement('button');
+					unitLeaveCaravanBtn.innerHTML = 'Leave Caravan';
+					unitLeaveCaravanBtn.setAttribute('onclick','handlers.leaveCaravan()');
+					unitCaravanDiv.appendChild(unitLeaveCaravanBtn);
+				};
+				
+			};
 
 			var unitCommoditiesTable = document.createElement('table');
 			unitCommoditiesTable.className = 'commoditiesTable';

@@ -663,7 +663,7 @@ var data = {
 			cargo: 2,
 			crew: 1,
 			fuel: {water:1},
-			speed: 10,
+			speed: 8,
 			offroadSpeed: 2,
 			canSurvey: true,
 			surveyTime: 7,

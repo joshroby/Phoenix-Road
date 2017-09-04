@@ -1,14 +1,6 @@
 Down the Phoenix Road To Do List
 
 
-IMMEDIATE
-
-
-
-
-
-NEAR FUTURE
-- pathfinding for multi-step trips
 - caravan
 	- create Caravan button just makes all unitsAtSite into one caravan
 		- inCaravan = true
@@ -16,8 +8,30 @@ NEAR FUTURE
 	- leave Caravan button drops a unit out of its caravan
 	- Unit.move() checks for caravans, then:
 		- caravans move at slowest Unit speed
-		- caravans share food/water/fuel
-	- Cancel Route works how?
+		- caravans share food/water/fuel (this is in Unit.eat())
+		- gives identical routes to all Units in caravan
+	- Cancel Route cancels all caravan units' routes
+
+
+IMMEDIATE
+
+Carpet should only display if you've visited that site?
+Trash Pile does not display qty
+Per Mischa, the donkey belonged to Grams
+Nothing stops you from taking 10000 Mail site to site.
+
+'rep cost beyond materials' replace:
+	What you write means "You need to pay this much more, poor fucker"
+	To get the materials that you aren't already carrying will consume NNN reputation
+
+new Site() sometimes has stuff in Trash Pile
+Does build infrastructure assess your partially-consumed commodities?
+
+'Days to Destination' on mouseover needs to use the distance from pathTo()
+
+NEAR FUTURE
+- save game
+
 - completing a production pipeline
 	- when you decrease the price of a commodity, check for infr that take it as inputs
 	- decrease the price of that infr's outputs as well
@@ -28,6 +42,7 @@ NEAR FUTURE
 - Options
 	- turn off model.checkClock()
 	- new game sliders (in Options or outside?)
+	- turn off map zoom
 - Zoom is still wonky
 
 GAMEN
@@ -35,9 +50,8 @@ GAMEN
 	color palette
 
 FAR FUTURE
-- save game
 - how do you affect wages?
-	- meeting house?
+	- union house
 - moving people (commodity 'Passengers')
 - rejigger site labels for legibility… somehow
 - fucking events
@@ -49,6 +63,7 @@ FAR FUTURE
 	- some kind of cult?
 - responsive design in the CSS
 - what do you do that starts passively spreading civilization / greening needs?
+- two builder units building the same thing at the same time
 
 
 EVENTS

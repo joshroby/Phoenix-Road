@@ -78,6 +78,7 @@ a.tipAnchor:hover span.tooltip {
 
 .unitHeaderDiv {
 	height: 18vw;
+	overflow-y: auto;
 	}
 
 .unitHeaderDiv p.stat {
@@ -91,6 +92,14 @@ a.tipAnchor:hover span.tooltip {
 	margin-top: 0;
 	margin-bottom: 1vh;
 	margin-left: 2vw;
+	font-size: 0.8em;
+	}
+
+.unitCaravanDiv {
+	margin-left: 2vw;
+	}
+
+.unitCaravanDiv p {
 	font-size: 0.8em;
 	}
 
