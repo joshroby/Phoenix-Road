@@ -706,17 +706,19 @@ function Site() {
 		routes[startKey] = {site:this,route:[{x:this.x,y:this.y}],distance:0};
 		for (var i=0;i<10;i++) {
 			for (var s in routes) {
-				for (n in routes[s].site.neighbors) {
-					var destination = routes[s].site.neighbors[n];
-					var destinationKey = destination.x + '_' + destination.y;
-					var newRoute = [];
-					for (var r in routes[s].route) {
-						newRoute.push(routes[s].route[r]);
-					};
-					newRoute.push({x:destination.x,y:destination.y});
-					var distance = routes[s].distance + Math.pow(Math.pow(destination.x - routes[s].site.x,2) + Math.pow(destination.y - routes[s].site.y,2),0.5);
-					if (routes[destinationKey] == undefined || distance < routes[destinationKey].distance) {
-						routes[destinationKey] = {site:destination,route:newRoute,distance:distance};
+				if (routes[s].site.hasVisited.p1) {
+					for (n in routes[s].site.neighbors) {
+						var destination = routes[s].site.neighbors[n];
+						var destinationKey = destination.x + '_' + destination.y;
+						var newRoute = [];
+						for (var r in routes[s].route) {
+							newRoute.push(routes[s].route[r]);
+						};
+						newRoute.push({x:destination.x,y:destination.y});
+						var distance = routes[s].distance + Math.pow(Math.pow(destination.x - routes[s].site.x,2) + Math.pow(destination.y - routes[s].site.y,2),0.5);
+						if (routes[destinationKey] == undefined || distance < routes[destinationKey].distance) {
+							routes[destinationKey] = {site:destination,route:newRoute,distance:distance};
+						};
 					};
 				};
 			};
@@ -842,20 +844,16 @@ function Unit(owner,startLoc,type) {
 			this.route = [];
 			var stepsThisLeg = 1;
 			var stepsInLeg = 0;
-			console.log(route[0],route[1]);
 			for (s=0;s<steps;s++) {
-				console.log(s,'/',steps,stepsThisLeg,'/',stepsInLeg);
 				if (stepsThisLeg > stepsInLeg) {
 					var lastWaypoint = waypointsToGo.shift();
 					var nextWaypoint = waypointsToGo[0];
-					console.log(lastWaypoint,nextWaypoint);
 					stepsThisLeg = 0;
 					stepsInLeg = Math.pow(Math.pow(nextWaypoint.x - lastWaypoint.x,2) + Math.pow(nextWaypoint.y - lastWaypoint.y,2),0.5) / speed;
 					var stepX = (nextWaypoint.x - lastWaypoint.x)/stepsInLeg;
 					var stepY = (nextWaypoint.y - lastWaypoint.y)/stepsInLeg;
 				};
 				this.route.push({x:lastWaypoint.x + stepsThisLeg*stepX,y:lastWaypoint.y + stepsThisLeg*stepY});
-				console.log(this.route);
 				stepsThisLeg++;
 			};
 			this.route[0].y += 10; // So unit doesn't overlap site
