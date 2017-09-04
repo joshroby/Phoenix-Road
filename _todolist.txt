@@ -1,25 +1,21 @@
 Down the Phoenix Road To Do List
 
+Per Mischa, the donkey belonged to Grams
 
-Site mouseover preview now displays travel time for multi-step routes
+'rep cost beyond materials' replaced with clearer text
+
+Trash Pile displays qty
+
+Mechanic no longer forces metals to be traded at its site
+
+canAfford() no longer counts partially-consumed commodities
 
 IMMEDIATE
 
-Carpet should only display if you've visited that site?
-Trash Pile does not display qty
-Per Mischa, the donkey belonged to Grams
-Nothing stops you from taking 10000 Mail site to site.
 
-'rep cost beyond materials' replace:
-	What you write means "You need to pay this much more, poor fucker"
-	To get the materials that you aren't already carrying will consume NNN reputation
-
-new Site() sometimes has stuff in Trash Pile
-Does build infrastructure assess your partially-consumed commodities?
-
-'Days to Destination' on mouseover needs to use the distance from pathTo()
 
 NEAR FUTURE
+
 - save game
 
 - completing a production pipeline
@@ -34,6 +30,9 @@ NEAR FUTURE
 	- new game sliders (in Options or outside?)
 	- turn off map zoom
 - Zoom is still wonky
+- Post Office as a infrastructure box
+	- only one or two mails available at a time
+	- addressed to specific destination site
 
 GAMEN
 	index.html content setup/injection

@@ -48,12 +48,13 @@ var model = {
 		};
 		startUnit.commodities.push({commodity:startCargo,qty:100});
 		startUnit.location.reputation.p1 -= cheapestValue * 100;
+		startUnit.name = "Grams' Old Donkey Cart";
 		
 		// Testing Cheats
-// 		startUnit.location.infrastructure.push(data.infrastructure.cartwright);
+		startUnit.location.infrastructure.push(data.infrastructure.cartwright);
 // 		startUnit.location.infrastructure.push(data.infrastructure.mechanic);
 // 		var dowser = new Unit(p1,startUnit.location,data.units.dowser);
-// 		var tinker = new Unit(p1,startUnit.location,data.units.tinkersCart);
+		var tinker = new Unit(p1,startUnit.location,data.units.tinkersCart);
 		
 		var localArea = [startUnit.location];
 		for (var i=0;i<5;i++) {
@@ -1240,9 +1241,11 @@ function Unit(owner,startLoc,type) {
 		// Count up cargo that can be used
 		for (var u in unitsAtSite) {
 			for (var c in unitsAtSite[u].commodities) {
-				var commodity = unitsAtSite[u].commodities[c].commodity;
-				if (outstanding[commodity] > 0) {
-					outstanding[commodity] -= unitsAtSite[u].commodities[c].qty / 100;
+				if (unitsAtSite[u].commodities[c].qty == 100) {
+					var commodity = unitsAtSite[u].commodities[c].commodity;
+					if (outstanding[commodity] > 0) {
+						outstanding[commodity] -= unitsAtSite[u].commodities[c].qty / 100;
+					};
 				};
 			};
 		};

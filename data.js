@@ -355,7 +355,7 @@ var data = {
 				'semi',
 				'constructionCrew'
 				],
-			inputs: ['metals','fuel'],
+			inputs: ['fuel'],
 			jobs: 4,
 		},
 		mine: {

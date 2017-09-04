@@ -101,11 +101,7 @@ var view = {
 		for (var i in p1.knownSites) {
 			for (var c in p1.knownSites[i].carpet) {
 				var newCarpet = document.createElementNS('http://www.w3.org/2000/svg','ellipse');
-// 				if (p1.knownSites[i].hasVisited.p1) {
-					newCarpet.setAttribute('fill','url(#greenGradient)');
-// 				} else {
-// 					newCarpet.setAttribute('fill','none');
-// 				};
+				newCarpet.setAttribute('fill','url(#greenGradient)');
 				newCarpet.setAttribute('stroke','none');
 				newCarpet.setAttribute('cx',p1.knownSites[i].x);
 				newCarpet.setAttribute('cy',p1.knownSites[i].y);
@@ -616,6 +612,9 @@ var view = {
 				var trashNameCell = document.createElement('td');
 				var icon = view.commodityIcon(site.trash[i].commodity);
 				trashNameCell.innerHTML = icon + ' ' + data.commodities[site.trash[i].commodity].name;
+				if (site.trash[i].qty < 100) {
+					trashNameCell.innerHTML += ' (' + site.trash[i].qty + '%)';
+				};
 				trashRow.appendChild(trashNameCell);
 				var trashPickupCell = document.createElement('td');
 				trashPickupCell.innerHTML = '<span class="fa fa-hand-paper-o fa-rotate-90"></span>';
@@ -689,7 +688,7 @@ var view = {
 		if (repCost == Infinity) {
 			buildItem.innerHTML += "<br />(requires exotic materials you do not have)";
 		} else {
-			buildItem.innerHTML += "<br />(" + repCost + " reputation beyond your materials)";
+			buildItem.innerHTML += "<br />(" + repCost + " reputation for the materials you don't already have)";
 		};
 		buildInfoDiv.appendChild(buildItem);		
 		
@@ -1111,7 +1110,7 @@ var view = {
 			if (repCost == Infinity) {
 				unitBuildCostP.innerHTML += "<br />(requires exotic materials you do not have)";
 			} else {
-				unitBuildCostP.innerHTML += "<br />(" + repCost + " reputation beyond your materials)";
+				unitBuildCostP.innerHTML += "<br />(" + repCost + " reputation for the materials you don't already have)";
 			};
 		};
 		unitBuildPreviewDiv.appendChild(unitBuildCostP);
