@@ -710,7 +710,7 @@ function Site() {
 		var startKey = this.x + '_' + this.y;
 		var routes = {};
 		routes[startKey] = {site:this,route:[{x:this.x,y:this.y}],distance:0};
-		for (var i=0;i<10;i++) {
+		for (var i=0;i<15;i++) {
 			for (var s in routes) {
 				if (routes[s].site.hasVisited.p1) {
 					for (n in routes[s].site.neighbors) {

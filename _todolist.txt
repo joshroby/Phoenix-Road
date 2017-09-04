@@ -1,17 +1,7 @@
 Down the Phoenix Road To Do List
 
 
-- caravan
-	- create Caravan button just makes all unitsAtSite into one caravan
-		- inCaravan = true
-		- caravan = {Unit,Unit,Unit}
-	- leave Caravan button drops a unit out of its caravan
-	- Unit.move() checks for caravans, then:
-		- caravans move at slowest Unit speed
-		- caravans share food/water/fuel (this is in Unit.eat())
-		- gives identical routes to all Units in caravan
-	- Cancel Route cancels all caravan units' routes
-
+Site mouseover preview now displays travel time for multi-step routes
 
 IMMEDIATE
 

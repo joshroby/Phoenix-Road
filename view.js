@@ -114,7 +114,8 @@ var view = {
 				for (var n in needs) {
 					r += needs[n].completion * ( 400 / needs.length);
 				};
-
+				
+				errors['view118'] = p1.knownSites[i];
 				newCarpet.setAttribute('rx',(0.5 * p1.knownSites[i].carpet[c].squish + 0.25) * r);
 				newCarpet.setAttribute('ry',(1 - (0.5 * p1.knownSites[i].carpet[c].squish + 0.25)) * r);
 				newCarpet.setAttribute('transform','rotate('+p1.knownSites[i].carpet[c].tilt*360+' '+p1.knownSites[i].x+' '+p1.knownSites[i].y+')');
@@ -488,23 +489,36 @@ var view = {
 			};
 		};
 		
-		if (view.focus.unit.location !== undefined && view.focus.unit.location.neighbors.indexOf(site) !== -1 && view.focus.unit.type.speed > 0) {
-			var travelMeansString = ' days by road';
-			var speed = view.focus.unit.type.speed;
+		var pathByRoad = false;
+		var travelTime;
+		var roadTravelTime;
+		var offroadTravelTime;
+		var travelMeansString;
+		if (view.focus.unit.location !== undefined && view.focus.unit.type.speed > 0) {
+			var path = view.focus.unit.location.pathTo(site);
+		};
+		
+		if (path !== undefined) {
+			roadTravelTime = Math.ceil(path.distance / view.focus.unit.type.speed);
+		};
+		
+		if (view.focus.unit.location !== undefined) {
 			var unitX = view.focus.unit.location.x;
 			var unitY = view.focus.unit.location.y;
 		} else {
-			var travelMeansString = ' days offroad';
-			var speed = view.focus.unit.type.offroadSpeed;
-			if (view.focus.unit.location !== undefined) {
-				var unitX = view.focus.unit.location.x;
-				var unitY = view.focus.unit.location.y;
-			} else {
-				var unitX = view.focus.unit.route[0].x;
-				var unitY = view.focus.unit.route[0].y;
-			};
+			var unitX = view.focus.unit.route[0].x;
+			var unitY = view.focus.unit.route[0].y;
 		};
-		var travelTime = Math.round(Math.pow(Math.pow(unitX - site.x,2) + Math.pow(unitY - site.y,2),0.5) / speed,0);
+		offroadTravelTime = Math.ceil(Math.pow(Math.pow(unitX - site.x,2) + Math.pow(unitY - site.y,2),0.5) / view.focus.unit.type.offroadSpeed);
+		
+		if (offroadTravelTime < roadTravelTime || roadTravelTime == undefined) {
+			travelMeansString = ' days offroad';
+			travelTime = offroadTravelTime;
+		} else {
+			travelMeansString = ' days by road';
+			travelTime = roadTravelTime;
+		};
+		
 		if (view.focus.unit.location !== site) {
 			var travelTimeP = document.createElement('p');
 			travelTimeP.innerHTML = '<strong>Travel Time:</strong> ' + travelTime + travelMeansString;

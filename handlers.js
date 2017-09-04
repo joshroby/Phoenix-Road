@@ -198,6 +198,9 @@ var handlers = {
 	revealMap: function() {
 		p1.knownSites = sites;
 		p1.knownLandmarks = landmarks;
+		for (i in sites) {
+			sites[i].hasVisited.p1 = true;
+		};
 		view.displayMap();
 	},
 
