@@ -794,12 +794,23 @@ function Unit(owner,startLoc,type) {
 		view.displayUnit(this);
 	};
 	
-	this.move = function(site) {		
-		var speed = this.type.speed;
+	this.move = function(site) {
 		if (this.offroad) {
-			speed = this.type.offroadSpeed;
+			var speed=this.type.offroadSpeed;
+			var distance = Math.pow(Math.pow(this.location.x - site.x,2) + Math.pow(this.location.y - site.y,2),.5);
+			var route = [{x:this.location.x,y:this.location.y},{x:site.x,y:site.y}];
+		} else {
+			var speed=this.type.speed;
+			var route = this.location.pathTo(site);
+			if (route == undefined) {
+				var distance = 1;
+				var route = undefined;
+			} else {
+				var distance = route.distance;
+				var route = route.route;
+			};
 		};
-		var distance = Math.pow(Math.pow(this.location.x - site.x,2) + Math.pow(this.location.y - site.y,2),.5);
+		var steps = distance / speed;
 		var foodEaten = distance / speed * this.type.crew;
 		var waterDrank = 0;
 		var fuelBurned = 0;
@@ -809,7 +820,6 @@ function Unit(owner,startLoc,type) {
 		var waterStore = 0;
 		var fuelStore = 0;
 		var cargo = 0;
-		var steps = distance / speed;
 		for (var i in this.commodities) {
 			if (this.commodities[i].commodity == 'food') {
 				foodStore += this.commodities[i].qty;
@@ -823,19 +833,35 @@ function Unit(owner,startLoc,type) {
 			};
 		};
 				
-		if ((this.location.neighbors.indexOf(site) !== -1 || this.offroad == true) && waterStore >= waterDrank && foodStore >= foodEaten && fuelStore >= fuelBurned && cargo <= this.type.cargo && !this.isBuilding && !this.isSurveying) {
-			var diffX = site.x - this.location.x;
-			var diffY = site.y - this.location.y;
-			this.route = [];
+		if (route !== undefined && waterStore >= waterDrank && foodStore >= foodEaten && fuelStore >= fuelBurned && cargo <= this.type.cargo && !this.isBuilding && !this.isSurveying) {
 			this.inTransit = true;
 			this.departed = false;
+			var diffX = undefined;
+			var diffY = undefined;
+			var waypointsToGo = route;
+			this.route = [];
+			var stepsThisLeg = 1;
+			var stepsInLeg = 0;
+			console.log(route[0],route[1]);
 			for (s=0;s<steps;s++) {
-				this.route.push({x:this.location.x + s*diffX/steps,y:this.location.y + s*diffY/steps});
+				console.log(s,'/',steps,stepsThisLeg,'/',stepsInLeg);
+				if (stepsThisLeg > stepsInLeg) {
+					var lastWaypoint = waypointsToGo.shift();
+					var nextWaypoint = waypointsToGo[0];
+					console.log(lastWaypoint,nextWaypoint);
+					stepsThisLeg = 0;
+					stepsInLeg = Math.pow(Math.pow(nextWaypoint.x - lastWaypoint.x,2) + Math.pow(nextWaypoint.y - lastWaypoint.y,2),0.5) / speed;
+					var stepX = (nextWaypoint.x - lastWaypoint.x)/stepsInLeg;
+					var stepY = (nextWaypoint.y - lastWaypoint.y)/stepsInLeg;
+				};
+				this.route.push({x:lastWaypoint.x + stepsThisLeg*stepX,y:lastWaypoint.y + stepsThisLeg*stepY});
+				console.log(this.route);
+				stepsThisLeg++;
 			};
 			this.route[0].y += 10; // So unit doesn't overlap site
 			this.route.push(site);
 			model.checkClock();
-		} else if (this.location.neighbors.indexOf(site) == -1 && this.offroad == false) {
+		} else if (route == undefined) {
 			gamen.displayPassage(new Passage('No path from ' + this.name + ' to ' + site.name + ". You'll have to go offroad."));
 		} else if (foodStore < foodEaten) {
 			gamen.displayPassage(new Passage(this.name + " needs "+Math.ceil(foodEaten)+"% load of food for the " + Math.round(steps,0) + "-day trip to " + site.name + "!"));
