@@ -1,6 +1,4 @@
 var gamen = {
-
-	clocks: [],
 	
 	prettyList: function(list,andor) {
 		if (andor == undefined) {andor = 'and'};
@@ -17,6 +15,25 @@ var gamen = {
 			};
 		};
 		return prettyList;
+	},
+	
+	saveGame: function() {
+		var name = 'Autosave';
+		var saveGame;
+		if (model.gamenSave !== undefined) {
+			saveGame = gamenSave;
+		} else if (model.flatGame !== undefined) {
+			saveGame = model.flatGame();
+		} else {
+			console.log('No Game to Save!');
+		};
+		if (saveGame !== undefined) {
+			var saveName = prompt('Overwrite current save or rename:',name);
+			saveName = model.gameSaveName + ' ' + name;
+			console.log(saveGame);
+			localStorage[saveName] = JSON.stringify(saveGame);
+		};
+
 	},
 
 	passageQueue: [],
@@ -149,12 +166,13 @@ function Clock(start) {
 				};
 			};
 			for (i in previousEvents) {
-				previousEvents[i]();
+				gamenEventPointers[previousEvents[i]]();
 			};
 		};
 	};
-	
-	gamen.clocks.push(this);
+};
+
+function Event(eventKey,eventArgs) {
 };
 
 function Passage(text,choiceArray,speaker,bust,bustPosition) {

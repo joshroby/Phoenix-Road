@@ -26,7 +26,7 @@ var view = {
 		view.displayMap();
 		view.displayUnit(view.focus.unit);
 // 		view.displaySiteDetails(view.focus.unit.location);
-		model.clock.logEventIn(8.64e+7,view.refreshGameDisplay);
+		model.clock.logEventIn(8.64e+7,'refreshGameDisplay');
 	},
 
 	displayMap: function() {

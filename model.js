@@ -9,6 +9,9 @@ var errors = {};
 
 var model = {
 
+	gameName: 'Down the Phoenix Road',
+	gameSaveName: 'PhoenixRoad',
+
 	options: {
 		dayLength: 1000,
 		paused: true,
@@ -18,7 +21,7 @@ var model = {
 		
 		model.clock = new Clock(new Date(new Date().getTime() + 3.154e+12 + 3.154e+12 * Math.random() ));
 		model.clock.timeStep = 8.64e+7;
-		model.clock.logEventIn(8.64e+7,model.eachDay);
+		model.clock.logEventIn(8.64e+7,'eachDay');
 		
 		model.newMap();
 		units = [];
@@ -53,7 +56,7 @@ var model = {
 		// Testing Cheats
 		startUnit.location.infrastructure.push(data.infrastructure.cartwright);
 // 		startUnit.location.infrastructure.push(data.infrastructure.mechanic);
-// 		var dowser = new Unit(p1,startUnit.location,data.units.dowser);
+		var dowser = new Unit(p1,startUnit.location,data.units.dowser);
 		var tinker = new Unit(p1,startUnit.location,data.units.tinkersCart);
 		
 		var localArea = [startUnit.location];
@@ -332,7 +335,7 @@ var model = {
 		view.displayUnit(view.focus.unit);
 		view.displayMap();
 		
-		model.clock.logEventIn(8.64e+7,model.eachDay);
+		model.clock.logEventIn(8.64e+7,'eachDay');
 		
 	},
 	
@@ -394,6 +397,51 @@ var model = {
 		var location = view.focus.unit.location;
 		location.infrastructure.splice(location.infrastructure.indexOf(infrastructure));
 		view.displayUnit(newUnit);
+	},
+	
+	flatGame: function() {
+		var flatGame = {};
+		flatGame.saveDate = new Date();
+		flatGame.clock = model.clock;
+		flatGame.landmarks = landmarks;
+		
+		flatGame.players = {};
+		for (var player in players) {
+			nextPlayer = {};
+			nextPlayer.vision = players[player].vision;
+			nextPlayer.knownSiteIndices = [];
+			for (var i of players[player].knownSites) {
+				for (var s in sites) {
+					if (sites[s] == i) {
+						nextPlayer.knownSiteIndices.push(s)
+					};
+				};
+			};
+			nextPlayer.knownLandmarkIndices = [];
+			for (var i of players[player].knownLandmarks) {
+				for (var s in landmarks) {
+					if (landmarks[s] == i) {
+						nextPlayer.knownLandmarkIndices.push(s)
+					};
+				};
+			};
+			flatGame.players[player] = nextPlayer;
+		};
+		
+		flatGame.sites = [];
+		for (var site in sites) {
+			flatGame.sites.push(sites[site].flat());
+		};
+		
+		flatGame.units = [];
+		for (var unit in units) {
+			flatGame.units.push(units[unit].flat());
+		};
+		
+		console.log(flatGame);
+		console.log(JSON.stringify(flatGame));
+
+		return flatGame;
 	},
 
 };
@@ -509,6 +557,38 @@ function Site() {
 	};
 	if (this.commodities.stone >= 0.5 && this.commodities.lumber >= 0.1) {
 		this.infrastructure.push(data.infrastructure.hovels);
+	};
+	
+	this.flat = function() {
+		var flat = {};
+		
+		var simples = ['name','adjustment','carpet','commodities','danger','goodwill','hasSurveyed','trash','wages','x','y'];
+		for (var i of simples) {
+			flat[i] = this[i];
+		};
+		
+		flat.neighborIndices = [];
+		for (i of this.neighbors) {
+			flat.neighborIndices.push(sites.indexOf(i));
+		};
+		flat.infrastructureKeys = [];
+		for (i of this.infrastructure) {
+			for (d in data.infrastructure) {
+				if (i == data.infrastructure[d]) {
+					flat.infrastructureKeys.push(d);
+				};
+			};
+		};
+		flat.resourceKeys = [];
+		for (i of this.resources) {
+			for (d in data.resources) {
+				if (i == data.resources[d]) {
+					flat.resourceKeys.push(d);
+				};
+			};
+		};
+
+		return flat;
 	};
 		
 	this.needs = function() {
@@ -787,6 +867,38 @@ function Unit(owner,startLoc,type) {
 		unitStuff: [],
 		siteStuff: [],
 		balance: 0,
+	};
+	
+	// Functions
+	
+	this.flat = function() {
+		var flat = {};
+		
+		var simples = ['name','commodities','inTransit','isSurveying','surveyComplete','surveyPotentials','isBuilding','buildComplete','buildProject'];
+		for (var i of simples) {
+			flat[i] = this[i];
+		};
+		
+		// owner, type, caravan, location
+		flat.locationIndex = sites.indexOf(this.location);
+		flat.caravanIndices = [];
+		if (this.caravan !== undefined) {
+			for (var i of this.caravan) {
+				flat.caravanIndices.push(units.indexOf(i));
+			};
+		};
+		for (i in players) {
+			if (this.owner == players[i]) {
+				flat.ownerKey = i;
+			};
+		};
+		for (i in data.units) {
+			if (this.type == data.units[i]) {
+				flat.typeKey = i;
+			};
+		};
+
+		return flat;
 	};
 	
 	this.rename = function(newName) {
@@ -1270,4 +1382,16 @@ function Unit(owner,startLoc,type) {
 	};
 	
 	units.push(this);
+};
+
+var gamenEventPointers = {
+
+	eachDay: function() {
+		model.eachDay();
+	},
+	
+	refreshGameDisplay: function() {
+		view.refreshGameDisplay();
+	},
+	
 };
