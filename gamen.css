@@ -1,3 +1,37 @@
+
+
+#loadGameDiv {
+	width:50vw;
+	margin-left: 25vw;
+	margin-top: 5vh;
+}
+
+#loadGameHeader {
+	background-color: darkslategray;
+	background: linear-gradient(white,darkslategray);
+	color: white;
+	text-align: center;
+	width: 100%;
+}
+
+.loadGameItem {
+	margin: 1vw;
+	width: 40%;
+	float: left;
+}
+
+.loadGameTimeDiv {
+	margin: 1vw;
+	width: 25%;
+	float: left;
+	font-size: 0.8em;
+}
+
+.loadGameBtn {
+	float: left;
+	margin: 1vw;
+}
+
 #gamenModalBacksplash {
 	display: none;
 	position: fixed;

@@ -1,4 +1,17 @@
 var gamen = {
+
+	init: function() {
+		var titleHead = document.getElementById('titleHead');
+		var gameTitle = model.gameTitle;
+		if (titleHead !== undefined && gameTitle !== undefined) {
+			titleHead.innerHTML = gameTitle;
+		};
+		
+		var loadGameDiv = document.getElementById('loadGameDiv');
+		if (loadGameDiv !== undefined) {
+			gamen.displayLoadGameDiv();
+		};
+	},
 	
 	prettyList: function(list,andor) {
 		if (andor == undefined) {andor = 'and'};
@@ -17,6 +30,59 @@ var gamen = {
 		return prettyList;
 	},
 	
+	displayLoadGameDiv: function(saveGames,gameSavePrefix) {
+		var loadGameDiv = document.getElementById('loadGameDiv');
+		loadGameDiv.innerHTML = '';
+		var gameSavePrefix = model.gameSavePrefix;
+		var localStorageKeys= Object.keys(localStorage);
+		var saveGames = [];
+		for (s in localStorageKeys) {
+			if (localStorageKeys[s].startsWith(gameSavePrefix)) {
+				saveGames.push(localStorageKeys[s]);
+			}
+		};
+		if (saveGames.length > 0) {
+			var loadGameHeader = document.createElement('div');
+			loadGameHeader.id = 'loadGameHeader';
+			loadGameHeader.innerHTML = 'Continue a Saved Game';
+			loadGameDiv.appendChild(loadGameHeader);
+			for (var i in saveGames) {
+				var saveDate = new Date(JSON.parse(localStorage[saveGames[i]]).saveDate);
+				var since = new Date() - saveDate;
+				if (since < 8.64e+7) {
+					saveDate = 
+						['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][saveDate.getDay()] + ", " +
+						['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][saveDate.getMonth()] + " " +
+						saveDate.getDate() + ", " +
+						saveDate.getFullYear() + " " +
+						saveDate.getHours() + ":" +
+						saveDate.getMinutes() + " " ;
+				} else {
+					saveDate = since + 's ago';
+				}
+				var loadGameItem = document.createElement('div');
+				loadGameItem.className = 'loadGameItem';
+				loadGameItem.innerHTML = saveGames[i].substring(gameSavePrefix.length);
+				loadGameItem.innerHTML += " ";
+				loadGameDiv.appendChild(loadGameItem);
+				var loadGameBtn = document.createElement('div');
+				loadGameBtn.className = 'loadGameTimeDiv';
+				loadGameBtn.innerHTML = saveDate;
+				loadGameDiv.appendChild(loadGameBtn);
+				var loadGameBtn = document.createElement('button');
+				loadGameBtn.className = 'loadGameBtn';
+				loadGameBtn.innerHTML = 'Continue';
+				loadGameBtn.setAttribute('onclick','gamen.loadGame("'+saveGames[i]+'")');
+				loadGameDiv.appendChild(loadGameBtn);
+				var loadGameBtn = document.createElement('button');
+				loadGameBtn.className = 'loadGameBtn';
+				loadGameBtn.innerHTML = 'Delete';
+				loadGameBtn.setAttribute('onclick','gamen.deleteGame("'+saveGames[i]+'")');
+				loadGameDiv.appendChild(loadGameBtn);
+			};
+		};
+	},
+	
 	saveGame: function() {
 		var name = 'Autosave';
 		var saveGame;
@@ -29,11 +95,21 @@ var gamen = {
 		};
 		if (saveGame !== undefined) {
 			var saveName = prompt('Overwrite current save or rename:',name);
-			saveName = model.gameSaveName + ' ' + name;
-			console.log(saveGame);
+			saveName = model.gameSavePrefix + ' ' + saveName;
 			localStorage[saveName] = JSON.stringify(saveGame);
 		};
 
+	},
+	
+	loadGame: function(storageKey) {
+		var gameSave = JSON.parse(localStorage[storageKey]);
+		model.unflattenGame(gameSave);
+		view.refreshGameDisplay();
+	},
+	
+	deleteGame: function(storageKey) {
+		localStorage.removeItem(storageKey);
+		gamen.displayLoadGameDiv();
 	},
 
 	passageQueue: [],
@@ -170,9 +246,6 @@ function Clock(start) {
 			};
 		};
 	};
-};
-
-function Event(eventKey,eventArgs) {
 };
 
 function Passage(text,choiceArray,speaker,bust,bustPosition) {

@@ -1,22 +1,15 @@
 Down the Phoenix Road To Do List
 
-Per Mischa, the donkey belonged to Grams
 
-'rep cost beyond materials' replaced with clearer text
 
-Trash Pile displays qty
-
-Mechanic no longer forces metals to be traded at its site
-
-canAfford() no longer counts partially-consumed commodities
+- save game
+- load game
+- load game UI
 
 IMMEDIATE
 
 
-
 NEAR FUTURE
-
-- save game
 
 - completing a production pipeline
 	- when you decrease the price of a commodity, check for infr that take it as inputs

@@ -12,15 +12,14 @@
 		<script src="view.js"></script>
 	</head>
 
-	<body>
+	<body onload='gamen.init()'>
 		
 		<div id='mainMenuDiv'>
 		
-			<h4 id='titleHead'>Down the Phoenix Road</h4>
+			<h4 id='titleHead'></h4>
 		
 			<button onclick = 'handlers.newGame()'>New Game</button>
-			<button id = 'saveButton' disabled onclick = 'handlers.saveGame()'>Save Game</button>
-			<button id = 'loadGameButton' disabled onclick = 'view.switchToIntroMode()'>Load Game</button>
+			<button id = 'saveButton' disabled onclick = 'gamen.saveGame()'>Save Game</button>
 			<button disabled onclick='handlers.toggleOptions()' >Options</span></button>
 		
 		</div>
@@ -35,11 +34,11 @@
 				<p>What will you find Down the Phoenix Road?</p>
 			</div>
 					
-			<div id='detailsUnitDiv'>
+			<div id='detailsUnitDiv' hidden>
 				&nbsp;
 			</div>
 			
-			<div id='centerColumn'>
+			<div id='centerColumn' hidden>
 		
 				<div id='mapDiv'>
 					<svg id='mapSVG'>
@@ -59,11 +58,15 @@
 			
 			</div>
 			
-			<div id='detailsSiteDiv'>
+			<div id='detailsSiteDiv' hidden>
 				&nbsp;
 			</div>
 		
 			
+		</div>
+			
+		<div id='loadGameDiv'>
+		
 		</div>
 		
 		<div id='gamenModalBacksplash'>

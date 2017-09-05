@@ -2,15 +2,15 @@ var map = {};
 var sites = [];
 var landmarks = [];
 var units = [];
-var p1 = {};
-var players;
+var players = {};
+players.p1 = {};
 
 var errors = {};
 
 var model = {
 
-	gameName: 'Down the Phoenix Road',
-	gameSaveName: 'PhoenixRoad',
+	gameTitle: 'Down the Phoenix Road',
+	gameSavePrefix: 'PhoenixRoad',
 
 	options: {
 		dayLength: 1000,
@@ -25,14 +25,13 @@ var model = {
 		
 		model.newMap();
 		units = [];
-		p1 = {};
+		players.p1 = {};
 		
-		p1.vision = 60;
-		p1.knownSites = [];
-		p1.knownLandmarks = [];
-		players = {p1:p1};
+		players.p1.vision = 60;
+		players.p1.knownSites = [];
+		players.p1.knownLandmarks = [];
 		
-		var startUnit = new Unit(p1,undefined,data.units.donkeyCart);
+		var startUnit = new Unit(players.p1,undefined,data.units.donkeyCart);
 		if (startUnit.location.neighbors.length == 0) {
 			startUnit.location = sites[Math.random() * sites.length << 0];
 		};
@@ -56,8 +55,8 @@ var model = {
 		// Testing Cheats
 		startUnit.location.infrastructure.push(data.infrastructure.cartwright);
 // 		startUnit.location.infrastructure.push(data.infrastructure.mechanic);
-		var dowser = new Unit(p1,startUnit.location,data.units.dowser);
-		var tinker = new Unit(p1,startUnit.location,data.units.tinkersCart);
+		var dowser = new Unit(players.p1,startUnit.location,data.units.dowser);
+		var tinker = new Unit(players.p1,startUnit.location,data.units.tinkersCart);
 		
 		var localArea = [startUnit.location];
 		for (var i=0;i<5;i++) {
@@ -256,13 +255,13 @@ var model = {
 			knownValues[c] = 0;
 			totalSites[c] = 0;
 		};
-		for (var s in p1.knownSites) {
-			if (p1.knownSites[s].hasVisited.p1) {
+		for (var s in players.p1.knownSites) {
+			if (players.p1.knownSites[s].hasVisited.p1) {
 				for (var c in knownValues) {
-					var traded = p1.knownSites[s].trading();
+					var traded = players.p1.knownSites[s].trading();
 					if (traded[c] !== undefined) {
 						totalSites[c]++;
-						knownValues[c] += p1.knownSites[s].commodities[c];
+						knownValues[c] += players.p1.knownSites[s].commodities[c];
 					};
 				};
 			};
@@ -369,7 +368,7 @@ var model = {
 		};
 		
 		// spawning the unit
-		var newUnit = new Unit(p1,view.focus.unit.location,unitType);
+		var newUnit = new Unit(players.p1,view.focus.unit.location,unitType);
 		view.focus.unit = newUnit;
 		view.displayUnit(newUnit);
 	},
@@ -403,6 +402,13 @@ var model = {
 		var flatGame = {};
 		flatGame.saveDate = new Date();
 		flatGame.clock = model.clock;
+		flatGame.eventQueue = [];
+		for (var e in model.clock.events) {
+			flatGame.eventQueue.push({time:e,events:model.clock.events[e]});
+		};
+		console.log(model.clock);
+		console.log(flatGame.eventQueue);
+		
 		flatGame.landmarks = landmarks;
 		
 		flatGame.players = {};
@@ -442,6 +448,81 @@ var model = {
 		console.log(JSON.stringify(flatGame));
 
 		return flatGame;
+	},
+	
+	unflattenGame: function(saveGame) {
+		console.log(saveGame);
+
+		model.clock = new Clock();
+		model.clock.time = new Date(saveGame.clock.time);
+		model.clock.timeStep = saveGame.clock.timeStep;
+		for (var e in saveGame.eventQueue) {
+			for (var f of saveGame.eventQueue[e].events) {
+				model.clock.logEventWhen(new Date(parseInt(saveGame.eventQueue[e].time)),f);
+			};
+		};
+
+		landmarks = saveGame.landmarks;
+		
+		sites = [];
+		for (var s in saveGame.sites) {
+			var newSite = new Site();
+		};
+		var simples = ['name','adjustment','carpet','commodities','danger','goodwill','hasVisited','hasSurveyed','trash','wages','x','y'];
+		for (var s in saveGame.sites) {
+			for (var d of simples) {
+				sites[s][d] = saveGame.sites[s][d];
+			};
+			sites[s].neighbors = [];
+			for (var n of saveGame.sites[s].neighborIndices) {
+				sites[s].neighbors.push(sites[n]);
+			};
+			delete sites[s].neighborIndices;
+			
+			sites[s].resources = [];
+			for (var r of saveGame.sites[s].resourceKeys) {
+				sites[s].resources.push(data.resources[r]);
+			};
+			
+			sites[s].infrastructure = [];
+			for (var i of saveGame.sites[s].infrastructureKeys) {
+				sites[s].infrastructure.push(data.infrastructure[i]);
+			};
+		};
+		
+		players = saveGame.players;
+		for (var p in players) {
+			players[p].knownSites = [];
+			for (s of players[p].knownSiteIndices) {
+				players[p].knownSites.push(sites[s]);
+			};
+			delete players[p].knownSiteIndices ;
+			players[p].knownLandmarks = [];
+			for (l of players[p].knownLandmarkIndices) {
+				players[p].knownLandmarks.push(landmarks[l]);
+			};
+			delete players[p].knownLandmarkIndices ;
+		};
+		
+		units = [];
+		var simples = ['name','commodities','inTransit','route','isSurveying','surveyComplete','surveyPotentials','isBuilding','buildComplete','buildProject'];
+		for (var u of saveGame.units) {
+			var newUnit = new Unit(players[u.ownerKey],sites[u.locationIndex],data.units[u.typeKey]);
+			for (var s of simples) {
+				newUnit[s] = u[s];
+			};
+			if (u.caravan !== undefined) {
+				newUnit.caravan = [];
+				for (var p of u.caravan) {
+					newUnit.caravan.push(units[p]);
+				};
+			};
+			if (u.route !== undefined) {
+				u.route.splice(u.route.length-1,1,sites[u.route[u.route.length-1]])
+			};
+		};
+		view.focus.unit = units[0];
+		
 	},
 
 };
@@ -562,7 +643,7 @@ function Site() {
 	this.flat = function() {
 		var flat = {};
 		
-		var simples = ['name','adjustment','carpet','commodities','danger','goodwill','hasSurveyed','trash','wages','x','y'];
+		var simples = ['name','adjustment','carpet','commodities','danger','goodwill','hasVisited','hasSurveyed','trash','wages','x','y'];
 		for (var i of simples) {
 			flat[i] = this[i];
 		};
@@ -821,7 +902,7 @@ function Unit(owner,startLoc,type) {
 	if (owner !== undefined) {
 		this.owner = owner;
 	} else {
-		this.owner = p1;
+		this.owner = players.p1;
 	};
 	if (startLoc !== undefined) {
 		this.location = startLoc;
@@ -874,9 +955,12 @@ function Unit(owner,startLoc,type) {
 	this.flat = function() {
 		var flat = {};
 		
-		var simples = ['name','commodities','inTransit','isSurveying','surveyComplete','surveyPotentials','isBuilding','buildComplete','buildProject'];
+		var simples = ['name','commodities','inTransit','route','isSurveying','surveyComplete','surveyPotentials','isBuilding','buildComplete','buildProject'];
 		for (var i of simples) {
 			flat[i] = this[i];
+		};
+		if (flat.route !== undefined) {
+			flat.route[flat.route.length-1] = sites.indexOf(flat.route[flat.route.length-1]);
 		};
 		
 		// owner, type, caravan, location

@@ -18,11 +18,17 @@ var view = {
 	
 	clearDetailsDivs: function() {
 		document.getElementById('introDiv').style.display = 'none';
+		document.getElementById('detailsUnitDiv').style.display = 'block';
 		document.getElementById('detailsUnitDiv').innerHTML = '&nbsp;';
+		document.getElementById('detailsSiteDiv').style.display = 'block';
 		document.getElementById('detailsSiteDiv').innerHTML = '&nbsp;';
+		document.getElementById('centerColumn').style.display = 'block';
+		document.getElementById('saveButton').disabled = false;
+		
 	},
 	
 	refreshGameDisplay: function() {
+		view.clearDetailsDivs();
 		view.displayMap();
 		view.displayUnit(view.focus.unit);
 // 		view.displaySiteDetails(view.focus.unit.location);
@@ -98,46 +104,46 @@ var view = {
 		background.setAttribute('height','1000');
 		svg.appendChild(background);
 		
-		for (var i in p1.knownSites) {
-			for (var c in p1.knownSites[i].carpet) {
+		for (var i in players.p1.knownSites) {
+			for (var c in players.p1.knownSites[i].carpet) {
 				var newCarpet = document.createElementNS('http://www.w3.org/2000/svg','ellipse');
 				newCarpet.setAttribute('fill','url(#greenGradient)');
 				newCarpet.setAttribute('stroke','none');
-				newCarpet.setAttribute('cx',p1.knownSites[i].x);
-				newCarpet.setAttribute('cy',p1.knownSites[i].y);
+				newCarpet.setAttribute('cx',players.p1.knownSites[i].x);
+				newCarpet.setAttribute('cy',players.p1.knownSites[i].y);
 				var r = 0;
-				var needs = p1.knownSites[i].needs();
+				var needs = players.p1.knownSites[i].needs();
 				for (var n in needs) {
 					r += needs[n].completion * ( 400 / needs.length);
 				};
 				
-				errors['view118'] = p1.knownSites[i];
-				newCarpet.setAttribute('rx',(0.5 * p1.knownSites[i].carpet[c].squish + 0.25) * r);
-				newCarpet.setAttribute('ry',(1 - (0.5 * p1.knownSites[i].carpet[c].squish + 0.25)) * r);
-				newCarpet.setAttribute('transform','rotate('+p1.knownSites[i].carpet[c].tilt*360+' '+p1.knownSites[i].x+' '+p1.knownSites[i].y+')');
+				errors['view118'] = players.p1.knownSites[i];
+				newCarpet.setAttribute('rx',(0.5 * players.p1.knownSites[i].carpet[c].squish + 0.25) * r);
+				newCarpet.setAttribute('ry',(1 - (0.5 * players.p1.knownSites[i].carpet[c].squish + 0.25)) * r);
+				newCarpet.setAttribute('transform','rotate('+ players.p1.knownSites[i].carpet[c].tilt*360+' '+players.p1.knownSites[i].x+' '+players.p1.knownSites[i].y+')');
 				svg.appendChild(newCarpet);
 			};
 		};
 		
-		for (var i in p1.knownLandmarks) {
+		for (var i in players.p1.knownLandmarks) {
 			var newLandmark = document.createElementNS('http://www.w3.org/2000/svg','ellipse');
 			newLandmark.setAttribute('fill','darkorange');
-			newLandmark.setAttribute('cx',p1.knownLandmarks[i].x);
-			newLandmark.setAttribute('cy',p1.knownLandmarks[i].y);
-			newLandmark.setAttribute('rx',(0.5 * p1.knownLandmarks[i].size + 0.25) * 100);
-			newLandmark.setAttribute('ry',(1 - (0.5 * p1.knownLandmarks[i].size + 0.25)) * 100);
-			newLandmark.setAttribute('transform','rotate('+p1.knownLandmarks[i].type*360+' '+p1.knownLandmarks[i].x+' '+p1.knownLandmarks[i].y+')');
+			newLandmark.setAttribute('cx',players.p1.knownLandmarks[i].x);
+			newLandmark.setAttribute('cy',players.p1.knownLandmarks[i].y);
+			newLandmark.setAttribute('rx',(0.5 * players.p1.knownLandmarks[i].size + 0.25) * 100);
+			newLandmark.setAttribute('ry',(1 - (0.5 * players.p1.knownLandmarks[i].size + 0.25)) * 100);
+			newLandmark.setAttribute('transform','rotate('+ players.p1.knownLandmarks[i].type*360+' '+players.p1.knownLandmarks[i].x+' '+players.p1.knownLandmarks[i].y+')');
 			svg.appendChild(newLandmark);
 		};
 		
-		for (var i in p1.knownSites) {
-			for (var n in p1.knownSites[i].neighbors) {
+		for (var i in players.p1.knownSites) {
+			for (var n in players.p1.knownSites[i].neighbors) {
 				var newRoute = document.createElementNS('http://www.w3.org/2000/svg','path');
 				newRoute.setAttribute('fill','none');
 				newRoute.setAttribute('stroke','yellow');
-				var d = 'M' + p1.knownSites[i].x + ',' + p1.knownSites[i].y;
-				var dx = p1.knownSites[i].neighbors[n].x - p1.knownSites[i].x;
-				var dy = p1.knownSites[i].neighbors[n].y - p1.knownSites[i].y;
+				var d = 'M' + players.p1.knownSites[i].x + ',' + players.p1.knownSites[i].y;
+				var dx = players.p1.knownSites[i].neighbors[n].x - players.p1.knownSites[i].x;
+				var dy = players.p1.knownSites[i].neighbors[n].y - players.p1.knownSites[i].y;
 				var dc1x = dx // * Math.random();
 				var dc1y = dy // * Math.random();
 				var dc2x = dx // * Math.random();
@@ -148,34 +154,34 @@ var view = {
 			};
 		};
 		
-		for (var i in p1.knownSites) {
-			var siteIndex = sites.indexOf(p1.knownSites[i]);
+		for (var i in players.p1.knownSites) {
+			var siteIndex = sites.indexOf(players.p1.knownSites[i]);
 			
 			var siteLabel = document.createElementNS('http://www.w3.org/2000/svg','text');
-			if (p1.knownSites[i].hasVisited.p1) {
+			if (players.p1.knownSites[i].hasVisited.p1) {
 				siteLabel.setAttribute('fill','black');
 			} else {
 				siteLabel.setAttribute('fill','dimgray');
 			};
-			siteLabel.setAttribute('x',p1.knownSites[i].x + 10);
-			siteLabel.setAttribute('y',p1.knownSites[i].y + 5);
+			siteLabel.setAttribute('x',players.p1.knownSites[i].x + 10);
+			siteLabel.setAttribute('y',players.p1.knownSites[i].y + 5);
 			siteLabel.setAttribute('onmouseover','handlers.displaySiteDetails('+siteIndex+')');
-			siteLabel.innerHTML = p1.knownSites[i].name;
+			siteLabel.innerHTML = players.p1.knownSites[i].name;
 			svg.appendChild(siteLabel);
 
 			var newSite = document.createElementNS('http://www.w3.org/2000/svg','circle');
 			newSite.id = 'site_' + i;
-			if (p1.knownSites[i].hasVisited.p1) {
+			if (players.p1.knownSites[i].hasVisited.p1) {
 				newSite.setAttribute('fill','black');
 			} else {
 				newSite.setAttribute('fill','dimgray');
 			};
 			newSite.setAttribute('stroke','yellow');
-			newSite.setAttribute('cx',p1.knownSites[i].x);
-			newSite.setAttribute('cy',p1.knownSites[i].y);
-			if (p1.knownSites[i].population < 100) {
+			newSite.setAttribute('cx',players.p1.knownSites[i].x);
+			newSite.setAttribute('cy',players.p1.knownSites[i].y);
+			if (players.p1.knownSites[i].population < 100) {
 				newSite.setAttribute('r',4);
-			} else if (p1.knownSites[i].population < 400) {
+			} else if (players.p1.knownSites[i].population < 400) {
 				newSite.setAttribute('r',5);
 			} else {
 				newSite.setAttribute('r',6);
@@ -226,7 +232,7 @@ var view = {
 		progressExploreBar.className = 'progressBar bigProgressBar';
 		var progressExploreDoneBar = document.createElement('div');
 		progressExploreDoneBar.className = 'progressBarDone';
-		var percentage = Math.round(p1.knownSites.length/sites.length * 100,0);
+		var percentage = Math.round(players.p1.knownSites.length/sites.length * 100,0);
 		var caption = percentage + "%";
 		progressExploreDoneBar.innerHTML = caption;
 		progressExploreDoneBar.style.width = percentage + '%';
@@ -561,7 +567,7 @@ var view = {
 				} else if (site.infrastructure[i].upgrade !== undefined) {
 					var upgrade = site.infrastructure[i].upgrade;
 					var upgradeString = upgrade.charAt(0).toUpperCase() + upgrade.slice(1);
-					var current = p1[upgrade] / 60;
+					var current = players.p1[upgrade] / 60;
 					var cost = current*500;
 					var infrastructureDiv = document.createElement('div');
 					var infrastructureHead = document.createElement('h3');
@@ -595,7 +601,7 @@ var view = {
 		// Trash Pile
 		var unitPresent = false;
 		for (var u in units) {
-			if (units[u].location == site && units[u].owner == p1) {
+			if (units[u].location == site && units[u].owner == players.p1) {
 				unitPresent = true;
 			};
 		};
