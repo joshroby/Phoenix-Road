@@ -359,6 +359,7 @@ var model = {
 				for (var c in unitsHere[u].commodities) {
 					if (unitsHere[u].commodities[c].commodity == buildCost[i] && unitsHere[u].commodities[c].qty == 100 && unpaid) {
 						unitsHere[u].commodities.splice(c,1);
+						unpaid = false;
 					};
 				};
 			};

@@ -1,13 +1,13 @@
 Down the Phoenix Road To Do List
 
-- tooltip on refresh telling you how much it'll cost
-- load game correctly sets reputation at sites
 
 
+
+- build sites will enable a build when you have the commodity there but won't take the commodity from your cargo
 
 
 IMMEDIATE
-- build sites will enable a build when you have the commodity there but won't take the commodity from your cargo
+
 
 NEAR FUTURE
 
@@ -20,8 +20,8 @@ NEAR FUTURE
 	- shading on landmarks
 - Options
 	- turn off model.checkClock()
-	- new game sliders (in Options or outside?)
 	- turn off map zoom
+	- new game sliders (in Options or outside?)
 - Zoom is still wonky
 - Post Office as a infrastructure box
 	- only one or two mails available at a time
