@@ -53,10 +53,10 @@ var model = {
 		startUnit.name = "Grams' Old Donkey Cart";
 		
 		// Testing Cheats
-		startUnit.location.infrastructure.push(data.infrastructure.cartwright);
+// 		startUnit.location.infrastructure.push(data.infrastructure.cartwright);
 // 		startUnit.location.infrastructure.push(data.infrastructure.mechanic);
-		var dowser = new Unit(players.p1,startUnit.location,data.units.dowser);
-		var tinker = new Unit(players.p1,startUnit.location,data.units.tinkersCart);
+// 		var dowser = new Unit(players.p1,startUnit.location,data.units.dowser);
+// 		var tinker = new Unit(players.p1,startUnit.location,data.units.tinkersCart);
 		
 		var localArea = [startUnit.location];
 		for (var i=0;i<5;i++) {
@@ -406,8 +406,6 @@ var model = {
 		for (var e in model.clock.events) {
 			flatGame.eventQueue.push({time:e,events:model.clock.events[e]});
 		};
-		console.log(model.clock);
-		console.log(flatGame.eventQueue);
 		
 		flatGame.landmarks = landmarks;
 		
@@ -444,14 +442,10 @@ var model = {
 			flatGame.units.push(units[unit].flat());
 		};
 		
-		console.log(flatGame);
-		console.log(JSON.stringify(flatGame));
-
 		return flatGame;
 	},
 	
 	unflattenGame: function(saveGame) {
-		console.log(saveGame);
 
 		model.clock = new Clock();
 		model.clock.time = new Date(saveGame.clock.time);
@@ -468,7 +462,7 @@ var model = {
 		for (var s in saveGame.sites) {
 			var newSite = new Site();
 		};
-		var simples = ['name','adjustment','carpet','commodities','danger','goodwill','hasVisited','hasSurveyed','trash','wages','x','y'];
+		var simples = ['name','adjustment','carpet','commodities','danger','goodwill','hasVisited','hasSurveyed','reputation','trash','wages','x','y'];
 		for (var s in saveGame.sites) {
 			for (var d of simples) {
 				sites[s][d] = saveGame.sites[s][d];
@@ -643,7 +637,7 @@ function Site() {
 	this.flat = function() {
 		var flat = {};
 		
-		var simples = ['name','adjustment','carpet','commodities','danger','goodwill','hasVisited','hasSurveyed','trash','wages','x','y'];
+		var simples = ['name','adjustment','carpet','commodities','danger','goodwill','hasVisited','hasSurveyed','reputation','trash','wages','x','y'];
 		for (var i of simples) {
 			flat[i] = this[i];
 		};
@@ -1003,7 +997,6 @@ function Unit(owner,startLoc,type) {
 	};
 	
 	this.leaveCaravan = function() {
-		console.log(this);
 		var newCaravan = this.caravan.splice(this.caravan.indexOf(this),1);
 		for (var u in newCaravan) {
 			newCaravan[u].caravan = newCaravan;
@@ -1212,7 +1205,7 @@ function Unit(owner,startLoc,type) {
 		};
 
 		if (foodEaten > 0) {
-			if (!this.isOddJobbing) {
+			if (!this.isOddJobbing && this.location !== undefined) {
 				gamen.displayPassage(new Passage(this.name + ' has run out of food.  The crew has taken on odd jobs in ' + this.location.name + ' to put food in their mouths.</p><p>If they are not resupplied soon, they might just settle down!'));
 				this.isOddJobbing = true;
 				model.clock.running = false;

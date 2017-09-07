@@ -889,11 +889,12 @@ var view = {
 					unitCommoditiesItem.appendChild(unitCommoditiesTradeCell);
 					
 					var resupplyCell = document.createElement('td');
-					if (unit.commodities[c].qty < 100 && unit.commodities[c].qty * unit.location.commodities[unit.commodities[c].commodity] < unit.location.reputation.p1) {
-						resupplyCell.innerHTML = '<span class="fa fa-refresh"></span>';
+					var resupplyCost = unit.commodities[c].qty * unit.location.commodities[unit.commodities[c].commodity];
+					if (unit.commodities[c].qty < 100 && resupplyCost < unit.location.reputation.p1) {
+						resupplyCell.innerHTML = '<a class="tipAnchor"><span class="fa fa-refresh"></span><span class="tooltip">Resupply: '+Math.ceil(resupplyCost)+' reputation</span></a>';
 						resupplyCell.setAttribute('onclick','handlers.resupply('+c+')');
 					} else if (unit.commodities[c].qty < 100) {
-						resupplyCell.innerHTML = '<span class="fa fa-refresh"></span>';
+						resupplyCell.innerHTML = '<a class="tipAnchor"><span class="fa fa-refresh"></span><span class="tooltip">Resupply: '+Math.ceil(resupplyCost)+' reputation</span></a>';
 						resupplyCell.style.color = 'lightgrey';
 					};
 					unitCommoditiesItem.appendChild(resupplyCell);

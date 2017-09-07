@@ -24,7 +24,7 @@ a.tipAnchor:hover span.tooltip {
 	background-color: white;
 	border: 1px solid darkorange;
 	padding: 0.5vh;
-	width: 15vw;
+	max-width: 15vw;
 	}
 
 .narrowMargin {

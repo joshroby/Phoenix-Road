@@ -1,13 +1,13 @@
 Down the Phoenix Road To Do List
 
+- tooltip on refresh telling you how much it'll cost
+- load game correctly sets reputation at sites
 
 
-- save game
-- load game
-- load game UI
+
 
 IMMEDIATE
-
+- build sites will enable a build when you have the commodity there but won't take the commodity from your cargo
 
 NEAR FUTURE
 
@@ -32,9 +32,10 @@ GAMEN
 	color palette
 
 FAR FUTURE
+- a 'notes' file that saves with game so you can tell Future Self what your strategy is
 - how do you affect wages?
 	- union house
-- moving people (commodity 'Passengers')
+- what benefit do YOU get for building defenses and housing?
 - rejigger site labels for legibility… somehow
 - fucking events
 - trailblazing
