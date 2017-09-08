@@ -95,6 +95,13 @@ var view = {
 		stop.setAttribute('stop-color','green');
 		stop.setAttribute('stop-opacity',0);
 		greenGradient.appendChild(stop);
+		
+		for (var i in data.units) {
+			if (draw[i] !== undefined) {
+				var svgNodes = draw[i]();
+				defs.appendChild(svgNodes);
+			};
+		};
 				
 		var background = document.createElementNS('http://www.w3.org/2000/svg','rect');
 		background.setAttribute('fill','#FFAA00');
@@ -103,6 +110,10 @@ var view = {
 		background.setAttribute('width','1000');
 		background.setAttribute('height','1000');
 		svg.appendChild(background);
+		
+		var carpetGroup = document.createElementNS('http://www.w3.org/2000/svg','g');
+		carpetGroup.id = 'carpetGroup';
+		svg.appendChild(carpetGroup);
 		
 		for (var i in players.p1.knownSites) {
 			for (var c in players.p1.knownSites[i].carpet) {
@@ -121,10 +132,14 @@ var view = {
 				newCarpet.setAttribute('rx',(0.5 * players.p1.knownSites[i].carpet[c].squish + 0.25) * r);
 				newCarpet.setAttribute('ry',(1 - (0.5 * players.p1.knownSites[i].carpet[c].squish + 0.25)) * r);
 				newCarpet.setAttribute('transform','rotate('+ players.p1.knownSites[i].carpet[c].tilt*360+' '+players.p1.knownSites[i].x+' '+players.p1.knownSites[i].y+')');
-				svg.appendChild(newCarpet);
+				carpetGroup.appendChild(newCarpet);
 			};
 		};
 		
+		var landmarksGroup = document.createElementNS('http://www.w3.org/2000/svg','g');
+		landmarksGroup.id = 'landmarksGroup';
+		svg.appendChild(landmarksGroup);
+
 		for (var i in players.p1.knownLandmarks) {
 			var newLandmark = document.createElementNS('http://www.w3.org/2000/svg','ellipse');
 			newLandmark.setAttribute('fill','darkorange');
@@ -133,9 +148,13 @@ var view = {
 			newLandmark.setAttribute('rx',(0.5 * players.p1.knownLandmarks[i].size + 0.25) * 100);
 			newLandmark.setAttribute('ry',(1 - (0.5 * players.p1.knownLandmarks[i].size + 0.25)) * 100);
 			newLandmark.setAttribute('transform','rotate('+ players.p1.knownLandmarks[i].type*360+' '+players.p1.knownLandmarks[i].x+' '+players.p1.knownLandmarks[i].y+')');
-			svg.appendChild(newLandmark);
+			landmarksGroup.appendChild(newLandmark);
 		};
 		
+		var routesGroup = document.createElementNS('http://www.w3.org/2000/svg','g');
+		routesGroup.id = 'routesGroup';
+		svg.appendChild(routesGroup);
+
 		for (var i in players.p1.knownSites) {
 			for (var n in players.p1.knownSites[i].neighbors) {
 				var newRoute = document.createElementNS('http://www.w3.org/2000/svg','path');
@@ -150,10 +169,14 @@ var view = {
 				var dc2y = dy // * Math.random();
 				d += ' c ' + dc1x + ' ' + dc1y + ' ' + dc2x + ' ' + dc2y + ' ' + dx + ' ' + dy;
 				newRoute.setAttribute('d',d);
-				svg.appendChild(newRoute);
+				routesGroup.appendChild(newRoute);
 			};
 		};
 		
+		var sitesGroup = document.createElementNS('http://www.w3.org/2000/svg','g');
+		sitesGroup.id = 'sitesGroup';
+		svg.appendChild(sitesGroup);
+
 		for (var i in players.p1.knownSites) {
 			var siteIndex = sites.indexOf(players.p1.knownSites[i]);
 			
@@ -167,7 +190,7 @@ var view = {
 			siteLabel.setAttribute('y',players.p1.knownSites[i].y + 5);
 			siteLabel.setAttribute('onmouseover','handlers.displaySiteDetails('+siteIndex+')');
 			siteLabel.innerHTML = players.p1.knownSites[i].name;
-			svg.appendChild(siteLabel);
+			sitesGroup.appendChild(siteLabel);
 
 			var newSite = document.createElementNS('http://www.w3.org/2000/svg','circle');
 			newSite.id = 'site_' + i;
@@ -187,9 +210,13 @@ var view = {
 				newSite.setAttribute('r',6);
 			};
 			newSite.setAttribute('onclick','handlers.selectSite('+siteIndex+')');
-			svg.appendChild(newSite);
+			sitesGroup.appendChild(newSite);
 		};
 		
+		var unitsGroup = document.createElementNS('http://www.w3.org/2000/svg','g');
+		unitsGroup.id = 'unitsGroup';
+		svg.appendChild(unitsGroup);
+
 		for (var i in units) {
 			if (units[i].inTransit) {
 				unitX = units[i].route[0].x;
@@ -198,14 +225,21 @@ var view = {
 				unitX = units[i].location.x;
 				unitY = units[i].location.y + 10;
 			};
-			var newUnit = document.createElementNS('http://www.w3.org/2000/svg','rect');
-			newUnit.setAttribute('fill','red');
-			newUnit.setAttribute('x',unitX - 5);
+			var newUnit = document.createElementNS('http://www.w3.org/2000/svg','use');
+			newUnit.setAttribute('href','#'+units[i].type.symbol);
+			newUnit.setAttribute('x',unitX - 25);
 			newUnit.setAttribute('y',unitY - 5);
-			newUnit.setAttribute('width',10);
-			newUnit.setAttribute('height',10);
 			newUnit.setAttribute('onclick','handlers.selectUnit('+i+')');
-			svg.appendChild(newUnit);
+			if (units[i].inTransit) {
+				newUnit.setAttribute('fill','green');
+			} else if (units[i].isBuilding) {
+				newUnit.setAttribute('fill','yellow');
+			} else if (units[i].isSurveying) {
+				newUnit.setAttribute('fill','blue');
+			} else {
+				newUnit.setAttribute('fill','red');
+			};
+			unitsGroup.appendChild(newUnit);
 		};
 		
 		svg.addEventListener('mousedown',view.mapDragStart);

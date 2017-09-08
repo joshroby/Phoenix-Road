@@ -564,6 +564,7 @@ var data = {
 	
 		donkeyCart: {
 			name: 'Donkey Cart',
+			symbol: 'donkeyCart',
 			cargo: 4,
 			crew: 2,
 			fuel: {water:1},
@@ -574,6 +575,7 @@ var data = {
 	
 		horseCart: {
 			name: 'Horse Cart',
+			symbol: 'horseCart',
 			cargo: 5,
 			crew: 2,
 			fuel: {water:3},
@@ -584,6 +586,7 @@ var data = {
 	
 		oxCart: {
 			name: 'Ox Cart',
+			symbol: 'oxCart',
 			cargo: 5,
 			crew: 2,
 			fuel: {water:3},
@@ -594,6 +597,7 @@ var data = {
 	
 		tinkersCart: {
 			name: "Tinker's Cart",
+			symbol: 'tinkersCart',
 			cargo: 5,
 			crew: 3,
 			fuel: {water:2},
@@ -624,6 +628,7 @@ var data = {
 	
 		constructionCrew: {
 			name: "Construction Crew",
+			symbol: 'constructionCrew',
 			cargo: 6,
 			crew: 5,
 			fuel: {fuel:2},
@@ -661,6 +666,7 @@ var data = {
 	
 		dowser: {
 			name: "Dowser",
+			symbol: 'dowser',
 			cargo: 2,
 			crew: 1,
 			fuel: {water:1},
@@ -674,6 +680,7 @@ var data = {
 		
 		bicycle: {
 			name: 'Bicycle',
+			symbol: 'bicycle',
 			cargo: 1,
 			crew: 1,
 			fuel: {},
@@ -684,6 +691,7 @@ var data = {
 		
 		buggy: {
 			name: 'Buggy',
+			symbol: 'buggy',
 			cargo: 3,
 			crew: 1,
 			fuel: {fuel:1},
@@ -694,6 +702,7 @@ var data = {
 		
 		wagon: {
 			name: 'Station Wagon',
+			symbol: 'wagon',
 			cargo: 5,
 			crew: 2,
 			fuel: {fuel:1},
@@ -705,6 +714,7 @@ var data = {
 		
 		truck: {
 			name: 'Truck',
+			symbol: 'truck',
 			cargo: 6,
 			crew: 2,
 			fuel: {fuel:2},
@@ -715,6 +725,7 @@ var data = {
 		
 		bus: {
 			name: 'Bus',
+			symbol: 'truck',
 			cargo: 10,
 			crew: 2,
 			fuel: {fuel:2},
@@ -726,6 +737,7 @@ var data = {
 		
 		semi: {
 			name: 'Semi',
+			symbol: 'semi',
 			cargo: 15,
 			crew: 4,
 			fuel: {fuel:3},
@@ -736,6 +748,7 @@ var data = {
 		
 		zeppelin: {
 			name: 'Zeppelin',
+			symbol: 'zeppelin',
 			cargo: 10,
 			crew: 4,
 			fuel: {fuel:3},
