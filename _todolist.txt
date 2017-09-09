@@ -2,20 +2,21 @@ Down the Phoenix Road To Do List
 
 
 
-
-- build sites will enable a build when you have the commodity there but won't take the commodity from your cargo
+	- draw functions for units
 
 
 IMMEDIATE
+- scuttle does not result in errors
 
 
 NEAR FUTURE
 
-- completing a production pipeline
-	- when you decrease the price of a commodity, check for infr that take it as inputs
-	- decrease the price of that infr's outputs as well
+- overhaul production buildings affect on values
+	- infrastructure with no source for inputs
+		- makes outputs at least equal to inputs?
+			- only for outputs not already traded?
+	- big bonus for completing a production pipeline (tannery between corral and saddler)
 - SVG tinkering
-	- draw functions for units
 	- movement animation/transition
 	- shading on landmarks
 - Options

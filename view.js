@@ -231,11 +231,11 @@ var view = {
 			newUnit.setAttribute('y',unitY - 5);
 			newUnit.setAttribute('onclick','handlers.selectUnit('+i+')');
 			if (units[i].inTransit) {
-				newUnit.setAttribute('fill','green');
+				newUnit.setAttribute('fill','#006400');
 			} else if (units[i].isBuilding) {
-				newUnit.setAttribute('fill','yellow');
+				newUnit.setAttribute('fill','#F0E68C');
 			} else if (units[i].isSurveying) {
-				newUnit.setAttribute('fill','blue');
+				newUnit.setAttribute('fill','#AFEEEE');
 			} else {
 				newUnit.setAttribute('fill','red');
 			};
