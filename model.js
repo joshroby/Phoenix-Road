@@ -55,7 +55,7 @@ var model = {
 		// Testing Cheats
 // 		startUnit.location.infrastructure.push(data.infrastructure.cartwright);
 // 		startUnit.location.infrastructure.push(data.infrastructure.mechanic);
-// 		var dowser = new Unit(players.p1,startUnit.location,data.units.dowser);
+		var dowser = new Unit(players.p1,startUnit.location,data.units.dowser);
 // 		var tinker = new Unit(players.p1,startUnit.location,data.units.tinkersCart);
 		
 		var localArea = [startUnit.location];
@@ -1387,7 +1387,7 @@ function Unit(owner,startLoc,type) {
 			this.location.population += this.type.crew;
 		};
 		units.splice(units.indexOf(this),1);
-		view.focus.unit = undefined;
+		view.focus.unit = units[0];
 		view.clearDetailsDivs();
 	};
 	

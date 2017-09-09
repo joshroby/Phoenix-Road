@@ -1,12 +1,9 @@
 Down the Phoenix Road To Do List
 
 
-
-	- draw functions for units
-
+- scuttle does not result in errors
 
 IMMEDIATE
-- scuttle does not result in errors
 
 
 NEAR FUTURE
