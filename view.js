@@ -774,6 +774,14 @@ var view = {
 			unitActionsDiv.className = 'unitActionsDiv';
 			unitPane.appendChild(unitActionsDiv);
 			
+			var unitPic = document.createElementNS('http://www.w3.org/2000/svg','svg');
+			unitPic.setAttribute('class','unitPic');
+			unitPic.setAttribute('width','100%');
+			unitPic.setAttribute('fill','black');
+			unitPic.setAttribute('viewbox','0 0 100 100');
+			unitPic.appendChild(draw[unitsAtSite[u].type.symbol]());
+			unitHeaderDiv.appendChild(unitPic);
+			
 			var unitHead = document.createElement('h2');
 			unitHead.id = 'unitHead_'+u;
 			unitHead.className = 'unitHead';

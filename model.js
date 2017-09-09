@@ -55,8 +55,8 @@ var model = {
 		// Testing Cheats
 // 		startUnit.location.infrastructure.push(data.infrastructure.cartwright);
 // 		startUnit.location.infrastructure.push(data.infrastructure.mechanic);
-		var dowser = new Unit(players.p1,startUnit.location,data.units.dowser);
-		var tinker = new Unit(players.p1,startUnit.location,data.units.tinkersCart);
+// 		var dowser = new Unit(players.p1,startUnit.location,data.units.dowser);
+// 		var tinker = new Unit(players.p1,startUnit.location,data.units.tinkersCart);
 		
 		var localArea = [startUnit.location];
 		for (var i=0;i<5;i++) {

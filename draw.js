@@ -399,7 +399,7 @@ var draw = {
 			svgNodes.appendChild(rect);
 		};
 		
-		svgNodes.setAttribute('transform','scale(0.1) translate(0,-300)');
+		svgNodes.setAttribute('transform','scale(0.1)');
 		
 		return svgNodes;
 	},

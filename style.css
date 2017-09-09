@@ -76,9 +76,25 @@ a.tipAnchor:hover span.tooltip {
 	overflow-y: auto;
 	}
 
+.unitPic {
+	width: 100%;
+	z-index: -1;
+	position: absolute;
+	top: 0;
+	left: 0;
+	}
+
 .unitHeaderDiv {
 	height: 18vw;
 	overflow-y: auto;
+	position: relative;
+	}
+
+.unitHead {
+	margin-bottom: 0;
+	margin-top: 2.5vw;
+	width: 100%;
+	border-bottom: 1px solid slategray;
 	}
 
 .unitHeaderDiv p.stat {
@@ -101,13 +117,6 @@ a.tipAnchor:hover span.tooltip {
 
 .unitCaravanDiv p {
 	font-size: 0.8em;
-	}
-
-.unitHead {
-	margin-bottom: 0;
-	margin-top: 2.5vw;
-	width: 100%;
-	border-bottom: 1px solid slategray;
 	}
 
 .unitCargoDiv {
