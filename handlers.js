@@ -190,7 +190,7 @@ var handlers = {
 		view.focus.unit.cancelRoute();
 	},
 	
-	recruitKidOnBike: function(infrastructureIndex) {
+	recruit: function(infrastructureIndex) {
 		var infrastructure = view.focus.unit.location.infrastructure[infrastructureIndex];
 		model.recruit(infrastructure);
 	},

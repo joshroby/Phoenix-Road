@@ -25,7 +25,7 @@ var model = {
 		
 		model.newMap();
 		units = [];
-		players.p1 = {};
+		players.p1 = {unitsUnlocked:{}};
 		
 		players.p1.vision = 60;
 		players.p1.knownSites = [];
@@ -59,7 +59,7 @@ var model = {
 // 		var tinker = new Unit(players.p1,startUnit.location,data.units.tinkersCart);
 		
 		var localArea = [startUnit.location];
-		for (var i=0;i<5;i++) {
+		for (var i=0;i<4;i++) {
 			for (s in localArea) {
 				for (n in localArea[s].neighbors) {
 					if (localArea.indexOf(localArea[s].neighbors[n]) == -1) {
@@ -68,12 +68,22 @@ var model = {
 				};
 			};
 		};
+		var distantArea = [];
+		for (var s in sites) {
+			if (localArea.indexOf(sites[s]) == -1) {
+				distantArea.push(sites[s]);
+			};
+		};
+		
 		localArea.shift();
 		localArea[Math.random() * localArea.length << 0].infrastructure.push(data.infrastructure.cartwright);
 		localArea[Math.random() * localArea.length << 0].infrastructure.push(data.infrastructure.lensmeister);
-		sites[Math.random() * sites.length << 0].infrastructure.push(data.infrastructure.kidOnABike);
-		sites[Math.random() * sites.length << 0].infrastructure.push(data.infrastructure.mechanic);
-		sites[Math.random() * sites.length << 0].infrastructure.push(data.infrastructure.hangar);
+		localArea[Math.random() * localArea.length << 0].infrastructure.push(data.infrastructure.kidOnABike);
+		localArea[Math.random() * localArea.length << 0].infrastructure.push(data.infrastructure.tinkerCamp);
+		localArea[Math.random() * localArea.length << 0].infrastructure.push(data.infrastructure.drunkDowser);
+		distantArea[Math.random() * distantArea.length << 0].infrastructure.push(data.infrastructure.mechanic);
+		distantArea[Math.random() * distantArea.length << 0].infrastructure.push(data.infrastructure.hangar);
+		distantArea[Math.random() * distantArea.length << 0].infrastructure.push(data.infrastructure.burntOutBus);
 		view.focus.unit = startUnit;
 		view.displayMap();
 		
@@ -83,7 +93,7 @@ var model = {
 
 	newMap: function(totalSites,minDist,maxDist,minAngle,totalThreats,ghostTowns) {
 		if (totalSites == undefined) { totalSites = 50 };
-		if (minDist == undefined) {  minDist = 30 };
+		if (minDist == undefined) {  minDist = 40 };
 		if (maxDist == undefined) {  maxDist = 2.6 };
 		if (minAngle == undefined) {  minAngle = 30 };
 		if (totalThreats == undefined) {totalThreats = 5};
@@ -394,8 +404,9 @@ var model = {
 	recruit: function(infrastructure) {
 		var newUnit = new Unit(players.p1,view.focus.unit.location,data.units[infrastructure.recruit]);
 		newUnit.name = infrastructure.name;
+		players.p1.unitsUnlocked[infrastructure.recruit] = true;
 		var location = view.focus.unit.location;
-		location.infrastructure.splice(location.infrastructure.indexOf(infrastructure));
+		location.infrastructure.splice(location.infrastructure.indexOf(infrastructure),1);
 		view.displayUnit(newUnit);
 	},
 	
@@ -413,6 +424,7 @@ var model = {
 		flatGame.players = {};
 		for (var player in players) {
 			nextPlayer = {};
+			nextPlayer.unitsUnlocked = players[player].unitsUnlocked;
 			nextPlayer.vision = players[player].vision;
 			nextPlayer.knownSiteIndices = [];
 			for (var i of players[player].knownSites) {
@@ -574,22 +586,14 @@ function Site() {
 	this.infrastructure = [];
 	
 	// Basic Agriculture
-	var foodInfrastructure = 0;
-	if (this.commodities.food < 0.05) {
-		foodInfrastructure = 3;
-	} else if (this.commodities.food < 0.08) {
-		foodInfrastructure = 2;
-	} else if (this.commodities.food < 0.1) {
-		foodInfrastructure = 1;
-	};
-	var foodList = ['corral','fields','orchards'];
-	for (var f=0;f<foodInfrastructure;f++) {
-		var num = Math.random() * foodList.length << 0;
-		this.infrastructure.push(data.infrastructure[foodList[num]]);
-		foodList.splice(num,1);
-	};
-	if (this.commodities.fiber < 0.15 && this.infrastructure.indexOf(data.infrastructure.fields) == -1) {
+	if ((this.commodities.food < 0.1 || this.commodities.fiber < 0.15) && (this.resources.indexOf(data.resources.river) !== -1 || this.resources.indexOf(data.resources.spring) !== -1)) {
 		this.infrastructure.push(data.infrastructure.fields);
+	};
+	if (this.commodities.food < 0.1 && this.resources.indexOf(data.resources.pasture) !== -1) {
+		this.infrastructure.push(data.infrastructure.corral);
+	};
+	if (this.commodities.food < 0.1 && this.resources.indexOf(data.resources.forest) !== -1) {
+		this.infrastructure.push(data.infrastructure.orchards);
 	};
 
 	// Basic Industry

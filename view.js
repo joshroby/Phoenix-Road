@@ -24,6 +24,7 @@ var view = {
 		document.getElementById('detailsSiteDiv').innerHTML = '&nbsp;';
 		document.getElementById('centerColumn').style.display = 'block';
 		document.getElementById('saveButton').disabled = false;
+		document.getElementById('loadGameDiv').style.display = 'none';
 		
 	},
 	
@@ -31,7 +32,6 @@ var view = {
 		view.clearDetailsDivs();
 		view.displayMap();
 		view.displayUnit(view.focus.unit);
-// 		view.displaySiteDetails(view.focus.unit.location);
 		model.clock.logEventIn(8.64e+7,'refreshGameDisplay');
 	},
 
@@ -614,10 +614,12 @@ var view = {
 					lockedOption.selected = true;
 					buildSelect.appendChild(lockedOption);
 					for (var u in site.infrastructure[i].buildUnits) {
-						var buildOption = document.createElement('option');
-						buildOption.innerHTML = data.units[site.infrastructure[i].buildUnits[u]].name;
-						buildOption.value = site.infrastructure[i].buildUnits[u];
-						buildSelect.appendChild(buildOption);
+						if (data.units[site.infrastructure[i].buildUnits[u]].unlockable == undefined || players.p1.unitsUnlocked[site.infrastructure[i].buildUnits[u]]) {
+							var buildOption = document.createElement('option');
+							buildOption.innerHTML = data.units[site.infrastructure[i].buildUnits[u]].name;
+							buildOption.value = site.infrastructure[i].buildUnits[u];
+							buildSelect.appendChild(buildOption);
+						};
 					};
 					infrastructureDiv.appendChild(buildSelect);
 					var buildBtn = document.createElement('button');
@@ -657,7 +659,7 @@ var view = {
 					infrastructureDiv.innerHTML = site.infrastructure[i].text + '<br />';
 					var recruitBtn = document.createElement('button');
 					recruitBtn.innerHTML = 'Recruit ' + site.infrastructure[i].name;
-					recruitBtn.setAttribute('onclick','handlers.recruitKidOnBike('+i+')');
+					recruitBtn.setAttribute('onclick','handlers.recruit('+i+')');
 					infrastructureDiv.appendChild(recruitBtn);
 					siteInfrastructureDiv.appendChild(infrastructureDiv);
 				};
@@ -881,7 +883,6 @@ var view = {
 					consumptionWater += unitsInCaravan[u].type.fuel.fuel;
 				};
 			};
-			console.log(provisionsFood,consumptionFood,provisionsWater,consumptionWater,provisionsFuel,consumptionFuel);
 			provisionsFood /= consumptionFood;
 			if (consumptionWater > 0) {
 				provisionsWater /= consumptionWater;

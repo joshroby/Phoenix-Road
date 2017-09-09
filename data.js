@@ -171,6 +171,35 @@ var data = {
 	},
 	
 	infrastructure: {
+	
+		kidOnABike: {
+			name: 'Kid on a Bike',
+			unitName: 'Kid on a Bike',
+			recruit: 'bicycle',
+			text: "There's a kid here with an ancient but functional bike.",
+			visible: false,
+		},
+		drunkDowser:  {
+			name: 'Drunken Dowser',
+			unitName: 'Drunken Dowser',
+			recruit: 'dowser',
+			text: "In the shelter afforded by a small cart with 'Dowsing Services' painted on the side, sputters a tiny fire.  Beside it slumps a disreputable sort, passed out drunk.",
+			visible: false,
+		},
+		tinkerCamp: {
+			name: 'Tinker Camp',
+			unitName: 'Tinker Band',
+			recruit: 'tinkersCart',
+			text: "This small band of tinkers travels town to town doing odd jobs.  When informed of your plans, they suggest they could help in exchange for regular meals.",
+			visible: false,
+		},
+		burntOutBus: {
+			name: 'Burnt Out Bus',
+			unitName: 'Charred Bus',
+			recruit: 'tinkersCart',
+			text: "You come across a burned-out vehicle, apparently hit by bandits.  It appears it was large enough for its former owners to live in… and die in.  They sure aren't using it anymore…",
+			visible: false,
+		},
 
 		aqueduct: {
 			name: 'Aqueduct',
@@ -202,12 +231,6 @@ var data = {
 			inputs: ['fuel'],
 			housing:100,
 			jobs: 10,
-		},
-		kidOnABike: {
-			name: 'Kid on a Bike',
-			recruit: 'bicycle',
-			text: "There's a kid here with an ancient but functional bike.",
-			visible: false,
 		},
 		bunker: {
 			name:'Bunker',
@@ -359,16 +382,17 @@ var data = {
 			inputs: ['fuel'],
 			jobs: 4,
 		},
-		mine: {
-			name: 'Mine',
-			buildCost: {lumber:4},
+		mineshaft: {
+			name: 'Mineshaft',
+			buildCost: {lumber:4,metal:2,stone:2},
 			requiredResource: ['mineralVein'],
 			buildTime: 28,
-			goodwill: 3,
+			replaces: ['openPitMine'],
+			goodwill: 4,
 			visible: false,
 			inputs: ['fuel'],
-			outputs: ['ore'],
-			jobs: 20,
+			outputs: ['ore','stone'],
+			jobs: 50,
 		},
 		oilWell: {
 			name: 'Oil Well',
@@ -390,6 +414,17 @@ var data = {
 			inputs: ['water'],
 			outputs: ['food','lumber'],
 			jobs: 10,
+		},
+		openPitMine: {
+			name: 'Open Pit Mine',
+			buildCost: {lumber:4},
+			requiredResource: ['mineralVein'],
+			buildTime: 21,
+			goodwill: 2,
+			visible: false,
+			inputs: ['fuel'],
+			outputs: ['ore','stone'],
+			jobs: 20,
 		},
 		postOffice: {
 			name: 'Post Office',
@@ -460,6 +495,18 @@ var data = {
 			inputs: ['fiber','cloth','leather'],
 			outputs: ['clothing'],
 			jobs: 4,
+		},
+		shantyTown: {
+			name:'Shanty Town',
+			buildCost: {stone:4,lumber:2,cloth:1},
+			requiredResource: ['ruins'],
+			buildTime: 42,
+			replaces: ['hovels'],
+			goodwill: 4,
+			visible: false,
+			inputs: ['fuel'],
+			housing:150,
+			jobs: 10,
 		},
 		stoneWall: {
 			name:'Stone Wall',
@@ -611,6 +658,7 @@ var data = {
 		tinkersCart: {
 			name: "Tinker's Cart",
 			symbol: 'tinkersCart',
+			unlockable: true,
 			cargo: 5,
 			crew: 3,
 			fuel: {water:2},
@@ -626,12 +674,14 @@ var data = {
 				'granary',
 				'loom',
 				'lumbermill',
+				'openPitMine',
 				'orchards',
 				'postOffice',
 				'rowhouses',
 				'saddler',
 				'seamstress',
 				'seine',
+				'shantyTown',
 				'tannery',
 				'well',
 				'watchtower',
@@ -662,7 +712,7 @@ var data = {
 				'loom',
 				'lumbermill',
 				'manorHouse',
-				'mine',
+				'mineshaft',
 				'oilWell',
 				'orchards',
 				'postOffice',
@@ -682,6 +732,7 @@ var data = {
 		dowser: {
 			name: "Dowser",
 			symbol: 'dowser',
+			unlockable: true,
 			cargo: 2,
 			crew: 1,
 			fuel: {water:1},
@@ -696,6 +747,7 @@ var data = {
 		bicycle: {
 			name: 'Bicycle',
 			symbol: 'bicycle',
+			unlockable: true,
 			cargo: 1,
 			crew: 1,
 			fuel: {},
@@ -741,6 +793,7 @@ var data = {
 		bus: {
 			name: 'Bus',
 			symbol: 'bus',
+			unlockable: true,
 			cargo: 10,
 			crew: 2,
 			fuel: {fuel:2},
