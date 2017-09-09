@@ -1,12 +1,11 @@
 Down the Phoenix Road To Do List
 
 
-- save and load game now actually saves and loads populations
-- resupply cost correctly calculated (it was inverting existing qty)
+- loading a save game needs to make surveyComplete and buildComplete into Date()s
+
 
 IMMEDIATE
 - 'days provisions' does not work with Caravan
-- loading a save game needs to make surveyComplete and buildComplete into Date()s
 
 NEAR FUTURE
 

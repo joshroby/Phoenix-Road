@@ -55,7 +55,7 @@ var model = {
 		// Testing Cheats
 // 		startUnit.location.infrastructure.push(data.infrastructure.cartwright);
 // 		startUnit.location.infrastructure.push(data.infrastructure.mechanic);
-// 		var dowser = new Unit(players.p1,startUnit.location,data.units.dowser);
+		var dowser = new Unit(players.p1,startUnit.location,data.units.dowser);
 // 		var tinker = new Unit(players.p1,startUnit.location,data.units.tinkersCart);
 		
 		var localArea = [startUnit.location];
@@ -514,6 +514,12 @@ var model = {
 			};
 			if (u.route !== undefined) {
 				u.route.splice(u.route.length-1,1,sites[u.route[u.route.length-1]])
+			};
+			if (u.buildComplete !== undefined) {
+				newUnit.buildComplete = new Date(u.buildComplete);
+			};
+			if (u.surveyComplete !== undefined) {
+				newUnit.surveyComplete = new Date(u.surveyComplete);
 			};
 		};
 		view.focus.unit = units[0];
