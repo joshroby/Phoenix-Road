@@ -725,7 +725,7 @@ var data = {
 		
 		bus: {
 			name: 'Bus',
-			symbol: 'truck',
+			symbol: 'bus',
 			cargo: 10,
 			crew: 2,
 			fuel: {fuel:2},
