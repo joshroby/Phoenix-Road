@@ -597,7 +597,7 @@ function Site() {
 	};
 
 	// Basic Industry
-	if (Math.random() < 0.9) {
+	if (Math.random() < 0.9 - this.infrastructure.length * 0.4) {
 		var industry = undefined;
 		if (this.commodities.stone < 0.3 && this.resources.indexOf(data.resources.outcropping) == -1 && Math.random() < 0.1) {
 			industry = data.infrastructure.quarry;
@@ -609,13 +609,26 @@ function Site() {
 			industry = data.infrastructure.oilWell;
 		};
 		if (industry == undefined) {
-			var buildings = ['cartwright','foundry','loom','refinery','saddler','seamstress','tannery'];
+			var buildings = ['cartwright','foundry','refinery','loom','saddler','seamstress','tannery','loom','saddler','seamstress','tannery'];
 			industry = data.infrastructure[buildings[Math.random() * buildings.length << 0]];
+			var totalInputs = 0;
+			var totalOutputs = 0;
 			for (c in industry.inputs) {
 				this.commodities[industry.inputs[c]] /= 0.8;
+				totalInputs += this.commodities[industry.inputs[c]];
 			};
 			for (c in industry.outputs) {
 				this.commodities[industry.outputs[c]] *= 0.8;
+				totalOutputs += this.commodities[industry.outputs[c]];
+			};
+			if (industry.inputs !== undefined && industry.outputs !== undefined) {
+				totalInputs /= industry.inputs.length;
+				totalOutputs /= industry.outputs.length;
+				if (totalInputs > totalOutputs * 0.8) {
+					for (c in industry.outputs) {
+						this.commodities[industry.outputs[c]] *= totalInputs / ( totalOutputs * 0.8 );
+					};
+				};
 			};
 		};
 		this.infrastructure.push(industry);

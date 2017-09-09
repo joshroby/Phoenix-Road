@@ -1,21 +1,18 @@
 Down the Phoenix Road To Do List
 
-Discoverable units: dowser, tinkers camp, burnt out bus
-Discoverable units cannot be built until discovered
-Load div hidden when game starts
 
 
 IMMEDIATE
 
 NEAR FUTURE
 
-- Dowser does not find enough opportunities to justify its cost
 
 - overhaul production buildings affect on values
 	- infrastructure with no source for inputs
 		- makes outputs at least equal to inputs?
 			- only for outputs not already traded?
 	- big bonus for completing a production pipeline (tannery between corral and saddler)
+		- values modified up & down pipelines
 - SVG tinkering
 	- movement animation/transition
 	- shading on landmarks
