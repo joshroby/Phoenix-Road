@@ -1,7 +1,6 @@
 Down the Phoenix Road To Do List
 
 
-- loading a save game needs to make surveyComplete and buildComplete into Date()s
 
 
 IMMEDIATE

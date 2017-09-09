@@ -852,28 +852,46 @@ var view = {
 			var unitProvisionsP = document.createElement('p');
 			unitProvisionsP.className = 'stat';
 			unitHeaderDiv.appendChild(unitProvisionsP);
+			if (unit.caravan == undefined) {
+				unitsInCaravan = [unit];
+			} else {
+				unitsInCaravan = unit.caravan;
+			};
 			var provisionsFood = 0;
 			var provisionsWater = 0;
 			var provisionsFuel = 0;
-			for (var c in unit.commodities) {
-				if (unit.commodities[c].commodity == 'food') {
-					provisionsFood += unit.commodities[c].qty;
-				} else if (unit.commodities[c].commodity == 'water') {
-					provisionsWater += unit.commodities[c].qty;
-				} else if (unit.commodities[c].commodity == 'fuel') {
-					provisionsFuel += unit.commodities[c].qty;
+			var consumptionFood = 0;
+			var consumptionWater = 0;
+			var consumptionFuel = 0;
+			for (var u in unitsInCaravan) {
+				for (var c in unitsInCaravan[u].commodities) {
+					if (unitsInCaravan[u].commodities[c].commodity == 'food') {
+						provisionsFood += unitsInCaravan[u].commodities[c].qty;
+					} else if (unitsInCaravan[u].commodities[c].commodity == 'water') {
+						provisionsWater += unitsInCaravan[u].commodities[c].qty;
+					} else if (unitsInCaravan[u].commodities[c].commodity == 'fuel') {
+						provisionsFuel += unitsInCaravan[u].commodities[c].qty;
+					};
+				};
+				consumptionFood += unitsInCaravan[u].type.crew;
+				if (unitsInCaravan[u].type.fuel.water !== undefined) {
+					consumptionWater += unitsInCaravan[u].type.fuel.water;
+				};
+				if (unitsInCaravan[u].type.fuel.fuel !== undefined) {
+					consumptionWater += unitsInCaravan[u].type.fuel.fuel;
 				};
 			};
-			provisionsFood /= unit.type.crew;
-			if (unit.type.fuel.water == undefined) {
-				provisionsWater = Infinity
+			console.log(provisionsFood,consumptionFood,provisionsWater,consumptionWater,provisionsFuel,consumptionFuel);
+			provisionsFood /= consumptionFood;
+			if (consumptionWater > 0) {
+				provisionsWater /= consumptionWater;
 			} else {
-				provisionsWater /= unit.type.fuel.water;
+				provisionsWater = Infinity;
 			};
-			if (unit.type.fuel.fuel == undefined) {
-				provisionsFuel = Infinity
+			if (consumptionFuel > 0) {
+				provisionsFuel /= consumptionFuel;
 			} else {
-				provisionsFuel /= unit.type.fuel.fuel;
+				provisionsFuel = Infinity;
 			};
 			var provisions = Math.floor(Math.min(provisionsFood,provisionsWater,provisionsFuel));
 			unitProvisionsP.innerHTML = provisions + " days provisions";
