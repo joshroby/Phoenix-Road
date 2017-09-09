@@ -55,7 +55,7 @@ var model = {
 		// Testing Cheats
 // 		startUnit.location.infrastructure.push(data.infrastructure.cartwright);
 // 		startUnit.location.infrastructure.push(data.infrastructure.mechanic);
-		var dowser = new Unit(players.p1,startUnit.location,data.units.dowser);
+// 		var dowser = new Unit(players.p1,startUnit.location,data.units.dowser);
 // 		var tinker = new Unit(players.p1,startUnit.location,data.units.tinkersCart);
 		
 		var localArea = [startUnit.location];
@@ -463,7 +463,7 @@ var model = {
 		for (var s in saveGame.sites) {
 			var newSite = new Site();
 		};
-		var simples = ['name','adjustment','carpet','commodities','danger','goodwill','hasVisited','hasSurveyed','reputation','trash','wages','x','y'];
+		var simples = ['name','adjustment','carpet','commodities','danger','goodwill','hasVisited','hasSurveyed','population','reputation','trash','wages','x','y'];
 		for (var s in saveGame.sites) {
 			for (var d of simples) {
 				sites[s][d] = saveGame.sites[s][d];
@@ -638,7 +638,7 @@ function Site() {
 	this.flat = function() {
 		var flat = {};
 		
-		var simples = ['name','adjustment','carpet','commodities','danger','goodwill','hasVisited','hasSurveyed','reputation','trash','wages','x','y'];
+		var simples = ['name','adjustment','carpet','commodities','danger','goodwill','hasVisited','hasSurveyed','population','reputation','trash','wages','x','y'];
 		for (var i of simples) {
 			flat[i] = this[i];
 		};

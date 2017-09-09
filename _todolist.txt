@@ -1,12 +1,16 @@
 Down the Phoenix Road To Do List
 
 
-- scuttle does not result in errors
+- save and load game now actually saves and loads populations
+- resupply cost correctly calculated (it was inverting existing qty)
 
 IMMEDIATE
-
+- 'days provisions' does not work with Caravan
+- loading a save game needs to make surveyComplete and buildComplete into Date()s
 
 NEAR FUTURE
+
+- Dowser does not find enough opportunities to justify its cost
 
 - overhaul production buildings affect on values
 	- infrastructure with no source for inputs
@@ -16,6 +20,8 @@ NEAR FUTURE
 - SVG tinkering
 	- movement animation/transition
 	- shading on landmarks
+	- fix unit svgs to have no overlapping paths
+		- then can implement the background stroke
 - Options
 	- turn off model.checkClock()
 	- turn off map zoom
@@ -39,7 +45,9 @@ FAR FUTURE
 - trailblazing
 - building outposts / new sites
 - warlord territory
-- warehousing?
+- warehousing
+	- works like trash pile except it doesn't disappear
+	- build costs will need to take warehouses into account
 - other only-findable infrastructures
 	- some kind of cult?
 - responsive design in the CSS

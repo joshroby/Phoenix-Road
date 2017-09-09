@@ -208,8 +208,8 @@ var draw = {
 		rect.setAttribute('height',"82.303");
 		svgNodes.appendChild(rect);
 		
-		svgNodes.appendChild(draw.wheel(478.988,225.407,34.684));
-		svgNodes.appendChild(draw.wheel(316.104,225.407,34.684));
+		svgNodes.appendChild(draw.wheel(500,260,34.684));
+		svgNodes.appendChild(draw.wheel(338,260,34.684));
 		
 		svgNodes.setAttribute('transform','scale(0.1)');
 		

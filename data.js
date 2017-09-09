@@ -175,7 +175,7 @@ var data = {
 		aqueduct: {
 			name: 'Aqueduct',
 			buildCost: {stone:4,lumber:2},
-			buildTime: 21,
+			buildTime: 42,
 			replaces: ['well'],
 			goodwill:2,
 			visible: true,
@@ -186,7 +186,7 @@ var data = {
 		bank: {
 			name:'Bank',
 			buildCost: {stone:4,lumber:2,reputation:2000},
-			buildTime: 7,
+			buildTime: 14,
 			goodwill: -10,
 			visible: false,
 			inputs: ['scrip'],
@@ -196,7 +196,7 @@ var data = {
 		barracks: {
 			name:'Barracks',
 			buildCost: {stone:4,lumber:2},
-			buildTime: 7,
+			buildTime: 14,
 			goodwill: 3,
 			visible: true,
 			inputs: ['fuel'],
@@ -212,7 +212,7 @@ var data = {
 		bunker: {
 			name:'Bunker',
 			buildCost: {stone:2,lumber:1},
-			buildTime: 3,
+			buildTime: 6,
 			goodwill: 1,
 			visible: false,
 			inputs: ['fuel'],
@@ -223,7 +223,7 @@ var data = {
 		cartwright: {
 			name:'Cartwright',
 			buildCost: {lumber:2},
-			buildTime: 7,
+			buildTime: 14,
 			goodwill: 1,
 			visible: false,
 			buildUnits: [
@@ -239,7 +239,7 @@ var data = {
 		cisterns: {
 			name: 'Cisterns',
 			buildCost: {stone:4},
-			buildTime: 7,
+			buildTime: 14,
 			goodwill: 1,
 			visible: true,
 			outputs: ['water'],
@@ -248,7 +248,7 @@ var data = {
 		corral: {
 			name: 'Corral',
 			buildCost: {lumber:2,fiber:2},
-			buildTime: 3,
+			buildTime: 6,
 			goodwill: 2,
 			visible: false,
 			requiredResource: ['pasture'],
@@ -258,7 +258,7 @@ var data = {
 		fields: {
 			name: 'Fields',
 			buildCost: {lumber:1,fiber:4},
-			buildTime: 7,
+			buildTime: 14,
 			goodwill: 1,
 			visible: true,
 			inputs: ['water'],
@@ -267,8 +267,8 @@ var data = {
 		},
 		foundry: {
 			name:'Foundry',
-			buildCost: {stone:8,lumber:8,cloth:2},
-			buildTime: 10,
+			buildCost: {stone:6,lumber:6,cloth:2,ore:5},
+			buildTime: 20,
 			goodwill: 5,
 			visible: true,
 			inputs: ['ore','fuel','water'],
@@ -278,7 +278,7 @@ var data = {
 		fortress: {
 			name:'Fortress',
 			buildCost: {stone:8,lumber:8,fiber:2,cloth:2},
-			buildTime: 28,
+			buildTime: 56,
 			replaces: ['bunker'],
 			goodwill: 5,
 			visible: true,
@@ -289,7 +289,7 @@ var data = {
 		granary: {
 			name: 'Granaries',
 			buildCost: {stone: 4,lumber:2},
-			buildTime: 7,
+			buildTime: 14,
 			goodwill: 1,
 			visible: true,
 			jobs: 4,
@@ -310,7 +310,7 @@ var data = {
 		loom: {
 			name: 'Loom',
 			buildCost: {lumber:2,fiber:4},
-			buildTime: 4,
+			buildTime: 8,
 			goodwill: 3,
 			visible: false,
 			inputs: ['fiber'],
@@ -326,7 +326,7 @@ var data = {
 		lumbermill: {
 			name: 'Lumbermill',
 			buildCost: {lumber:3,fiber:2},
-			buildTime: 7,
+			buildTime: 14,
 			requiredResource: ['forest'],
 			goodwill:2,
 			visible:false,
@@ -336,7 +336,7 @@ var data = {
 		manorHouse: {
 			name:'Manor House',
 			buildCost: {stone:2,lumber:2,cloth:4},
-			buildTime: 14,
+			buildTime: 28,
 			goodwill: -1,
 			visible: false,
 			inputs: ['fuel'],
@@ -361,7 +361,7 @@ var data = {
 		mine: {
 			name: 'Mine',
 			buildCost: {lumber:4},
-			buildTime: 14,
+			buildTime: 28,
 			goodwill: 3,
 			visible: false,
 			requiredResource: ['mineralVein'],
@@ -372,7 +372,7 @@ var data = {
 		oilWell: {
 			name: 'Oil Well',
 			buildCost: {metals:8},
-			buildTime: 7,
+			buildTime: 14,
 			goodwill: 3,
 			visible: true,
 			requiredResource: ['oilReservoir'],
@@ -382,7 +382,7 @@ var data = {
 		orchards: {
 			name: 'Orchards',
 			buildCost: {lumber:1},
-			buildTime: 7,
+			buildTime: 14,
 			goodwill: 1,
 			visible: true,
 			requiredResource: ['forest'],
@@ -393,7 +393,7 @@ var data = {
 		postOffice: {
 			name: 'Post Office',
 			buildCost: {lumber:1,stone:1},
-			buildTime: 4,
+			buildTime: 8,
 			goodwill: 1,
 			visible: false,
 			outputs: ['mail'],
@@ -402,7 +402,7 @@ var data = {
 		quarry: {
 			name: 'Quarry',
 			buildCost: {lumber:4},
-			buildTime: 7,
+			buildTime: 14,
 			goodwill: 2,
 			visible: false,
 			requiredResource: ['outcropping'],
@@ -413,7 +413,7 @@ var data = {
 		refinery: {
 			name: 'Refinery',
 			buildCost: {lumber:1},
-			buildTime: 14,
+			buildTime: 28,
 			goodwill: 5,
 			visible: true,
 			inputs: ['crudeOil'],
@@ -423,7 +423,7 @@ var data = {
 		rowhouses: {
 			name: 'Rowhouses',
 			buildCost: {stone: 4,lumber: 2, cloth: 2 },
-			buildTime: 7,
+			buildTime: 14,
 			goodwill: 3,
 			replaces: ['hovels'],
 			inputs: ['fuel'],
@@ -432,8 +432,8 @@ var data = {
 		},
 		saddler: {
 			name: 'Saddler',
-			buildCost: {lumber:1,fiber:1,leather:1},
-			buildTime: 4,
+			buildCost: {lumber:1,fiber:3,leather:3},
+			buildTime: 8,
 			goodwill: 2,
 			visible: false,
 			inputs: ['leather'],
@@ -443,7 +443,7 @@ var data = {
 		seine: {
 			name: 'Seine',
 			buildCost: {fiber:4},
-			buildTime: 1,
+			buildTime: 2,
 			goodwill: 1,
 			visible: false,
 			requiredResource: ['river'],
@@ -452,8 +452,8 @@ var data = {
 		},
 		seamstress: {
 			name: 'Seamstress',
-			buildCost: {lumber:1,fiber:1,leather:1,cloth:1},
-			buildTime: 4,
+			buildCost: {lumber:1,fiber:1,leather:1,cloth:5},
+			buildTime: 8,
 			goodwill: 2,
 			visible: false,
 			inputs: ['fiber','cloth','leather'],
@@ -463,7 +463,7 @@ var data = {
 		stoneWall: {
 			name:'Stone Wall',
 			buildCost: {stone:8,lumber:2},
-			buildTime: 14,
+			buildTime: 28,
 			replaces: ['woodenPallisade'],
 			goodwill: 2,
 			visible: true,
@@ -471,8 +471,8 @@ var data = {
 		},
 		tannery: {
 			name:'Tannery',
-			buildCost: {stone:1,lumber:1,hides:2,fiber:1},
-			buildTime: 4,
+			buildCost: {stone:1,lumber:1,hides:5,fiber:1},
+			buildTime: 8,
 			goodwill: 2,
 			visible: false,
 			inputs: ['hides'],
@@ -482,7 +482,7 @@ var data = {
 		tenements: {
 			name:'Tenements',
 			buildCost: {stone:8,lumber:4,cloth:2},
-			buildTime: 21,
+			buildTime: 42,
 			replaces: ['hovels'],
 			goodwill: 5,
 			visible: true,
@@ -493,15 +493,23 @@ var data = {
 		warehouse: {
 			name: 'Warehouse',
 			buildCost: {stone:2,lumber:4},
-			buildTime: 7,
+			buildTime: 14,
 			goodwill: -1,
 			visible: false,
 			jobs: 5,
 		},
+		watchtower: {
+			name:'Watchtower',
+			buildCost: {lumber:4,fiber:2},
+			buildTime: 6,
+			goodwill: 1,
+			visible: true,
+			defense:2,
+		},
 		watermill: {
 			name: 'Watermill',
 			buildCost: {lumber:4,stone:1,cloth:2},
-			buildTime: 14,
+			buildTime: 28,
 			goodwill:5,
 			visible: false,
 			requiredResource: ['river'],
@@ -511,7 +519,7 @@ var data = {
 		well: {
 			name: 'Well',
 			buildCost: {stone:2,lumber:1},
-			buildTime: 2,
+			buildTime: 4,
 			goodwill:1,
 			visible: false,
 			requiredResource: ['spring'],
@@ -520,7 +528,7 @@ var data = {
 		woodenPallisade: {
 			name:'Wooden Pallisade',
 			buildCost: {lumber:4,fiber:2},
-			buildTime: 3,
+			buildTime: 6,
 			goodwill: 1,
 			visible: true,
 			defense:3,
@@ -621,6 +629,8 @@ var data = {
 				'seine',
 				'tannery',
 				'well',
+				'watchtower',
+				'watermill',
 				'woodenPallisade'
 			],
 			buildCost: {lumber:4,fiber:4,tack:1,stone:1,food:1,water:1},

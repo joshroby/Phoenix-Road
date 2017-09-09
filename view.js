@@ -77,6 +77,7 @@ var view = {
 		
 		var defs = document.createElementNS('http://www.w3.org/2000/svg','defs');
 		svg.appendChild(defs);
+		
 		var greenGradient = document.createElementNS('http://www.w3.org/2000/svg','radialGradient');
 		greenGradient.id = 'greenGradient';
 		defs.appendChild(greenGradient);
@@ -95,6 +96,31 @@ var view = {
 		stop.setAttribute('stop-color','green');
 		stop.setAttribute('stop-opacity',0);
 		greenGradient.appendChild(stop);
+		
+		var landmarkGradient = document.createElementNS('http://www.w3.org/2000/svg','radialGradient');
+		landmarkGradient.id = 'landmarkGradient';
+		defs.appendChild(landmarkGradient);
+		var stop = document.createElementNS('http://www.w3.org/2000/svg','stop');
+		stop.setAttribute('offset','10%');
+		stop.setAttribute('stop-color','darkorange');
+		stop.setAttribute('stop-opacity',1);
+		landmarkGradient.appendChild(stop);
+		var stop = document.createElementNS('http://www.w3.org/2000/svg','stop');
+		stop.setAttribute('offset','100%');
+		stop.setAttribute('stop-color','darkorange');
+		stop.setAttribute('stop-opacity',0.1);
+		landmarkGradient.appendChild(stop);
+		
+		var landmarkShadow = document.createElementNS('http://www.w3.org/2000/svg','clipPath');
+		landmarkShadow.id = 'landmarkShadow';
+		defs.appendChild(landmarkShadow);
+		var rect = document.createElementNS('http://www.w3.org/2000/svg','rect');
+		rect.setAttribute('x',0);
+		rect.setAttribute('y',0);
+		rect.setAttribute('width',20);
+		rect.setAttribute('height',20);
+// 		rect.setAttribute('transform','rotate(45)');
+		landmarkShadow.appendChild(rect);
 		
 		for (var i in data.units) {
 			if (draw[i] !== undefined) {
@@ -230,13 +256,19 @@ var view = {
 			newUnit.setAttribute('x',unitX - 25);
 			newUnit.setAttribute('y',unitY - 5);
 			newUnit.setAttribute('onclick','handlers.selectUnit('+i+')');
+// 			newUnit.setAttribute('paint-order','stroke fill');
+// 			newUnit.setAttribute('stroke-width','50');
 			if (units[i].inTransit) {
+// 				newUnit.setAttribute('stroke','#006400');
 				newUnit.setAttribute('fill','#006400');
 			} else if (units[i].isBuilding) {
+// 				newUnit.setAttribute('stroke','#F0E68C');
 				newUnit.setAttribute('fill','#F0E68C');
 			} else if (units[i].isSurveying) {
+// 				newUnit.setAttribute('stroke','#AFEEEE');
 				newUnit.setAttribute('fill','#AFEEEE');
 			} else {
+// 				newUnit.setAttribute('stroke','red');
 				newUnit.setAttribute('fill','red');
 			};
 			unitsGroup.appendChild(newUnit);
@@ -931,7 +963,7 @@ var view = {
 					unitCommoditiesItem.appendChild(unitCommoditiesTradeCell);
 					
 					var resupplyCell = document.createElement('td');
-					var resupplyCost = unit.commodities[c].qty * unit.location.commodities[unit.commodities[c].commodity];
+					var resupplyCost = (100 - unit.commodities[c].qty) * unit.location.commodities[unit.commodities[c].commodity];
 					if (unit.commodities[c].qty < 100 && resupplyCost < unit.location.reputation.p1) {
 						resupplyCell.innerHTML = '<a class="tipAnchor"><span class="fa fa-refresh"></span><span class="tooltip">Resupply: '+Math.ceil(resupplyCost)+' reputation</span></a>';
 						resupplyCell.setAttribute('onclick','handlers.resupply('+c+')');
@@ -1175,7 +1207,6 @@ var view = {
 		};
 		
 		if (infrastructure.replaces !== undefined) {
-			console.log('replaces');
 			var replaceList = [];
 			for (var i in infrastructure.replaces) {
 				replaceList.push(data.infrastructure[infrastructure.replaces[i]].name);
@@ -1183,7 +1214,6 @@ var view = {
 			var unitBuildReplaceP = document.createElement('p');
 			unitBuildReplaceP.innerHTML = "<strong>Replaces:</strong> " + gamen.prettyList(replaceList);
 			unitBuildPreviewDiv.appendChild(unitBuildReplaceP);
-			console.log(unitBuildReplaceP);
 		};
 		
 		if (view.focus.unit.canAfford(infrastructure.buildCost) && !view.focus.unit.isBuilding && !view.focus.unit.inTransit) {
