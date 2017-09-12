@@ -58,7 +58,7 @@ var events = {
 		gamen.passageQueue = [];
 		var cargo = units[0].commodities[2].commodity;
 		view.displayUnit(units[0]);
-		var passageText = "You've loaded up your Grams' old donkey cart with " +view.commodityIcon('food')+ " Food and " +view.commodityIcon('food')+ " Water for the journey, plus a load of your town's most plentiful commodity: " + view.commodityIcon(cargo) + data.commodities[cargo].name + ".<p>The food is for you and your friend.  The water is for the donkey.  The " + view.commodityIcon(cargo) + data.commodities[cargo].name + " is for somebody out there who needs it more than you do.  Maybe they'll have something they don't need, something plentiful in their town, for which the people here have a dire need.";
+		var passageText = "You've loaded up your Grams' old donkey cart with " +view.commodityIcon('food')+ " Food and " +view.commodityIcon('water')+ " Water for the journey, plus a load of your town's most plentiful commodity: " + view.commodityIcon(cargo) + data.commodities[cargo].name + ".<p>The food is for you and your friend.  The water is for the donkey.  The " + view.commodityIcon(cargo) + data.commodities[cargo].name + " is for somebody out there who needs it more than you do.  Maybe they'll have something they don't need, something plentiful in their town, for which the people here have a dire need.";
 		var choiceArray = [new Choice('Continue',events.tutorial_005),new Choice('Turn off Tutorial',events.disableTutorial)];
 		gamen.displayPassage(new Passage(passageText,choiceArray));
 		gamen.displayPassage(new Passage("Did you want to disable the tutorial?",choiceArray));
@@ -67,7 +67,7 @@ var events = {
 	tutorial_005: function() {
 		gamen.passageQueue = [];
 		var cargo = units[0].commodities[2].commodity;
-		gamen.displayPassage(new Passage("It's time to hit the road.  After you've dismissed this message, click on your donkey cart to select it.<p>You can then click on another town on the map and you'll start heading there.<p>Before you go, though, you might want to request another load of a commodity.  Click on any of the <span class='fa fa-cart-plus'></span> icons next to the commodity you want to ask for and then click on the Trade button below the map.  Your cart can carry one more load.  Do you want another " + view.commodityIcon(cargo) + data.commodities[cargo].name + ", or something different? "+data.commodities[units[0].commodities[2].commodity].name+" is cheap, but carrying two different commodities increases the chances that the people out there will find it useful."));
+		gamen.displayPassage(new Passage("It's time to hit the road.  After you've dismissed this message, click on your donkey cart to select it.<p>You can then click on another town on the map and you'll start heading there.<p>Before you go, though, you might want to request another load of a commodity.  Click on any of the <span class='fa fa-cart-plus'></span> icons next to the commodity you want to ask for and then click on the Trade button below the map.  Your cart can carry one more load.  Do you want another " + view.commodityIcon(cargo) + data.commodities[cargo].name + ", or something different? "+data.commodities[units[0].commodities[2].commodity].name+" is cheap, but carrying two different commodities increases the chances that the people out there will find what you've got useful."));
 	},
 	
 	tutorial_firstArrival: function() {

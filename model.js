@@ -66,8 +66,17 @@ var model = {
 		// Testing Cheats
 // 		startUnit.location.infrastructure.push(data.infrastructure.cartwright);
 // 		startUnit.location.infrastructure.push(data.infrastructure.mechanic);
-// 		var dowser = new Unit(players.p1,startUnit.location,data.units.dowser);
-// 		var tinker = new Unit(players.p1,startUnit.location,data.units.tinkersCart);
+		var dowser = new Unit(players.p1,startUnit.location,data.units.dowser);
+		var tinker = new Unit(players.p1,startUnit.location,data.units.tinkersCart);
+		var horseCart = new Unit(players.p1,startUnit.location,data.units.horseCart);
+		var oxCart = new Unit(players.p1,startUnit.location,data.units.oxCart);
+		var bicycle = new Unit(players.p1,startUnit.location,data.units.bicycle);
+		var buggy = new Unit(players.p1,startUnit.location,data.units.buggy);
+		var wagon = new Unit(players.p1,startUnit.location,data.units.wagon);
+		var bus = new Unit(players.p1,startUnit.location,data.units.bus);
+		var truck = new Unit(players.p1,startUnit.location,data.units.truck);
+		var semi = new Unit(players.p1,startUnit.location,data.units.semi);
+		var zeppelin = new Unit(players.p1,startUnit.location,data.units.zeppelin);
 		
 		var localArea = [startUnit.location];
 		for (var i=0;i<4;i++) {
@@ -780,7 +789,6 @@ function Site(mapSize) {
 	};
 	
 	this.hometown = function() {
-		gamen.displayPassage(new Passage('You return to your hometown.'));
 		if (!players.p1.eventLog.returnHome && model.options.tutorials) {
 			events.tutorial_returnHome();
 		};

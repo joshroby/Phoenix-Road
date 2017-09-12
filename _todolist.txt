@@ -1,17 +1,16 @@
 Down the Phoenix Road To Do List
 
--Tutorial Guidance Quests
 
 IMMEDIATE
 
 
 NEAR FUTURE
 
-
+- Post Office as a infrastructure box
+	- only one or two mails available at a time
+	- addressed to specific destination site?
 - overhaul production buildings affect on values
-	- infrastructure with no source for inputs
-		- makes outputs at least equal to inputs?
-			- only for outputs not already traded?
+	- infrastructure with no local source for inputs does not decrease outputs
 	- big bonus for completing a production pipeline (tannery between corral and saddler)
 		- values modified up & down pipelines
 - SVG tinkering
@@ -23,9 +22,6 @@ NEAR FUTURE
 	- need to set a center point (defaults to 500,500 or focus unit?)
 	- zoom in / out pays no attention to the location of the mouse
 		- or takes its value initially but then ignores it until zoom is done?
-- Post Office as a infrastructure box
-	- only one or two mails available at a time
-	- addressed to specific destination site
 
 GAMEN
 	index.html content setup/injection

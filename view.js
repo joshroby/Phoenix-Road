@@ -337,20 +337,20 @@ var view = {
 			newUnit.setAttribute('x',unitX - 25);
 			newUnit.setAttribute('y',unitY - 5);
 			newUnit.setAttribute('onclick','handlers.selectUnit('+i+')');
-// 			newUnit.setAttribute('paint-order','stroke fill');
-// 			newUnit.setAttribute('stroke-width','50');
+			newUnit.setAttribute('paint-order','stroke fill');
+			newUnit.setAttribute('stroke-width','40');
 			if (units[i].inTransit) {
-// 				newUnit.setAttribute('stroke','#006400');
-				newUnit.setAttribute('fill','#006400');
+				newUnit.setAttribute('stroke','#006400');
+// 				newUnit.setAttribute('fill','#006400');
 			} else if (units[i].isBuilding) {
-// 				newUnit.setAttribute('stroke','#F0E68C');
-				newUnit.setAttribute('fill','#F0E68C');
+				newUnit.setAttribute('stroke','#F0E68C');
+// 				newUnit.setAttribute('fill','#F0E68C');
 			} else if (units[i].isSurveying) {
-// 				newUnit.setAttribute('stroke','#AFEEEE');
-				newUnit.setAttribute('fill','#AFEEEE');
+				newUnit.setAttribute('stroke','#AFEEEE');
+// 				newUnit.setAttribute('fill','#AFEEEE');
 			} else {
-// 				newUnit.setAttribute('stroke','red');
-				newUnit.setAttribute('fill','red');
+				newUnit.setAttribute('stroke','red');
+// 				newUnit.setAttribute('fill','red');
 			};
 			unitsGroup.appendChild(newUnit);
 		};
