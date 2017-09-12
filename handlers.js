@@ -5,6 +5,20 @@ var handlers = {
 		model.newGame();
 	},
 	
+	toggleOptions: function() {
+		view.toggleOptions();
+	},
+	
+	toggleOption: function(option) {
+		model.options[option] = !model.options[option];
+	},
+	
+	updateNewGameOption: function(option) {
+		var optionInput = document.getElementById(option + 'OptionsSlider');
+		model.options.newGame[option] = parseInt(optionInput.value);
+		document.getElementById(option + 'OptionsNumber').innerHTML = optionInput.value;
+	},
+	
 	clockPause: function() {
 		if (model.clock.running) {
 			model.clock.running = false;

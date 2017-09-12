@@ -1,5 +1,9 @@
 Down the Phoenix Road To Do List
 
+- Options
+	- turn off model.checkClock()
+	- turn off map zoom
+	- new game sliders (in Options or outside?)
 
 
 IMMEDIATE
@@ -18,10 +22,6 @@ NEAR FUTURE
 	- shading on landmarks
 	- fix unit svgs to have no overlapping paths
 		- then can implement the background stroke
-- Options
-	- turn off model.checkClock()
-	- turn off map zoom
-	- new game sliders (in Options or outside?)
 - Zoom is still wonky
 - Post Office as a infrastructure box
 	- only one or two mails available at a time

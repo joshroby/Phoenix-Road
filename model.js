@@ -13,8 +13,18 @@ var model = {
 	gameSavePrefix: 'PhoenixRoad',
 
 	options: {
-		dayLength: 1000,
-		paused: true,
+		tutorials: true,
+		autoplay: true,
+		zoom: true,
+		newGame: {
+			mapSize: 1000,
+			totalSites: 50,
+			minDist: 40,
+			maxDist: 2.6,
+			totalThreats: 5,
+			ghostTowns: 2,
+			volatility: 5,
+		},
 	},
 
 	newGame: function() {
@@ -80,7 +90,7 @@ var model = {
 		localArea[Math.random() * localArea.length << 0].infrastructure.push(data.infrastructure.lensmeister);
 		localArea[Math.random() * localArea.length << 0].infrastructure.push(data.infrastructure.kidOnABike);
 		localArea[Math.random() * localArea.length << 0].infrastructure.push(data.infrastructure.tinkerCamp);
-		localArea[Math.random() * localArea.length << 0].infrastructure.push(data.infrastructure.drunkDowser);
+		distantArea[Math.random() * distantArea.length << 0].infrastructure.push(data.infrastructure.drunkDowser);
 		distantArea[Math.random() * distantArea.length << 0].infrastructure.push(data.infrastructure.mechanic);
 		distantArea[Math.random() * distantArea.length << 0].infrastructure.push(data.infrastructure.hangar);
 		distantArea[Math.random() * distantArea.length << 0].infrastructure.push(data.infrastructure.burntOutBus);
@@ -91,17 +101,18 @@ var model = {
 		
 	},
 
-	newMap: function(totalSites,minDist,maxDist,minAngle,totalThreats,ghostTowns) {
-		if (totalSites == undefined) { totalSites = 50 };
-		if (minDist == undefined) {  minDist = 40 };
+	newMap: function(mapSize,totalSites,minDist,maxDist,minAngle,totalThreats,ghostTowns) {
+		if (mapSize == undefined) { mapSize = model.options.newGame.mapSize };
+		if (totalSites == undefined) { totalSites = model.options.newGame.totalSites };
+		if (minDist == undefined) {  minDist = model.options.newGame.minDist };
 		if (maxDist == undefined) {  maxDist = 2.6 };
 		if (minAngle == undefined) {  minAngle = 30 };
-		if (totalThreats == undefined) {totalThreats = 5};
-		if (ghostTowns == undefined) {ghostTowns = 2};
+		if (totalThreats == undefined) {totalThreats = model.options.newGame.totalThreats};
+		if (ghostTowns == undefined) {ghostTowns = model.options.newGame.ghostTowns};
 	
 		sites = [];
 		for (var i=0;i<totalSites*3;i++) {
-			var newSite = new Site();
+			var newSite = new Site(mapSize);
 		};
 		
 		// Remove too-close sites, reduce to totalSites
@@ -283,15 +294,17 @@ var model = {
 	},
 	
 	checkClock: function() {
-		var allBusy = true;
-		for (var u in units) {
-			if (!units[u].inTransit && !units[u].isSurveying && !units[u].isBuilding ) {
-				allBusy = false;
+		if (model.options.autoplay) {
+			var allBusy = true;
+			for (var u in units) {
+				if (!units[u].inTransit && !units[u].isSurveying && !units[u].isBuilding ) {
+					allBusy = false;
+				};
 			};
-		};
-		if (allBusy && !model.clock.running) {
-			model.clock.running = true;
-			model.clock.go();
+			if (allBusy && !model.clock.running) {
+				model.clock.running = true;
+				model.clock.go();
+			};
 		};
 	},
 	
@@ -540,9 +553,12 @@ var model = {
 
 };
 
-function Site() {
-	this.x = 25 + Math.random() * 950 << 0;
-	this.y = 25 + Math.random() * 950 << 0;
+function Site(mapSize) {
+	if (mapSize == undefined) {mapSize = 1000};
+	var trimmed = mapSize - 50;
+	var min = (1000 - trimmed ) / 2;
+	this.x = min + Math.random() * trimmed << 0;
+	this.y = min + Math.random() * trimmed << 0;
 	this.name = model.siteName();
 	
 	this.carpet = [{tilt:Math.random(),squish:Math.random()},{tilt:Math.random(),squish:Math.random()},{tilt:Math.random(),squish:Math.random()}];

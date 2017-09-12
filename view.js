@@ -16,6 +16,87 @@ var view = {
 		}
 	},
 	
+	toggleOptions: function() {
+		var optionsDiv = document.getElementById('optionsDiv');
+		if (optionsDiv.innerHTML == '') {
+			optionsDiv.className = 'optionsDivOpened';
+			var optionsHead = document.createElement('h3');
+			optionsHead.innerHTML = 'Options';
+			optionsDiv.appendChild(optionsHead);
+			
+			var tutorialsP = document.createElement('p');
+			var tutorialsCheck = document.createElement('input');
+			tutorialsCheck.id = 'tutorialsCheck';
+			tutorialsCheck.setAttribute('type','checkbox');
+			tutorialsCheck.setAttribute('onclick','handlers.toggleOption("tutorials")');
+			if (model.options.tutorials) {tutorialsCheck.setAttribute('checked','checked')};
+			tutorialsP.appendChild(tutorialsCheck);
+			tutorialsP.innerHTML += "Tutorial Quests"
+			optionsDiv.appendChild(tutorialsP);
+			
+			var autoplayP = document.createElement('p');
+			var autoplayCheck = document.createElement('input');
+			autoplayCheck.id = 'autoplayCheck';
+			autoplayCheck.setAttribute('type','checkbox');
+			autoplayCheck.setAttribute('onclick','handlers.toggleOption("autoplay")');
+			if (model.options.autoplay) {autoplayCheck.setAttribute('checked','checked')};
+			autoplayP.appendChild(autoplayCheck);
+			autoplayP.innerHTML += "Autoplay when all units are busy"
+			optionsDiv.appendChild(autoplayP);
+			
+			var zoomP = document.createElement('p');
+			var zoomCheck = document.createElement('input');
+			zoomCheck.id = 'zoomCheck';
+			zoomCheck.setAttribute('type','checkbox');
+			zoomCheck.setAttribute('onclick','handlers.toggleOption("zoom")');
+			if (model.options.zoom) {zoomCheck.setAttribute('checked','checked')};
+			zoomP.appendChild(zoomCheck);
+			zoomP.innerHTML += "Map Zoom"
+			optionsDiv.appendChild(zoomP);
+			
+			var newGameOptionsDiv = document.createElement('div');
+			newGameOptionsDiv.id = 'newGameOptionsDiv';
+			optionsDiv.appendChild(newGameOptionsDiv);
+			
+			var newGameOptionsHead = document.createElement('h4');
+			newGameOptionsHead.innerHTML = 'New Game Options';
+			newGameOptionsDiv.appendChild(newGameOptionsHead);
+			
+			var newGameOptions = [
+				{option:'mapSize',label:'Map Size',min:400,max:1000,},
+				{option:'totalSites',label:'Towns',min:20,max:100,},
+				{option:'minDist',label:'Minimum Route Length',min:10,max:100,},
+				{option:'totalThreats',label:'Threats',min:1,max:10,},
+				{option:'volatility',label:'Value Volatility',min:1,max:10,},
+				{option:'ghostTowns',label:'Ghost Towns',min:0,max:10,},
+			];
+			for (var option of newGameOptions) {
+				var newGameOption = document.createElement('p');
+				var newGameOptionSlider = document.createElement('input');
+				newGameOptionSlider.id = option.option + 'OptionsSlider';
+				newGameOptionSlider.className = 'optionsSlider';
+				newGameOptionSlider.setAttribute('type','range');
+				newGameOptionSlider.setAttribute('name',option.option);
+				newGameOptionSlider.setAttribute('min',option.min);
+				newGameOptionSlider.setAttribute('max',option.max);
+				newGameOptionSlider.setAttribute('value',model.options.newGame[option.option]);
+				newGameOptionSlider.setAttribute('onchange','handlers.updateNewGameOption("'+option.option+'")');
+				newGameOption.appendChild(newGameOptionSlider);
+				var newGameOptionNumber = document.createElement('span');
+				newGameOptionNumber.id = option.option + 'OptionsNumber';
+				newGameOptionNumber.innerHTML = newGameOptionSlider.value;
+				newGameOption.appendChild(newGameOptionNumber);
+				newGameOption.innerHTML += " " + option.label;
+				newGameOptionsDiv.appendChild(newGameOption);
+			};
+			
+		} else {
+			optionsDiv.className = '';
+			optionsDiv.innerHTML = '';
+		};
+	},
+
+	
 	clearDetailsDivs: function() {
 		document.getElementById('introDiv').style.display = 'none';
 		document.getElementById('detailsUnitDiv').style.display = 'block';
@@ -326,36 +407,38 @@ var view = {
 	},
 	
 	mapZoom: function(e) {
-		view.zoom.z += e.deltaY * 2;
-		view.zoom.z = Math.min(Math.max(view.zoom.z,1),1000);
+		if (model.options.zoom) {
+			view.zoom.z += e.deltaY * 2;
+			view.zoom.z = Math.min(Math.max(view.zoom.z,1),1000);
 		
-		var mapSVG = document.getElementById('mapSVG');
-		var mapRect = mapSVG.getBoundingClientRect();
-		var viewbox = view.zoom.viewbox;
+			var mapSVG = document.getElementById('mapSVG');
+			var mapRect = mapSVG.getBoundingClientRect();
+			var viewbox = view.zoom.viewbox;
 		
-		// coordinates relative to map contents
-		var relX = (e.pageX - mapRect.left)/mapRect.width;
-		var relY = (e.pageY - mapRect.top)/mapRect.height;
+			// coordinates relative to map contents
+			var relX = (e.pageX - mapRect.left)/mapRect.width;
+			var relY = (e.pageY - mapRect.top)/mapRect.height;
 		
-		// coordinates relative to viewbox / map borders
-		var viewX = 1000*relX;
-		var viewY = 1000*relY;
+			// coordinates relative to viewbox / map borders
+			var viewX = 1000*relX;
+			var viewY = 1000*relY;
 		
-		var mapX = viewbox.minX + view.zoom.z*relX;
-		var mapY = viewbox.minY + view.zoom.z*relY;
+			var mapX = viewbox.minX + view.zoom.z*relX;
+			var mapY = viewbox.minY + view.zoom.z*relY;
 		
-// 		console.log('view',viewX,viewY);
-// 		console.log('map',mapX,mapY);
-// 		console.log('zoom',view.zoom.z);
+	// 		console.log('view',viewX,viewY);
+	// 		console.log('map',mapX,mapY);
+	// 		console.log('zoom',view.zoom.z);
 				
-		viewbox.minX = Math.min(1000-view.zoom.z,Math.max(0,mapX - view.zoom.z / 2));
-		viewbox.minY = Math.min(1000-view.zoom.z,Math.max(0,mapY - view.zoom.z / 2));
-		viewbox.width = view.zoom.z;
-		viewbox.height = view.zoom.z;
+			viewbox.minX = Math.min(1000-view.zoom.z,Math.max(0,mapX - view.zoom.z / 2));
+			viewbox.minY = Math.min(1000-view.zoom.z,Math.max(0,mapY - view.zoom.z / 2));
+			viewbox.width = view.zoom.z;
+			viewbox.height = view.zoom.z;
 
-		var viewboxString = viewbox.minX + ' ' + viewbox.minY + ' ' + viewbox.width + ' ' + viewbox.height;
-		mapSVG.setAttribute('viewBox',viewboxString);
-		view.zoom.viewbox = viewbox;
+			var viewboxString = viewbox.minX + ' ' + viewbox.minY + ' ' + viewbox.width + ' ' + viewbox.height;
+			mapSVG.setAttribute('viewBox',viewboxString);
+			view.zoom.viewbox = viewbox;
+		};
 	},
 	
 	mapDragStart: function(e) {
