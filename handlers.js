@@ -164,7 +164,7 @@ var handlers = {
 	},
 	
 	upgrade: function(stat) {
-		p1[stat] *= 2;
+		players.p1[stat] *= 2;
 		for (u in units) {
 			units[u].look();
 		};

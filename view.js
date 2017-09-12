@@ -718,14 +718,17 @@ var view = {
 				} else if (site.infrastructure[i].upgrade !== undefined) {
 					var upgrade = site.infrastructure[i].upgrade;
 					var upgradeString = upgrade.charAt(0).toUpperCase() + upgrade.slice(1);
-					var current = players.p1[upgrade] / 60;
+					var current = players.p1[upgrade] / 60 - 1;
 					var cost = current*500;
 					var infrastructureDiv = document.createElement('div');
 					var infrastructureHead = document.createElement('h3');
 					infrastructureHead.className = 'infrastructureHead';
 					infrastructureHead.innerHTML = site.infrastructure[i].name;
 					infrastructureDiv.appendChild(infrastructureHead);
-					infrastructureUpgradeButton = document.createElement('button');
+					var infrastructureUpgradeText = document.createElement('p');
+					infrastructureUpgradeText.innerHTML = site.infrastructure[i].text;
+					infrastructureDiv.appendChild(infrastructureUpgradeText);
+					var infrastructureUpgradeButton = document.createElement('button');
 					infrastructureUpgradeButton.innerHTML = 'Upgrade ' + upgradeString + " (" +cost+ ")";
 					infrastructureUpgradeButton.setAttribute('onclick','handlers.upgrade("'+upgrade+'")');
 					if(cost > site.reputation.p1) {
@@ -739,7 +742,12 @@ var view = {
 					siteInfrastructureDiv.appendChild(infrastructureDiv);
 				} else if (site.infrastructure[i].recruit !== undefined) {
 					var infrastructureDiv = document.createElement('div');
-					infrastructureDiv.innerHTML = site.infrastructure[i].text + '<br />';
+					var infrastructureHead = document.createElement('h3');
+					infrastructureHead.innerHTML = site.infrastructure[i].name;
+					infrastructureDiv.appendChild(infrastructureHead);
+					var infrastructureDescription = document.createElement('p');
+					infrastructureDescription.innerHTML = site.infrastructure[i].text + '<br />';
+					infrastructureDiv.appendChild(infrastructureDescription);
 					var recruitBtn = document.createElement('button');
 					recruitBtn.innerHTML = 'Recruit ' + site.infrastructure[i].name;
 					recruitBtn.setAttribute('onclick','handlers.recruit('+i+')');

@@ -35,7 +35,7 @@ var model = {
 		
 		model.newMap();
 		units = [];
-		players.p1 = {unitsUnlocked:{}};
+		players.p1 = {unitsUnlocked:{},eventLog:{}};
 		
 		players.p1.vision = 60;
 		players.p1.knownSites = [];
@@ -45,6 +45,7 @@ var model = {
 		if (startUnit.location.neighbors.length == 0) {
 			startUnit.location = sites[Math.random() * sites.length << 0];
 		};
+		players.p1.hometown = startUnit.location;
 		
 		startUnit.look();
 		startUnit.location.reputation.p1 = 100;
@@ -761,6 +762,29 @@ function Site(mapSize) {
 		
 		return array;
 	};
+
+	this.arrivalEvents = function() {
+		if (!players.p1.eventLog.tutorialStarted && model.options.tutorials) {
+			events.tutorial_001();
+		} else if (!players.p1.eventLog.firstArrival && model.options.tutorials) {
+			events.tutorial_firstArrival();
+		};
+		for (var i of this.infrastructure) {
+			if (i.passage !== undefined) {
+				gamen.displayPassage(new Passage(i.passage));
+			};
+		};
+		if (!players.p1.eventLog.cartwright && model.options.tutorials && this.infrastructure.indexOf(data.infrastructure.cartwright) !== -1) {
+			events.tutorial_cartwright();
+		};
+	};
+	
+	this.hometown = function() {
+		gamen.displayPassage(new Passage('You return to your hometown.'));
+		if (!players.p1.eventLog.returnHome && model.options.tutorials) {
+			events.tutorial_returnHome();
+		};
+	};	
 	
 	this.trading = function() {
 		var commodities = {};
@@ -1276,9 +1300,13 @@ function Unit(owner,startLoc,type) {
 				this.owner.knownSites.push(sites[i]);
 			};
 		};
-		if (this.location !== undefined) {
+		if (this.location !== undefined && !this.location.hasVisited.p1) {
 			this.location.hasVisited.p1 = true;
+			this.location.arrivalEvents();
 		};
+		if (this.location !== undefined && this.location == players.p1.hometown) {
+			this.location.hometown();
+		}
 		for (var i in landmarks) {
 			if (( Math.pow(Math.pow(landmarks[i].x - unitX,2) + Math.pow(landmarks[i].y - unitY,2),.5) < this.owner.vision + 60 ) && this.owner.knownLandmarks.indexOf(landmarks[i]) == -1) {
 				this.owner.knownLandmarks.push(landmarks[i]);
@@ -1509,6 +1537,12 @@ var gamenEventPointers = {
 	
 	refreshGameDisplay: function() {
 		view.refreshGameDisplay();
+	},
+	
+	tutorial: function(tutorialKey) {
+		if (model.options.tutorials) {
+			console.log(tutorialKey);
+		};
 	},
 	
 };

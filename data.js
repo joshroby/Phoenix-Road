@@ -177,29 +177,82 @@ var data = {
 			unitName: 'Kid on a Bike',
 			recruit: 'bicycle',
 			text: "There's a kid here with an ancient but functional bike.",
+			passage: "There's a kid here with an ancient but functional bicycle.",
 			visible: false,
 		},
 		drunkDowser:  {
 			name: 'Drunken Dowser',
 			unitName: 'Drunken Dowser',
 			recruit: 'dowser',
-			text: "In the shelter afforded by a small cart with 'Dowsing Services' painted on the side, sputters a tiny fire.  Beside it slumps a disreputable sort, passed out drunk.",
+			text: "This passed-out dowser is sleeping it off by the fire.",
+			passage: "In the shelter afforded by a small cart with 'Dowsing Services' painted on the side, sputters a tiny fire.  Beside it slumps a disreputable sort, passed out drunk.",
 			visible: false,
 		},
 		tinkerCamp: {
 			name: 'Tinker Camp',
 			unitName: 'Tinker Band',
 			recruit: 'tinkersCart',
-			text: "This small band of tinkers travels town to town doing odd jobs.  When informed of your plans, they suggest they could help in exchange for regular meals.",
+			text: "These tinkers are interested in work but skeptical of your ability to feed them.",
+			passage: "This small band of tinkers travels town to town doing odd jobs.  When informed of your plans, they suggest they could help in exchange for regular meals.",
 			visible: false,
 		},
 		burntOutBus: {
 			name: 'Burnt Out Bus',
 			unitName: 'Charred Bus',
-			recruit: 'tinkersCart',
-			text: "You come across a burned-out vehicle, apparently hit by bandits.  It appears it was large enough for its former owners to live in… and die in.  They sure aren't using it anymore…",
+			recruit: 'bus',
+			text: "This burnt-out husk can be refurbished with a few materials.",
+			passage: "You come across a burned-out vehicle, apparently hit by bandits.  It appears it was large enough for its former owners to live in... and die in.  They sure aren't using it anymore...",
 			visible: false,
 		},
+		cartwright: {
+			name:'Cartwright',
+			buildCost: {lumber:2},
+			buildTime: 14,
+			goodwill: 1,
+			visible: false,
+			buildUnits: [
+				'donkeyCart',
+				'oxCart',
+				'horseCart',
+				'tinkersCart',
+				'dowser'
+				],
+			inputs: ['tack','lumber','fiber'],
+			jobs: 2,
+		},
+		hangar: {
+			name:'Hangar',
+			passage: "You come across a huge, old-world building, like half a barrel lying on its side... if that barrel was broader than any tree.  A handful of people mill about outside the structure, working diligently on repairing or building bits of machinery.  Inside... inside is a huge skeleton of metal beams draped in shimmering cloth.<p>At your approach, one of the workers waves a hand in welcome.  'Ah, the trader,' she shouts merrily.  'We've heard about you.  How'd you like to make your deliveries from the sky?'",
+			visible: true,
+			buildUnits: ['zeppelin'],
+			inputs: ['metals','fiber','fuel'],
+			jobs: 3,
+		},
+		lensmeister: {
+			name: 'Lensmeister',
+			passage: "One of this town's eldest citizens has amassed a sizeable collection of ancient glass lenses.  Some of the pieces in the collection include spyglasses and powerful telescopes.  The elder is happy enough to gift you with a weak specimen in exchange for an evening of your stories.  They intimate that they'd be willing to part with even more powerful artifacts if you help their town.",
+			text: "The elder is happy to share their collection of lenses with people who help the town.",
+			visible: false,
+			upgrade: 'vision',
+			jobs: 1,
+		},
+		mechanic: {
+			name:'Mechanic',
+			passage: "This town is the home of an expert in ancient machines, a mechanic.  Cars and trucks resurrected from her junkyard are used throughout the town.  These powerful machines can haul more, and faster, than anything pulled by an animal.  For the right materials, she can rebuild one of the hulks in her junkyard for your use.",
+			visible: false,
+			buildUnits: [
+				'bicycle',
+				'buggy',
+				'wagon',
+				'truck',
+				'bus',
+				'semi',
+				'constructionCrew'
+				],
+			inputs: ['fuel'],
+			jobs: 4,
+		},
+		
 
 		aqueduct: {
 			name: 'Aqueduct',
@@ -242,22 +295,6 @@ var data = {
 			housing:20,
 			defense:5,
 			jobs: 1,
-		},
-		cartwright: {
-			name:'Cartwright',
-			buildCost: {lumber:2},
-			buildTime: 14,
-			goodwill: 1,
-			visible: false,
-			buildUnits: [
-				'donkeyCart',
-				'oxCart',
-				'horseCart',
-				'tinkersCart',
-				'dowser'
-				],
-			inputs: ['tack','lumber','fiber'],
-			jobs: 2,
 		},
 		cisterns: {
 			name: 'Cisterns',
@@ -319,13 +356,6 @@ var data = {
 			jobs: 4,
 			outputs: ['food'],
 		},
-		hangar: {
-			name:'Hangar',
-			visible: false,
-			buildUnits: ['zeppelin'],
-			inputs: ['metals','fiber','fuel'],
-			jobs: 3,
-		},
 		hovels: {
 			name: 'Hovels & Shacks',
 			visible: false,
@@ -340,12 +370,6 @@ var data = {
 			inputs: ['fiber'],
 			outputs: ['cloth'],
 			jobs: 10,
-		},
-		lensmeister: {
-			name: 'Lensmeister',
-			visible: false,
-			upgrade: 'vision',
-			jobs: 1,
 		},
 		lumbermill: {
 			name: 'Lumbermill',
@@ -366,21 +390,6 @@ var data = {
 			inputs: ['fuel'],
 			housing:20,
 			jobs: 2,
-		},
-		mechanic: {
-			name:'Mechanic',
-			visible: false,
-			buildUnits: [
-				'bicycle',
-				'buggy',
-				'wagon',
-				'truck',
-				'bus',
-				'semi',
-				'constructionCrew'
-				],
-			inputs: ['fuel'],
-			jobs: 4,
 		},
 		mineshaft: {
 			name: 'Mineshaft',

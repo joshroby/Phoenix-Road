@@ -115,9 +115,8 @@ var gamen = {
 	passageQueue: [],
 
 	displayPassage: function(passage) {
-	
+
 		if (!this.passageUp) {
-			gamen.dismissPassage();
 			
 			for (var i in gamen.clocks) {
 				gamen.clocks[i].paused = true;
@@ -155,6 +154,11 @@ var gamen = {
 	
 	dismissPassage: function() {
 		this.passageUp = false;
+		
+		for (i in gamen.clocks) {
+			gamen.clocks[i].resume();
+		};
+		
 
 		document.getElementById('gamenModalBustDiv').innerHTML = '';
 		document.getElementById('gamenModalTextDiv').innerHTML = '';
@@ -165,14 +169,10 @@ var gamen = {
 			var nextPassage = gamen.passageQueue.shift();
 			gamen.displayPassage(nextPassage);
 		};
-		
-		for (i in gamen.clocks) {
-			gamen.clocks[i].resume();
-		};
-		
 	},
 	
 	passageChoice: function(choice) {
+		
 		if (choice.execute !== undefined) {choice.execute();};
 		gamen.dismissPassage();
 	},

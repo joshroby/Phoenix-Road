@@ -1,12 +1,9 @@
 Down the Phoenix Road To Do List
 
-- Options
-	- turn off model.checkClock()
-	- turn off map zoom
-	- new game sliders (in Options or outside?)
-
+-Tutorial Guidance Quests
 
 IMMEDIATE
+
 
 NEAR FUTURE
 
@@ -23,6 +20,9 @@ NEAR FUTURE
 	- fix unit svgs to have no overlapping paths
 		- then can implement the background stroke
 - Zoom is still wonky
+	- need to set a center point (defaults to 500,500 or focus unit?)
+	- zoom in / out pays no attention to the location of the mouse
+		- or takes its value initially but then ignores it until zoom is done?
 - Post Office as a infrastructure box
 	- only one or two mails available at a time
 	- addressed to specific destination site
