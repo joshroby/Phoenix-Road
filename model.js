@@ -486,6 +486,8 @@ var model = {
 					};
 				};
 			};
+			nextPlayer.eventLog = players[player].eventLog;
+			nextPlayer.recruitProgress = players[player].recruitProgress;
 			flatGame.players[player] = nextPlayer;
 		};
 		

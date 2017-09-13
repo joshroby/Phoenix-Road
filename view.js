@@ -497,9 +497,9 @@ var view = {
 			var sitePopulationP = document.createElement('p');
 			if (site.population > 200) {
 				sitePopulationP.innerHTML = "a city of ";
-			} else if (site.population > 100) {
+			} else if (site.population > 80) {
 				sitePopulationP.innerHTML = "a town of ";
-			} else if (site.population > 50) {
+			} else if (site.population > 40) {
 				sitePopulationP.innerHTML = "a village of ";
 			} else if (site.population > 20) {
 				sitePopulationP.innerHTML = "a hamlet of ";
