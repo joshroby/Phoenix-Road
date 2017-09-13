@@ -65,7 +65,7 @@ var model = {
 		startUnit.name = "Grams' Old Donkey Cart";
 		
 		// Testing Cheats
-		startUnit.location.infrastructure.push(data.infrastructure.burntOutBus);
+// 		startUnit.location.infrastructure.push(data.infrastructure.burntOutBus);
 // 		startUnit.location.infrastructure.push(data.infrastructure.cartwright);
 // 		startUnit.location.infrastructure.push(data.infrastructure.mechanic);
 // 		var dowser = new Unit(players.p1,startUnit.location,data.units.dowser);
@@ -446,7 +446,7 @@ var model = {
 	
 	recruit: function(infrastructure) {
 		var newUnit = new Unit(players.p1,view.focus.unit.location,data.units[infrastructure.recruit]);
-		newUnit.name = infrastructure.name;
+		newUnit.name = infrastructure.unitName;
 		players.p1.unitsUnlocked[infrastructure.recruit] = true;
 		var location = view.focus.unit.location;
 		location.infrastructure.splice(location.infrastructure.indexOf(infrastructure),1);
@@ -635,6 +635,9 @@ function Site(mapSize) {
 	// Basic Agriculture
 	if ((this.commodities.food < 0.1 || this.commodities.fiber < 0.15) && (this.resources.indexOf(data.resources.river) !== -1 || this.resources.indexOf(data.resources.spring) !== -1)) {
 		this.infrastructure.push(data.infrastructure.fields);
+	};
+	if (this.commodities.food < 0.07 && this.resources.indexOf(data.resources.river) !== -1 && this.infrastructure.indexOf(data.infrastructure.fields) == -1) {
+		this.infrastructure.push(data.infrastructure.seine);
 	};
 	if (this.commodities.food < 0.1 && this.resources.indexOf(data.resources.pasture) !== -1) {
 		this.infrastructure.push(data.infrastructure.corral);
@@ -938,7 +941,7 @@ function Site(mapSize) {
 		};
 		desirability /= localNeeds.length;
 		
-		desirability *= desirability * 2;
+		desirability *= desirability * 0.5;
 
 		desirability = Math.max(0,(500 - this.population) * desirability,0);
 
@@ -1090,9 +1093,9 @@ function Unit(owner,startLoc,type) {
 	};
 	
 	this.leaveCaravan = function() {
-		var newCaravan = this.caravan.splice(this.caravan.indexOf(this),1);
-		for (var u in newCaravan) {
-			newCaravan[u].caravan = newCaravan;
+		this.caravan.splice(this.caravan.indexOf(this),1);
+		if (this.caravan.length == 1) {
+			this.caravan[0].caravan = undefined;
 		};
 		this.caravan = undefined;
 	};

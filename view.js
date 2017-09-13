@@ -495,11 +495,22 @@ var view = {
 
 		if (site.hasVisited.p1) {
 			var sitePopulationP = document.createElement('p');
-			if (site.population > 0) {
-				sitePopulationP.innerHTML = site.population + " souls";
+			if (site.population > 200) {
+				sitePopulationP.innerHTML = "a city of ";
+			} else if (site.population > 100) {
+				sitePopulationP.innerHTML = "a town of ";
+			} else if (site.population > 50) {
+				sitePopulationP.innerHTML = "a village of ";
+			} else if (site.population > 20) {
+				sitePopulationP.innerHTML = "a hamlet of ";
+			} else if (site.population > 0) {
+				sitePopulationP.innerHTML = "a haven for ";
 			} else {
 				sitePopulationP.innerHTML = "Ghost Town";
 			};
+			if (site.population > 0) {
+				sitePopulationP.innerHTML += site.population + " souls";
+			}
 			sitePopulationP.className = 'narrowMargin';
 			siteCharacterDiv.appendChild(sitePopulationP);
 		};
@@ -1006,7 +1017,7 @@ var view = {
 					consumptionWater += unitsInCaravan[u].type.fuel.water;
 				};
 				if (unitsInCaravan[u].type.fuel.fuel !== undefined) {
-					consumptionWater += unitsInCaravan[u].type.fuel.fuel;
+					consumptionFuel += unitsInCaravan[u].type.fuel.fuel;
 				};
 			};
 			provisionsFood /= consumptionFood;

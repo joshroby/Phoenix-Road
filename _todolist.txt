@@ -1,21 +1,37 @@
 Down the Phoenix Road To Do List
 
 
+- fuel-burning units display range/provisions correctly
+- site details prepends 'village'/'town'/'metropolis' before XX souls
+- Leave caravan no longer leaves last unit in empty caravan
+- recruit code correctly names recruited units
+- bus fare quartered
+
+
 IMMEDIATE
-- finish model.payRecruitCost()
-- disable/enable Recruit button
+
+- Game saves need to save and load the players.p1.eventLog
+	- and players.p1.recruitProgress
 
 NEAR FUTURE
 
-- Recruit infrastructures take commodities towards a recruitCost
-- Game saves need to save and load the players.p1.eventLog
 - Post Office as a infrastructure box
 	- only one or two mails available at a time
 	- addressed to specific destination site?
+- Threats
+	- what if threats are just sites with events on arrival?
+		- can you 'civilize' them / make them not threats?
+		- arrival events
+			- ask for intel, which increases danger of knownSites
+			- tax goods (can take percentage of loads)
+			- confiscate goods (take a whole load)
+	- or, pull threats off of the sites array before trimming (to maintain space)
+		- give threats names
+		- make them discoverable (not via vision, tho?)
 - overhaul production buildings affect on values
+	- port it over to the adjustments code
+	- make adjustments go up and down pipelines
 	- infrastructure with no local source for inputs does not decrease outputs
-	- big bonus for completing a production pipeline (tannery between corral and saddler)
-		- values modified up & down pipelines
 - SVG tinkering
 	- movement animation/transition
 	- shading on landmarks
@@ -31,23 +47,25 @@ GAMEN
 	color palette
 
 FAR FUTURE
+- eventually, enough findable locations that not all of them appear in each play
 - a 'notes' file that saves with game so you can tell Future Self what your strategy is
 - how do you affect wages?
 	- union house
 - what benefit do YOU get for building defenses and housing?
 - rejigger site labels for legibility… somehow
-- fucking events
 - trailblazing
 - building outposts / new sites
 - warlord territory
 - warehousing
 	- works like trash pile except it doesn't disappear
 	- build costs will need to take warehouses into account
-- other only-findable infrastructures
+- other only-findable infrastructures?
 	- some kind of cult?
 - responsive design in the CSS
 - what do you do that starts passively spreading civilization / greening needs?
 - two builder units building the same thing at the same time
+
+- what can you DISCOVER that greatly helps a lot of towns directly?
 
 
 EVENTS
