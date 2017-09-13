@@ -2,10 +2,13 @@ Down the Phoenix Road To Do List
 
 
 IMMEDIATE
-
+- finish model.payRecruitCost()
+- disable/enable Recruit button
 
 NEAR FUTURE
 
+- Recruit infrastructures take commodities towards a recruitCost
+- Game saves need to save and load the players.p1.eventLog
 - Post Office as a infrastructure box
 	- only one or two mails available at a time
 	- addressed to specific destination site?
@@ -63,8 +66,6 @@ MOTHBALLS
 	- in ten days you get half-loads of food and water
 	- your rep there dips down the price of a full load of food and water.
 	- appears only when you have less than a week's provisions and no local rep
-- make Unit.eat() consume food/water/fuel differently for different units
-	- and fuel only when in transit
 - Construction and Surveying require food
 	(replaced by 'join the community' consequences)
 - boats? terrain?

@@ -40,6 +40,7 @@ var model = {
 		players.p1.vision = 60;
 		players.p1.knownSites = [];
 		players.p1.knownLandmarks = [];
+		players.p1.recruitProgress = {};
 		
 		var startUnit = new Unit(players.p1,undefined,data.units.donkeyCart);
 		if (startUnit.location.neighbors.length == 0) {
@@ -64,19 +65,20 @@ var model = {
 		startUnit.name = "Grams' Old Donkey Cart";
 		
 		// Testing Cheats
+		startUnit.location.infrastructure.push(data.infrastructure.burntOutBus);
 // 		startUnit.location.infrastructure.push(data.infrastructure.cartwright);
 // 		startUnit.location.infrastructure.push(data.infrastructure.mechanic);
-		var dowser = new Unit(players.p1,startUnit.location,data.units.dowser);
-		var tinker = new Unit(players.p1,startUnit.location,data.units.tinkersCart);
-		var horseCart = new Unit(players.p1,startUnit.location,data.units.horseCart);
-		var oxCart = new Unit(players.p1,startUnit.location,data.units.oxCart);
-		var bicycle = new Unit(players.p1,startUnit.location,data.units.bicycle);
-		var buggy = new Unit(players.p1,startUnit.location,data.units.buggy);
-		var wagon = new Unit(players.p1,startUnit.location,data.units.wagon);
-		var bus = new Unit(players.p1,startUnit.location,data.units.bus);
-		var truck = new Unit(players.p1,startUnit.location,data.units.truck);
-		var semi = new Unit(players.p1,startUnit.location,data.units.semi);
-		var zeppelin = new Unit(players.p1,startUnit.location,data.units.zeppelin);
+// 		var dowser = new Unit(players.p1,startUnit.location,data.units.dowser);
+// 		var tinker = new Unit(players.p1,startUnit.location,data.units.tinkersCart);
+// 		var horseCart = new Unit(players.p1,startUnit.location,data.units.horseCart);
+// 		var oxCart = new Unit(players.p1,startUnit.location,data.units.oxCart);
+// 		var bicycle = new Unit(players.p1,startUnit.location,data.units.bicycle);
+// 		var buggy = new Unit(players.p1,startUnit.location,data.units.buggy);
+// 		var wagon = new Unit(players.p1,startUnit.location,data.units.wagon);
+// 		var bus = new Unit(players.p1,startUnit.location,data.units.bus);
+// 		var truck = new Unit(players.p1,startUnit.location,data.units.truck);
+// 		var semi = new Unit(players.p1,startUnit.location,data.units.semi);
+// 		var zeppelin = new Unit(players.p1,startUnit.location,data.units.zeppelin);
 		
 		var localArea = [startUnit.location];
 		for (var i=0;i<4;i++) {
@@ -100,7 +102,7 @@ var model = {
 		localArea[Math.random() * localArea.length << 0].infrastructure.push(data.infrastructure.lensmeister);
 		localArea[Math.random() * localArea.length << 0].infrastructure.push(data.infrastructure.kidOnABike);
 		localArea[Math.random() * localArea.length << 0].infrastructure.push(data.infrastructure.tinkerCamp);
-		distantArea[Math.random() * distantArea.length << 0].infrastructure.push(data.infrastructure.drunkDowser);
+		distantArea[Math.random() * distantArea.length << 0].infrastructure.push(data.infrastructure.nakedDowser);
 		distantArea[Math.random() * distantArea.length << 0].infrastructure.push(data.infrastructure.mechanic);
 		distantArea[Math.random() * distantArea.length << 0].infrastructure.push(data.infrastructure.hangar);
 		distantArea[Math.random() * distantArea.length << 0].infrastructure.push(data.infrastructure.burntOutBus);
@@ -424,12 +426,31 @@ var model = {
 		return count / (populatedSites * num);
 	},
 	
+	payRecruitCost: function(unitKey,commodityKey) {
+		if (players.p1.recruitProgress[unitKey] == undefined) {
+			players.p1.recruitProgress[unitKey] = {};
+		};
+		if (players.p1.recruitProgress[unitKey][commodityKey] !== undefined) {
+			players.p1.recruitProgress[unitKey][commodityKey]++;
+		} else {
+			players.p1.recruitProgress[unitKey][commodityKey] = 1;
+		};
+		var outstanding = true;
+		for (var c in view.focus.unit.commodities) {
+			if (outstanding && view.focus.unit.commodities[c].commodity == commodityKey && view.focus.unit.commodities[c].qty == 100) {
+				outstanding = false;
+				view.focus.unit.commodities.splice(c,1);
+			};
+		};		
+	},
+	
 	recruit: function(infrastructure) {
 		var newUnit = new Unit(players.p1,view.focus.unit.location,data.units[infrastructure.recruit]);
 		newUnit.name = infrastructure.name;
 		players.p1.unitsUnlocked[infrastructure.recruit] = true;
 		var location = view.focus.unit.location;
 		location.infrastructure.splice(location.infrastructure.indexOf(infrastructure),1);
+		view.focus.unit = newUnit;
 		view.displayUnit(newUnit);
 	},
 	

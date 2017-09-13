@@ -748,9 +748,44 @@ var view = {
 					var infrastructureDescription = document.createElement('p');
 					infrastructureDescription.innerHTML = site.infrastructure[i].text + '<br />';
 					infrastructureDiv.appendChild(infrastructureDescription);
+					var recruitCostP = document.createElement('p');
+					var recruitCostOutstandingList = [];
+					var recruitCostOutstandingItems = [];
+					var recruitCostMet = true;
+					for (var c in site.infrastructure[i].recruitCost) {
+						var progress = 0;
+						if (players.p1.recruitProgress[site.infrastructure[i].recruit] !== undefined && players.p1.recruitProgress[site.infrastructure[i].recruit][c] !== undefined) {
+							progress = players.p1.recruitProgress[site.infrastructure[i].recruit][c];
+						};
+						if (site.infrastructure[i].recruitCost[c] > progress) {
+							var num =  site.infrastructure[i].recruitCost[c] - progress ;
+							recruitCostOutstandingList.push(num + " " + view.commodityIcon(c) + data.commodities[c].name);
+							recruitCostOutstandingItems.push(c);
+							recruitCostMet = false;
+						};
+					};
+					if (recruitCostOutstandingItems.length > 0) {
+						recruitCostP.innerHTML = "Needs: " + gamen.prettyList(recruitCostOutstandingList);
+						infrastructureDiv.appendChild(recruitCostP);
+						for (c of recruitCostOutstandingItems) {
+							var recruitCostBtn = document.createElement('button');
+							recruitCostBtn.innerHTML = 'Give ' + view.commodityIcon(c) + data.commodities[c].name;
+							recruitCostBtn.setAttribute('onclick','handlers.payRecruitCost("'+site.infrastructure[i].recruit+'","'+c+'")');
+							recruitCostBtn.disabled = true;
+							for (var d in view.focus.unit.commodities) {
+								if (view.focus.unit.commodities[d].commodity == c && view.focus.unit.commodities[d].qty == 100) {
+									recruitCostBtn.disabled = false;
+								};
+							};
+							infrastructureDiv.appendChild(recruitCostBtn);
+						};
+					};
 					var recruitBtn = document.createElement('button');
 					recruitBtn.innerHTML = 'Recruit ' + site.infrastructure[i].name;
 					recruitBtn.setAttribute('onclick','handlers.recruit('+i+')');
+					if (!recruitCostMet) {
+						recruitBtn.disabled = true;
+					};
 					infrastructureDiv.appendChild(recruitBtn);
 					siteInfrastructureDiv.appendChild(infrastructureDiv);
 				};

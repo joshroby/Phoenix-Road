@@ -209,6 +209,12 @@ var handlers = {
 		model.recruit(infrastructure);
 	},
 	
+	payRecruitCost: function(unitKey,commodityKey) {
+		model.payRecruitCost(unitKey,commodityKey);
+		view.displayUnit(view.focus.unit);
+		view.displaySiteDetails(view.focus.unit.location);
+	},
+	
 	revealMap: function() {
 		players.p1.knownSites = sites;
 		players.p1.knownLandmarks = landmarks;
