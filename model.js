@@ -30,8 +30,10 @@ var model = {
 	newGame: function() {
 		
 		model.clock = new Clock(new Date(new Date().getTime() + 3.154e+12 + 3.154e+12 * Math.random() ));
+		gamen.clocks = [model.clock];
 		model.clock.timeStep = 8.64e+7;
 		model.clock.logEventIn(8.64e+7,'eachDay');
+		model.clock.logEventIn(8.64e+7*10*Math.random(),'randomEvent');
 		
 		model.newMap();
 		units = [];
@@ -243,17 +245,7 @@ var model = {
 		// Ghost Towns
 		for (var i=0;i<ghostTowns;i++) {
 			var ghostTown = sites[Math.random() * sites.length << 0];
-			ghostTown.population = 0;
-			var production = ['water'];
-			for (var i in ghostTown.infrastructure) {
-				if (ghostTown.infrastructure[i].outputs !== undefined) {
-					production = production.concat(ghostTown.infrastructure[i].outputs);
-				};
-			};
-			var abandoned = Math.random() * 5 << 0;
-			for (var a=0;a<abandoned;a++) {
-				ghostTown.trash.push({commodity:production[Math.random() * production.length << 0],qty:100});
-			};
+			ghostTown.ghost();
 		};
 		
 		// Pile into Map Object
@@ -337,9 +329,6 @@ var model = {
 			for (var g in sites[s].goodwill) {
 				sites[s].reputation[g] += sites[s].goodwill[g]/20;
 			};
-			if (sites[s].trash.length > 0 && Math.random() < 0.05) {
-				sites[s].trash.splice(sites[s].trash.length * Math.random() >> 0,1);
-			};
 			if (Object.keys(sites[s].adjustment).length > 0) {
 				for (var a in sites[s].adjustment) {
 					var magnitude = 0.995;
@@ -357,6 +346,19 @@ var model = {
 					} else {
 						delete sites[s].adjustment[a];
 					};
+				};
+			};
+			if (sites[s].trash.length > 0 && Math.random() < 0.05) {
+				sites[s].trash.splice(sites[s].trash.length * Math.random() >> 0,1);
+			};
+			if (sites[s].infrastructure.length == 0 && sites[s].resources.length == 0 && sites[s].trash.length == 0) {
+				if (sites[s].population > 0) {
+					if (Math.random() < 0.05) {
+						sites[s].population -= Math.random() * Math.random() * 50 << 0;
+					};
+				} else {
+					players.p1.knownSites.splice(players.p1.knownSites.indexOf(sites[s]),1);
+					sites.splice(sites.indexOf(sites[s]),1);
 				};
 			};
 		};
@@ -741,6 +743,20 @@ function Site(mapSize) {
 
 		return flat;
 	};
+	
+	this.ghost = function() {
+		this.population = 0;
+		var production = ['water'];
+		for (var i in this.infrastructure) {
+			if (this.infrastructure[i].outputs !== undefined) {
+				production = production.concat(this.infrastructure[i].outputs);
+			};
+		};
+		var abandoned = Math.random() * 5 << 0;
+		for (var a=0;a<abandoned;a++) {
+			this.trash.push({commodity:production[Math.random() * production.length << 0],qty:100});
+		};
+	};
 		
 	this.needs = function() {
 		var housing = 0;
@@ -761,6 +777,7 @@ function Site(mapSize) {
 
 		var array = [];
 		var hunger = Math.min(1,(jobs * this.wages) / (this.population * 100 * (this.commodities.food + this.commodities.water)) );
+		if (isNaN(hunger)) {hunger = 0};
 		var hungerLabels = [
 			'half-starved',
 			'hungry',
@@ -777,6 +794,7 @@ function Site(mapSize) {
 		array.push({label:hungerLabels[hungerLabels.length * hunger * 0.99 << 0],completion:hunger,desc:hungerDesc});
 		
 		var housingRatio = Math.min(1,housing / this.population);
+		if (isNaN(housingRatio)) {housingRatio = 0};
 		var housingLabels = [
 			'cold',
 			'crowded',
@@ -811,6 +829,11 @@ function Site(mapSize) {
 		};
 		if (!players.p1.eventLog.cartwright && model.options.tutorials && this.infrastructure.indexOf(data.infrastructure.cartwright) !== -1) {
 			events.tutorial_cartwright();
+		};
+		if (this.arrivalEventsList !== undefined) {
+			for (var i in this.arrivalEventsList) {
+				events[this.arrivalEventsList[i]](this);
+			};
 		};
 	};
 	
@@ -1573,10 +1596,12 @@ var gamenEventPointers = {
 		view.refreshGameDisplay();
 	},
 	
-	tutorial: function(tutorialKey) {
-		if (model.options.tutorials) {
-			console.log(tutorialKey);
-		};
+	randomEvent: function() {
+		var randomEventList = Object.keys(events.randomEvents);
+		var event = randomEventList[Math.random() * randomEventList.length << 0];
+		console.log(event);
+		events.randomEvents[event]();
+		model.clock.logEventIn( 8.64e+7 * ( 10 * Math.random() + 5 ),'randomEvent');		
 	},
 	
 };

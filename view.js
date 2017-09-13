@@ -235,7 +235,6 @@ var view = {
 					r += needs[n].completion * ( 400 / needs.length);
 				};
 				
-				errors['view118'] = players.p1.knownSites[i];
 				newCarpet.setAttribute('rx',(0.5 * players.p1.knownSites[i].carpet[c].squish + 0.25) * r);
 				newCarpet.setAttribute('ry',(1 - (0.5 * players.p1.knownSites[i].carpet[c].squish + 0.25)) * r);
 				newCarpet.setAttribute('transform','rotate('+ players.p1.knownSites[i].carpet[c].tilt*360+' '+players.p1.knownSites[i].x+' '+players.p1.knownSites[i].y+')');

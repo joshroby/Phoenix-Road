@@ -116,13 +116,13 @@ var gamen = {
 
 	displayPassage: function(passage) {
 
-		if (!this.passageUp) {
+		if (document.getElementById('gamenModalBacksplash').style.display !== 'block') {
 			
 			for (var i in gamen.clocks) {
 				gamen.clocks[i].paused = true;
 			};
 		
-			this.passageUp = true;
+// 			this.passageUp = true;
 		
 			var gamenModalTextDiv = document.getElementById('gamenModalTextDiv');
 		
@@ -153,9 +153,9 @@ var gamen = {
 	},
 	
 	dismissPassage: function() {
-		this.passageUp = false;
+// 		this.passageUp = false;
 		
-		for (i in gamen.clocks) {
+		for (var i in gamen.clocks) {
 			gamen.clocks[i].resume();
 		};
 		

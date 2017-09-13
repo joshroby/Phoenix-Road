@@ -157,5 +157,237 @@ var events = {
 		players.p1.eventLog.cartwright = true;
 		gamen.displayPassage(new Passage("This town boasts a cartwright, a builder of carts and wagons.  If you provide the right materials -- or have a great enough reputation in town to acquire them locally -- the cartwright will build you another cart.  Recruiting some eager young people from the town should be easy, and then you'll have two carts moving materials down the Phoenix Road."));
 	},
+	
+	randomEvents: {
+	
+		angryAurochs: function() {
+			var unit = units[Math.random() * units.length << 0];
+			var passageString = unit.name + " encounters an angry aurochs!";
+			if (Math.random() * 6 < unit.type.crew) {
+				passageString += "  The crew manages to subdue the beast, carving up the carcass and adding it to their provisions.";
+				unit.commodities.push({commodity:'food',qty:100});
+			} else {
+				passageString += "  They barely manage to escape with their lives!";
+			};
+			gamen.displayPassage(new Passage(passageString));
+		},
+		
+		bandits: function() {
+			var unit = units[Math.random() * units.length << 0];
+			var passageString = unit.name + " are beset by bandits!";
+			if (Math.random() * 10 < unit.type.crew) {
+				passageString += "  Through a bit of quick thinking, the crew manages to overcome their would-be attackers.";
+			} else if (Math.random() * 10 < unit.type.crew) {
+				passageString += "  Through a bit of quick thinking, the crew manages to escape their would-be attackers.";
+			} else {
+				passageString += "  The outlaws strip the " + unit.type.name + " of its valuables.";
+				for (var i in unit.commodities) {
+					if (unit.commodities[i].qty > 50) {
+						unit.commodities[i].qty = 0;
+					};
+				};
+			};
+			gamen.displayPassage(new Passage(passageString));
+		},
+	
+		drought: function()  {
+			var site = sites[Math.random() * sites.length << 0];
+			var infrastructureList = [];
+			for (var i of ['cisterns','well','aqueduct']) {
+				if (site.infrastructure.indexOf(data.infrastructure[i]) !== -1) {
+					infrastructureList.push(data.infrastructure[i].name);
+				};
+			};
+			if (infrastructureList.length > 0) {
+				site.commodities.water *= 1.25;
+				site.commodities.food *= 1.25;
+				passageString = "A severe drought hits " + site.name + ", but its effects are mitigated by their " + gamen.prettyList(infrastructureList) + '.';
+			} else {
+				site.commodities.water *= 2;
+				site.commodities.food *= 2;
+				passageString = "Drought in " + site.name + ".  "+view.commodityIcon('food')+" Food and "+view.commodityIcon('water')+" Water become scarse and valuable.";
+			};
+			if (site.hasVisited.p1) {
+				gamen.displayPassage(new Passage(passageString));
+			};
+		},
+		
+		fire: function()  {
+			var site = sites[Math.random() * sites.length << 0];
+			var index = Math.random() * site.infrastructure.length << 0;
+			var outputs = [];
+			var passageString = "A terrible fire rips through " + site.name + ".  Their " + site.infrastructure[index].name + " is completely destroyed.";
+			if (site.infrastructure[index].outputs !== undefined) {
+				for (var o of site.infrastructure[index].outputs) {
+					site.commodities[o] *= 1.25;
+					outputs.push(view.commodityIcon(o)+" "+data.commodities[o].name);
+				};
+				passageString += " The value of " + gamen.prettyList(outputs) + " rises.";
+			};
+			site.infrastructure.splice(index,1);
+			if (site.hasVisited.p1) {
+				gamen.displayPassage(new Passage(passageString));
+			};
+		},
+		
+		flood: function()  {
+			var site = sites[Math.random() * sites.length << 0];
+			if (site.resources.indexOf(data.resources.river !== -1)) {
+				var index = Math.random() * site.infrastructure.length << 0;
+				var outputs = [];
+				var passageString = "The river floods in " + site.name + ".  The " + site.infrastructure[index].name + " is completely destroyed.";
+				if (site.infrastructure[index].outputs !== undefined) {
+					for (var o of site.infrastructure[index].outputs) {
+						site.commodities[o] *= 1.25;
+						outputs.push(view.commodityIcon(o)+" "+data.commodities[o].name);
+					};
+					passageString += " The value of " + gamen.prettyList(outputs) + " rises.";
+				};
+				site.infrastructure.splice(index,1);
+				if (site.hasVisited.p1) {
+					gamen.displayPassage(new Passage(passageString));
+				};
+			};
+		},
+		
+		mysteriousSite: function()  {
+			var unit = units[Math.random() * units.length << 0];
+			if (unit.inTransit) {
+				var randomX = (Math.random() * 30 + 30);
+				var randomY = (Math.random() * 30 + 30);
+				if (Math.random() > 0.5) {randomX *= -1};
+				if (Math.random() > 0.5) {randomY *= -1};
+				mysteryX = Math.round(unit.route[0].x + randomX,0);
+				mysteryY = Math.round(unit.route[0].y + randomY,0);
+				var tooClose = false;
+				for (var s in sites) {
+					if (Math.pow(Math.pow(sites[s].x - mysteryX,2) + Math.pow(sites[s].y - mysteryY,2),0.5) < model.options.newGame.minDist) {
+						tooClose = true;
+					};
+				};
+				if (!tooClose) {
+					gamen.displayPassage(new Passage(unit.name + " sights a mysterious shape on the horizon."));
+					var mysteriousSite = new Site();
+					mysteriousSite.name = "??";
+					mysteriousSite.x = mysteryX;
+					mysteriousSite.y = mysteryY;
+					mysteriousSite.neighbors = [];
+					players.p1.knownSites.push(mysteriousSite);
+					var mysteryTypes = ['ghostTown','forgottenCache','refugeeCamp','ghostTown','forgottenCache','refugeeCamp','crashSite'];
+					var mysteryType = mysteryTypes[Math.random() * mysteryTypes.length << 0];
+					mysteriousSite.arrivalEventsList = [mysteryType];
+					if (mysteryType == 'ghostTown') {
+						mysteriousSite.ghost();
+					} else if (mysteryType == 'forgottenCache') {
+						mysteriousSite.ghost();
+						mysteriousSite.infrastructure = [];
+						mysteriousSite.resources = [];
+						mysteriousSite.trash = [];
+						for (var i=0;i<10;i++) {
+							var randomCommodity = Object.keys(data.commodities)[Math.random() * Object.keys(data.commodities).length << 0];
+							if (randomCommodity == 'passengers') {randomCommodity = 'ore'};
+							mysteriousSite.trash.push({commodity:randomCommodity,qty:Math.ceil(Math.random()*100)});
+						};
+					} else if (mysteryType == 'crashSite') {
+						mysteriousSite.ghost();
+						mysteriousSite.infrastructure = [];
+						mysteriousSite.resources = [];
+						mysteriousSite.trash = [];
+						for (var i=0;i<6;i++) {
+							var randomCommodity = ['metals','metals','cloth','cloth','cloth','fuel','fuel','mail'][Math.random() * 5 << 0]
+							mysteriousSite.trash.push({commodity:randomCommodity,qty:100});
+						};
+					} else if (mysteryType == 'refugeeCamp') {
+						mysteriousSite.population = Math.ceil(Math.random() * 80 + 20);
+						mysteriousSite.infrastructure = [];
+						mysteriousSite.resources = [];
+						mysteriousSite.carpet = [];
+						for (var c in mysteriousSite.commodities) {
+							mysteriousSite.commodities[c] = data.commodities[c].baseValue * .03;
+						};
+					};
+				};
+			};
+		},
+		
+		oldWorldCache: function()  {
+			var site = sites[Math.random() * sites.length << 0];
+			var commodities = ['clothing','fuel','metals'];
+			var commoditiesList = [];
+			for (var i of commodities) {
+				site.commodities[i] *= (Math.random() + Math.random())/4 + 0.5;
+				commoditiesList.push(view.commodityIcon(i)+" "+data.commodities[i].name);
+			};
+			if (site.hasVisited.p1) {
+				gamen.displayPassage(new Passage("The people at " + site.name + " have uncovered a large cache of old world goods.  The values of " + gamen.prettyList(commoditiesList) + " drop!"));
+			};
+		},
+		
+		plague: function()  {
+			var site = sites[Math.random() * sites.length << 0];
+			var deaths = Math.ceil(site.population * Math.random() * Math.random());
+			site.population -= deaths;
+			if (site.hasVisited.p1) {
+				gamen.displayPassage(new Passage("Plague in " + site.name + ".  " + deaths + " people perish."));
+			};
+		},
+		
+// 		raid: function()  {
+// 			var site = sites[Math.random() * sites.length << 0];
+// 			if (site.hasVisited.p1) {
+// 				gamen.displayPassage(new Passage("Raid on " + site.name + "."));
+// 			};
+// 		},
+		
+		refugees: function()  {
+			var site = sites[Math.random() * sites.length << 0];
+			var number = Math.ceil(Math.random() * Math.random() * 80 + 20);
+			site.population += number;
+			if (site.hasVisited.p1) {
+				gamen.displayPassage(new Passage("A bedraggled band of " +number+ " refugees arrive at " + site.name + ".  The locals begrudgingly tolerate the newcomers settling in."));
+			};
+		},
+	
+	},
+	
+	ghostTown: function(site) {
+		var potentialNames = [];
+		for (var s of site.infrastructure) {
+			if (s.outputs !== undefined) {
+				potentialNames.push(s);
+				potentialNames.push(s);
+			} else {
+				potentialNames.push(s);
+			};
+		};
+		var prefices = ['Lost ','Abandoned ','Old ','Empty ','Ruined '];
+		site.name = prefices[Math.random() * prefices.length << 0] + potentialNames[Math.random() * potentialNames.length << 0].name;
+		gamen.displayPassage(new Passage("Nothing but a ghost town, long abandoned."));
+	},
+	
+	forgottenCache: function(site) {
+		site.name = "Cache";
+		if (site.trash.length > 0) {
+			passageString = "It seems you've stumbled across a cache of old world goods!";
+		} else {
+			passageString = "Nothing but a crumbled building.  Recent tracks suggest somebody found something worth looting, just before you got here.";
+		};
+		gamen.displayPassage(new Passage(passageString));
+	},
+	
+	crashSite: function(site) {
+		site.name = "Crash Site";
+		if (site.trash.length > 0) {
+			passageString = "Something huge and metal seems to have crashed here.  Sheets of cloth hang off of the twisted wreck, stirring in the faint wind.";
+		} else {
+			passageString = "You find an impact crater, signs of fires, and tracks indicating that, whatever it was that crashed here, its remains have already been hauled away.";
+		};
+		gamen.displayPassage(new Passage(passageString));
+	},
+	
+	refugeeCamp: function(site) {
+		site.name = "Camp";
+		gamen.displayPassage(new Passage("Refugees, fleeing from danger elsewhere."));
+	},
 
 };
