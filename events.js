@@ -288,6 +288,14 @@ var events = {
 					mysteriousSite.x = mysteryX;
 					mysteriousSite.y = mysteryY;
 					mysteriousSite.neighbors = [];
+					var threatDistance = Infinity;
+					for (var i in sites) {
+						var distance = Math.pow(Math.pow(sites[i].x - mysteryX,2) + Math.pow(sites[i].y - mysteryY,2),0.5);
+						if (sites[i].threat !== undefined && distance < threatDistance) {
+							threatDistance = distance;
+							mysteriousSite.nearestThreat = sites[i];
+						};
+					};
 					players.p1.knownSites.push(mysteriousSite);
 					var mysteryTypes = ['ghostTown','forgottenCache','refugeeCamp','ghostTown','forgottenCache','refugeeCamp','crashSite'];
 					var mysteryType = mysteryTypes[Math.random() * mysteryTypes.length << 0];

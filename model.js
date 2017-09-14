@@ -825,7 +825,7 @@ function Site(mapSize) {
 		];
 		var housingDesc = '<strong>Housing</strong><br />'+housing+' beds / '+this.population+' souls ';
 		array.push({label:housingLabels[housingLabels.length * housingRatio * 0.99 << 0],completion:housingRatio,desc:housingDesc});
-		
+		console.log(this);
 		var safety = Math.min(1,defense / this.nearestThreat.threat.strength);
 		var safetyLabels = [
 			'scared',
