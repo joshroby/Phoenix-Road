@@ -213,7 +213,14 @@ a.tipAnchor:hover span.tooltip {
 #clockSpan {
 	margin-right: 2vw;
 	margin-left: 2vw;
-	width: 20vw;
+	}
+
+#clockSpeedSlider {
+	width: 50px;
+	}
+
+#clockPauseBtn {
+	margin-left: 1vw;
 	}
 
 .progressDiv {

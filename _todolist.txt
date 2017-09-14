@@ -1,13 +1,13 @@
 Down the Phoenix Road To Do List
 
 
-Raids!
+- Slider Speed Control
+
 
 IMMEDIATE
 
 NEAR FUTURE
 
-- Slider Speed Control
 - displaySiteDetails to show threat territory if you've visited
 - Post Office as a infrastructure box
 	- only one or two mails available at a time

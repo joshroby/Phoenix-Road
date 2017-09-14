@@ -30,22 +30,10 @@ var handlers = {
 		};
 	},
 	
-	clockSpeedUp: function() {
-		model.clock.tick = Math.max(model.clock.tick / 2,100);
-		if (!model.clock.running) {
-			model.clock.running = true;
-			document.getElementById('clockPauseBtn').innerHTML = '<span class="fa fa-pause"></span>';
-			model.clock.go();
-		};
-	},
-	
-	clockSlowDown: function() {
-		model.clock.tick = Math.min(model.clock.tick * 2,4000);
-		if (!model.clock.running) {
-			model.clock.running = true;
-			document.getElementById('clockPauseBtn').innerHTML = '<span class="fa fa-pause"></span>';
-			model.clock.go();
-		};
+	setClockSpeed: function() {
+		var clockSpeedSlider = document.getElementById('clockSpeedSlider');
+		model.clock.tick = 10000/clockSpeedSlider.value;
+		model.clock.go();
 	},
 	
 	displaySiteDetails: function(siteIndex) {

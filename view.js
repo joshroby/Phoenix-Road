@@ -132,23 +132,23 @@ var view = {
 			model.clock.time.getFullYear()
 			;
 		clockDiv.appendChild(clockSpan);
-		var clockSlowDownBtn = document.createElement('button');
-		clockSlowDownBtn.innerHTML = '<span class="fa fa-backward"></span>';
-		clockSlowDownBtn.setAttribute('onclick','handlers.clockSlowDown()');
-		clockDiv.appendChild(clockSlowDownBtn);
-		var clockPauseBtn = document.createElement('button');
+		var clockSpeedSlider = document.createElement('input');
+		clockSpeedSlider.id = 'clockSpeedSlider';
+		clockSpeedSlider.setAttribute('type','range');
+		clockSpeedSlider.setAttribute('min',1);
+		clockSpeedSlider.setAttribute('max',100);
+		clockSpeedSlider.setAttribute('value',10000/model.clock.tick);
+		clockSpeedSlider.setAttribute('onchange','handlers.setClockSpeed()');
+		clockDiv.appendChild(clockSpeedSlider);
+		var clockPauseBtn = document.createElement('span');
 		clockPauseBtn.id = 'clockPauseBtn';
 		if (model.clock.running) {
-			clockPauseBtn.innerHTML = '<span class="fa fa-pause"></span>';
+			clockPauseBtn.className = 'fa fa-pause';
 		} else {
-			clockPauseBtn.innerHTML = '<span class="fa fa-play"></span>';
+			clockPauseBtn.className = 'fa fa-play';
 		};
 		clockPauseBtn.setAttribute('onclick','handlers.clockPause()');
 		clockDiv.appendChild(clockPauseBtn);
-		var clockSpeedUpBtn = document.createElement('button');
-		clockSpeedUpBtn.innerHTML = '<span class="fa fa-forward"></span>';
-		clockSpeedUpBtn.setAttribute('onclick','handlers.clockSpeedUp()');
-		clockDiv.appendChild(clockSpeedUpBtn);
 		mapDiv.appendChild(clockDiv);
 		
 		var svg = document.createElementNS('http://www.w3.org/2000/svg','svg');
