@@ -164,10 +164,7 @@ var handlers = {
 	},
 	
 	upgrade: function(stat) {
-		players.p1[stat] *= 2;
-		for (u in units) {
-			units[u].look();
-		};
+		model.upgrade(stat);
 		view.displayMap();
 		view.displaySiteDetails(view.focus.unit.location);
 	},

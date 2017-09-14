@@ -40,10 +40,11 @@ var model = {
 		players.p1 = {unitsUnlocked:{},eventLog:{}};
 		
 		players.p1.vision = 60;
-		players.p1.selfDefense = 1;
+		players.p1.selfDefense = 0.5;
 		players.p1.knownSites = [];
 		players.p1.knownLandmarks = [];
 		players.p1.recruitProgress = {};
+		players.p1.specialEventStack = [];
 		
 		var startUnit = new Unit(players.p1,sites[Math.random() * safeIndex << 0],data.units.donkeyCart);
 		if (startUnit.location.neighbors.length == 0) {
@@ -68,8 +69,8 @@ var model = {
 		startUnit.name = "Grams' Old Donkey Cart";
 		
 		// Testing Cheats
-// 		startUnit.location.infrastructure.push(data.infrastructure.burntOutBus);
-// 		startUnit.location.infrastructure.push(data.infrastructure.cartwright);
+// 		startUnit.location.infrastructure.push(data.infrastructure.lensmeister);
+// 		startUnit.location.infrastructure.push(data.infrastructure.arena);
 // 		startUnit.location.infrastructure.push(data.infrastructure.mechanic);
 // 		var dowser = new Unit(players.p1,startUnit.location,data.units.dowser);
 // 		var tinker = new Unit(players.p1,startUnit.location,data.units.tinkersCart);
@@ -292,6 +293,19 @@ var model = {
 		return prefices[Math.random() * prefices.length >> 0] + roots[Math.random() * roots.length >> 0] + suffices[Math.random() * suffices.length >> 0]
 	},
 	
+	nearestThreat: function(x,y) {
+		var threat = undefined;
+		var threatDistance = Infinity;
+		for (var i in sites) {
+			var distance = Math.pow(Math.pow(sites[i].x - x,2) + Math.pow(sites[i].y - y,2),0.5);
+			if (sites[i].threat !== undefined && distance < threatDistance) {
+				threatDistance = distance;
+				threat = sites[i];
+			};
+		};
+		return threat;
+	},
+	
 	knownValues: function() {
 		var knownValues = {};
 		var totalSites = {};
@@ -376,8 +390,19 @@ var model = {
 						sites[s].population -= Math.random() * Math.random() * 50 << 0;
 					};
 				} else {
-					players.p1.knownSites.splice(players.p1.knownSites.indexOf(sites[s]),1);
-					sites.splice(sites.indexOf(sites[s]),1);
+					var unitsAtSite = [];
+					for (var i in units) {
+						if (units[i].location == sites[s]) {
+							unitsAtSite.push(units[i]);
+						};
+					};
+					if (unitsAtSite.length == 0) {
+						for (var i in sites) {
+							sites[i].neighbors.splice(sites[i].neighbors.indexOf(sites[s]),1);
+						}
+						players.p1.knownSites.splice(players.p1.knownSites.indexOf(sites[s]),1);
+						sites.splice(sites.indexOf(sites[s]),1);
+					};
 				};
 			};
 		};
@@ -428,6 +453,17 @@ var model = {
 		var newUnit = new Unit(players.p1,view.focus.unit.location,unitType);
 		view.focus.unit = newUnit;
 		view.displayUnit(newUnit);
+	},
+	
+	upgrade: function(stat) {
+		if (stat == 'vision') {
+			players.p1[stat] *= 2;
+			for (u in units) {
+				units[u].look();
+			};
+		} else if (stat == 'selfDefense') {
+			players.p1[stat] += 0.2;
+		};
 	},
 	
 	victoryProgress: function() {
@@ -825,7 +861,6 @@ function Site(mapSize) {
 		];
 		var housingDesc = '<strong>Housing</strong><br />'+housing+' beds / '+this.population+' souls ';
 		array.push({label:housingLabels[housingLabels.length * housingRatio * 0.99 << 0],completion:housingRatio,desc:housingDesc});
-		console.log(this);
 		var safety = Math.min(1,defense / this.nearestThreat.threat.strength);
 		var safetyLabels = [
 			'scared',
@@ -1224,6 +1259,7 @@ function Unit(owner,startLoc,type) {
 		if (route !== undefined && waterStore >= waterDrank && foodStore >= foodEaten && fuelStore >= fuelBurned && cargo <= cargoCapacity && !isBuilding && !isSurveying) {
 			this.inTransit = true;
 			this.departed = false;
+			this.departedFrom = this.location;
 			var diffX = undefined;
 			var diffY = undefined;
 			var waypointsToGo = route;
@@ -1277,10 +1313,50 @@ function Unit(owner,startLoc,type) {
 	};
 	
 	this.moveStep = function() {
+		var load = 0;
+		var foodStore = 0;
+		var waterStore = 0;
+		var fuelStore = 0;
+		for (var i in this.commodities) {
+			if (data.commodities[this.commodities[i].commodity].cargo) {
+				load++;
+			};
+			if (this.commodities[i].commodity == 'food') {
+				foodStore += this.commodities[i].qty;
+			} else if (this.commodities[i].commodity == 'water') {
+				waterStore += this.commodities[i].qty;
+			} else if (this.commodities[i].commodity == 'fuel') {
+				fuelStore += this.commodities[i].qty;
+			};
+		};
 		if (load > this.type.cargo) {
 			gamen.displayPassage(new Passage(this.name + ' is overburdened and cannot travel.'));
 			view.focus.unit = this;
 			view.displayUnit(this);
+		} else if (foodStore == 0) {
+			gamen.displayPassage(new Passage(this.name + " loses a day scrounging for food in the wilderness."));
+			this.commodities.push({commodity:'food',qty:Math.floor(Math.random()*10)});
+		} else if (waterStore == 0 && this.type.fuel.water !== undefined) {
+			gamen.displayPassage(new Passage(this.name + " loses a day scavenging for water in the wilderness."));
+			this.commodities.push({commodity:'water',qty:Math.floor(Math.random()*10)});
+		} else if (fuelStore == 0 && this.type.fuel.fuel !== undefined) {
+			gamen.displayPassage(new Passage(this.name + " has run out of fuel."));
+			var shelter = new Site();
+			shelter.x = this.route[0].x;
+			shelter.y = this.route[0].y;
+			shelter.name = 'Roadside';
+			shelter.population = 0;
+			shelter.nearestThreat = model.nearestThreat(shelter.x,shelter.y);
+			shelter.infrastructure = [];
+			shelter.resources = [];
+			shelter.neighbors = [this.departedFrom,this.route[this.route.length - 1]];
+			shelter.hasVisited.p1 = true;
+			players.p1.knownSites.push(shelter);
+			this.departedFrom.neighbors.push(shelter);
+			this.route[this.route.length - 1].neighbors.push(shelter);
+			this.location = shelter;
+			this.route = undefined;
+			this.inTransit = false;
 		} else {
 			var currentStep = this.route.shift();
 			this.departed = true;
@@ -1621,10 +1697,11 @@ var gamenEventPointers = {
 	},
 	
 	randomEvent: function() {
-		var randomEventList = Object.keys(events.randomEvents);
+		var randomEventList = ["aurochs", "bandits", "drought", "fire", "flood", "mysteriousSite", "oldWorldCache", "plague", "refugees"];
+		randomEventList = randomEventList.concat(players.p1.specialEventStack);
 		var event = randomEventList[Math.random() * randomEventList.length << 0];
 		console.log(event);
-		events.randomEvents[event]();
+		events[event]();
 		model.clock.logEventIn( 8.64e+7 * ( 10 * Math.random() + 5 ),'randomEvent');		
 	},
 	

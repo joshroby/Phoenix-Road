@@ -170,6 +170,16 @@ var data = {
 		
 	},
 	
+	selfDefense: [
+		'green',
+		'inexperienced',
+		'hardened',
+		'veteran',
+		'elite',
+		'badass',
+		'not-to-be-fucked-with'
+	],
+	
 	infrastructure: {
 	
 		kidOnABike: {
@@ -234,12 +244,14 @@ var data = {
 		},
 		arena: {
 			name: 'Arena',
-			passage: "This town hosts a no-holds-barred pit fighting event few days.  Road warriors, brutes, and soldiers from all over travel here to test their skills against each other. Admission can get pricey, especially for the best fighters' bouts, but there's also an amateur's night.  There are no rules inside the arena, which makes it a whole lot like fights you've seen out on the road.  Maybe you can learn a thing or two watching.",
+			passage: "This town hosts a no-holds-barred pit fighting event few days.  Road warriors, brutes, and soldiers from all over travel here to test their skills against each other. Admission can be pretty exclusive, especially for the best fighters' bouts, but there's also an amateur's night.  There are no rules inside the arena, which makes it a whole lot like fights you've seen out on the road.  Maybe you can learn a thing or two watching.",
 			text: "Take in a bout at the arena, maybe you'll learn some tricks you can share with the other drivers.",
 			visible: false,
 			upgrade: 'selfDefense',
+			upgradeDisplay: "Self Defense",
 			jobs: 3,
 			defense: 2,
+			cost: function(player) {return Math.pow(players[player].selfDefense * 5 - 2.5,2) * 100 },
 		},
 		lensmeister: {
 			name: 'Lensmeister',
@@ -247,7 +259,9 @@ var data = {
 			text: "The elder is happy to share their collection of lenses with people who help the town.",
 			visible: false,
 			upgrade: 'vision',
+			upgradeDisplay: "Vision",
 			jobs: 1,
+			cost: function(player) {return ( players[player].vision / 60 - 1 ) * 500 },
 		},
 		mechanic: {
 			name:'Mechanic',

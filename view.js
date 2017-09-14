@@ -504,8 +504,10 @@ var view = {
 				sitePopulationP.innerHTML = "a hamlet of ";
 			} else if (site.population > 0) {
 				sitePopulationP.innerHTML = "a haven for ";
-			} else {
+			} else if (site.infrastructure.length > 0) {
 				sitePopulationP.innerHTML = "Ghost Town";
+			} else {
+				sitePopulationP.innerHTML = "the middle of nowhere";
 			};
 			if (site.population > 0) {
 				sitePopulationP.innerHTML += site.population + " souls";
@@ -726,10 +728,7 @@ var view = {
 					buildInfoDiv.className = 'buildInfoDiv';
 					infrastructureDiv.appendChild(buildInfoDiv);
 				} else if (site.infrastructure[i].upgrade !== undefined) {
-					var upgrade = site.infrastructure[i].upgrade;
-					var upgradeString = upgrade.charAt(0).toUpperCase() + upgrade.slice(1);
-					var current = players.p1[upgrade] / 60 - 1;
-					var cost = current*500;
+					var cost = site.infrastructure[i].cost('p1');
 					var infrastructureDiv = document.createElement('div');
 					var infrastructureHead = document.createElement('h3');
 					infrastructureHead.className = 'infrastructureHead';
@@ -739,8 +738,8 @@ var view = {
 					infrastructureUpgradeText.innerHTML = site.infrastructure[i].text;
 					infrastructureDiv.appendChild(infrastructureUpgradeText);
 					var infrastructureUpgradeButton = document.createElement('button');
-					infrastructureUpgradeButton.innerHTML = 'Upgrade ' + upgradeString + " (" +cost+ ")";
-					infrastructureUpgradeButton.setAttribute('onclick','handlers.upgrade("'+upgrade+'")');
+					infrastructureUpgradeButton.innerHTML = 'Upgrade ' + site.infrastructure[i].upgradeDisplay + " (" +cost+ ")";
+					infrastructureUpgradeButton.setAttribute('onclick','handlers.upgrade("'+site.infrastructure[i].upgrade+'")');
 					if(cost > site.reputation.p1) {
 						infrastructureUpgradeButton.disabled = true;
 					};

@@ -2,14 +2,19 @@ Down the Phoenix Road To Do List
 
 
 - threat home bases have reduced wages
-- players have a selfDefense score used to defend drivers from attacks on the road
+- players can choose to use their selfDefense score to defend drivers from attacks on the road
 	- angry aurochs
 	- bandits
 - arena to train your drivers to defend themselves from bandits, etc (upgrade)
+- if you run out of food/water/fuel on the road, stuff happens.
+	- food and water makes you stop to scavenge
+	- fuel makes you stop at the roadside
 
 IMMEDIATE
 
 NEAR FUTURE
+
+- Proper Event Stack
 
 - Post Office as a infrastructure box
 	- only one or two mails available at a time
@@ -47,6 +52,7 @@ GAMEN
 	index.html content setup/injection
 	color palette
 	pronoun substitution
+	prettyNumber(2) -> "two"
 
 FAR FUTURE
 - eventually, enough findable locations that not all of them appear in each play

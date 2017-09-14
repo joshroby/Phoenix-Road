@@ -173,7 +173,7 @@ var gamen = {
 	
 	passageChoice: function(choice) {
 		
-		if (choice.execute !== undefined) {choice.execute();};
+		if (choice.execute !== undefined) {choice.execute.apply(this,choice.argsArray);};
 		gamen.dismissPassage();
 	},
 
@@ -262,11 +262,12 @@ function Passage(text,choiceArray,speaker,bust,bustPosition) {
 
 };
 
-function Choice(label,execute,disabled) {
+function Choice(label,execute,argsArray,disabled) {
 	if (label == undefined) {label = 'Dismiss'};
 	if (disabled == undefined) {disabled = false};
 	
 	this.label = label;
 	this.execute = execute;
+	this.argsArray = argsArray;
 	this.disabled = disabled;
 };
