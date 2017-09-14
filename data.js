@@ -232,6 +232,15 @@ var data = {
 			inputs: ['metals','fiber','fuel'],
 			jobs: 3,
 		},
+		arena: {
+			name: 'Arena',
+			passage: "This town hosts a no-holds-barred pit fighting event few days.  Road warriors, brutes, and soldiers from all over travel here to test their skills against each other. Admission can get pricey, especially for the best fighters' bouts, but there's also an amateur's night.  There are no rules inside the arena, which makes it a whole lot like fights you've seen out on the road.  Maybe you can learn a thing or two watching.",
+			text: "Take in a bout at the arena, maybe you'll learn some tricks you can share with the other drivers.",
+			visible: false,
+			upgrade: 'selfDefense',
+			jobs: 3,
+			defense: 2,
+		},
 		lensmeister: {
 			name: 'Lensmeister',
 			passage: "One of this town's eldest citizens has amassed a sizeable collection of ancient glass lenses.  Some of the pieces in the collection include spyglasses and powerful telescopes.  The elder is happy enough to gift you with a weak specimen in exchange for an evening of your stories.  They intimate that they'd be willing to part with even more powerful artifacts if you help their town.",

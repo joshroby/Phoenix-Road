@@ -40,6 +40,7 @@ var model = {
 		players.p1 = {unitsUnlocked:{},eventLog:{}};
 		
 		players.p1.vision = 60;
+		players.p1.selfDefense = 1;
 		players.p1.knownSites = [];
 		players.p1.knownLandmarks = [];
 		players.p1.recruitProgress = {};
@@ -104,6 +105,7 @@ var model = {
 		localArea[Math.random() * localArea.length << 0].infrastructure.push(data.infrastructure.lensmeister);
 		localArea[Math.random() * localArea.length << 0].infrastructure.push(data.infrastructure.kidOnABike);
 		localArea[Math.random() * localArea.length << 0].infrastructure.push(data.infrastructure.tinkerCamp);
+		localArea[Math.random() * localArea.length << 0].infrastructure.push(data.infrastructure.arena);
 		distantArea[Math.random() * distantArea.length << 0].infrastructure.push(data.infrastructure.nakedDowser);
 		distantArea[Math.random() * distantArea.length << 0].infrastructure.push(data.infrastructure.mechanic);
 		distantArea[Math.random() * distantArea.length << 0].infrastructure.push(data.infrastructure.hangar);
@@ -228,8 +230,8 @@ var model = {
 		// Threats
 		var threats = [];
 		for (var i=sites.length-1;i>sites.length-totalThreats-1;i--) {
-// 			threats.push({x:-100 + Math.random() * 1200 >> 0,y:-100 + Math.random() * 1200 >> 0});
 			threats.push(sites[i]);
+			sites[i].wages *= Math.random()/2+0.5;
 			sites[i].threat = {
 				name: model.threatName(sites[i]),
 				strength: 3 + Math.random() * 7 << 0,
@@ -284,10 +286,10 @@ var model = {
 	},
 	
 	threatName: function(site) {
-		var prefices = ["","Howling","Hell's","The","Great","The Supreme"];
-		var roots = ["","Jackal","Unitarian-Universalist","White","Demon","Angel"];
-		var suffices = ["Kings","Queens","Sovereigns","Gang","Army","Nation","Division","Militia","Horde"];
-		return prefices[Math.random() * prefices.length >> 0] + " " + roots[Math.random() * roots.length >> 0] + " " + suffices[Math.random() * suffices.length >> 0]
+		var prefices = ["","Howling ","Hell's ","The ","Great ","The Supreme ","69th ","Furious "];
+		var roots = ["",site.name + " ",site.name + " ",site.name + " ","Jackal ","Peacekeeping ","White ","Demon ","Angel ","Highway ","Chopper ","Fury "];
+		var suffices = ["Kings","Queens","Sovereigns","Gang","Army","Nation","Division","Legion","Militia","Horde","Riders"];
+		return prefices[Math.random() * prefices.length >> 0] + roots[Math.random() * roots.length >> 0] + suffices[Math.random() * suffices.length >> 0]
 	},
 	
 	knownValues: function() {
@@ -489,6 +491,7 @@ var model = {
 			nextPlayer = {};
 			nextPlayer.unitsUnlocked = players[player].unitsUnlocked;
 			nextPlayer.vision = players[player].vision;
+			nextPlayer.selfDefense = players[player].selfDefense;
 			nextPlayer.knownSiteIndices = [];
 			for (var i of players[player].knownSites) {
 				for (var s in sites) {

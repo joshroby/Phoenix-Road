@@ -1,13 +1,11 @@
 Down the Phoenix Road To Do List
 
 
-- player does not start in a ghost town
-- threats are harbored in sites
-- threats have names, strengths, and target lists
-- each site has its nearestThreat logged
-- Site.needs() safety is gauged against the site's nearestThreat's strength
-- everything saves and loads
-
+- threat home bases have reduced wages
+- players have a selfDefense score used to defend drivers from attacks on the road
+	- angry aurochs
+	- bandits
+- arena to train your drivers to defend themselves from bandits, etc (upgrade)
 
 IMMEDIATE
 
@@ -17,15 +15,12 @@ NEAR FUTURE
 	- only one or two mails available at a time
 	- addressed to specific destination site?
 - Threats
-	- what if threats are just sites with events on arrival?
-		- can you 'civilize' them / make them not threats?
-		- arrival events
-			- ask for intel, which increases danger of knownSites
-			- tax goods (can take percentage of loads)
-			- confiscate goods (take a whole load)
-	- or, pull threats off of the sites array before trimming (to maintain space)
-		- give threats names
-		- make them discoverable (not via vision, tho?)
+	- you can discover their home base
+	- you can nullify a threat / reduce its strength
+	- arrival events
+		- ask for intel, which increases danger of knownSites
+		- tax goods (can take percentage of loads)
+		- confiscate goods (take a whole load)
 - overhaul production buildings affect on values
 	- port it over to the adjustments code
 	- make adjustments go up and down pipelines
@@ -68,7 +63,7 @@ FAR FUTURE
 	- build costs will need to take warehouses into account
 - other only-findable infrastructures?
 	- some kind of cult?
-	- dojo / train your drivers to defend themselves from bandits, etc (upgrade)
+	
 - responsive design in the CSS
 - what do you do that starts passively spreading civilization / greening needs?
 - two builder units building the same thing at the same time

@@ -163,7 +163,9 @@ var events = {
 		angryAurochs: function() {
 			var unit = units[Math.random() * units.length << 0];
 			var passageString = unit.name + " encounters an angry aurochs!";
-			if (Math.random() * 6 < unit.type.crew) {
+			var defenseScore = unit.type.crew * players.p1.selfDefense * Math.random();
+			var attackScore = 5 * Math.random();
+			if (defenseScore > attackScore) {
 				passageString += "  The crew manages to subdue the beast, carving up the carcass and adding it to their provisions.";
 				unit.commodities.push({commodity:'food',qty:100});
 			} else {
@@ -174,13 +176,27 @@ var events = {
 		
 		bandits: function() {
 			var unit = units[Math.random() * units.length << 0];
-			var passageString = unit.name + " are beset by bandits!";
-			if (Math.random() * 10 < unit.type.crew) {
-				passageString += "  Through a bit of quick thinking, the crew manages to overcome their would-be attackers.";
-			} else if (Math.random() * 10 < unit.type.crew) {
-				passageString += "  Through a bit of quick thinking, the crew manages to escape their would-be attackers.";
+			var threat = {name:"the wilderness",strength: 2};
+			if (unit.location !== undefined) {
+				var threat = unit.location.nearestThreat.threat;
 			} else {
-				passageString += "  The outlaws ransack the " + unit.type.name + " of its valuables.";
+				var threat = undefined;
+				var threatDistance = Infinity;
+				for (var i in sites) {
+					var distance = Math.pow(Math.pow(sites[i].x - unit.route[0].x,2) + Math.pow(sites[i].y - unit.route[0].y,2),0.5);
+					if (sites[i].threat !== undefined && distance < threatDistance) {
+						threatDistance = distance;
+						threat = sites[i].threat;
+					};
+				};
+			};
+			var defenseScore = unit.type.crew * players.p1.selfDefense * Math.random();
+			var attackScore = threat.strength * Math.random();
+			var passageString = unit.name + " are beset by bandits from "+threat.name+"!";
+			if (defenseScore > attackScore) {
+				passageString += "<p>With a bit of quick thinking, the crew manages to overcome their would-be attackers and make an escape.";
+			} else {
+				passageString += "<p>The bandits quickly overwhelm the crew and ransack the " + unit.type.name + " of its valuables.";
 				for (var i in unit.commodities) {
 					if (unit.commodities[i].qty > 50 && (unit.commodities[i].commodity !== 'food' && unit.commodities[i].commodity !== 'water') ) {
 						unit.commodities[i].qty = 10;
