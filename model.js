@@ -287,7 +287,7 @@ var model = {
 	},
 	
 	threatName: function(site) {
-		var prefices = ["","Howling ","Hell's ","The ","Great ","The Supreme ","69th ","Furious "];
+		var prefices = ["","Howling ","Hell's ","The ","Great ","The Supreme ","69th ","Furious ","Faithful ","Pure ","Stone Cold ","Flaming ","Killer "];
 		var roots = ["",site.name + " ",site.name + " ",site.name + " ","Jackal ","Peacekeeping ","White ","Demon ","Angel ","Highway ","Chopper ","Fury "];
 		var suffices = ["Kings","Queens","Sovereigns","Gang","Army","Nation","Division","Legion","Militia","Horde","Riders"];
 		return prefices[Math.random() * prefices.length >> 0] + roots[Math.random() * roots.length >> 0] + suffices[Math.random() * suffices.length >> 0]
@@ -1707,7 +1707,7 @@ var gamenEventPointers = {
 	},
 	
 	randomEvent: function() {
-		var randomEventList = ["aurochs", "bandits", "drought", "fire", "flood", "mysteriousSite", "oldWorldCache", "plague", "refugees"];
+		var randomEventList = ["aurochs", "bandits", "drought", "fire", "flood", "mysteriousSite", "oldWorldCache", "plague", "refugees", "roadRefugees"];
 		randomEventList = randomEventList.concat(players.p1.specialEventStack);
 		var event = randomEventList[Math.random() * randomEventList.length << 0];
 		console.log(event);

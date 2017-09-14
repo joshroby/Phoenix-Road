@@ -453,6 +453,52 @@ var events = {
 			gamen.displayPassage(new Passage("A bedraggled band of " +number+ " refugees arrive at " + site.name + ".  The locals begrudgingly tolerate the newcomers settling in.  The values of " + gamen.prettyList(commoditiesList) + " rise."));
 		};
 	},
+	
+	roadRefugees: function() {
+		var unit = units[Math.random() * units.length << 0];
+		view.focus.unit = unit;
+		view.displayUnit(unit);
+		if (unit.caravan !== undefined) {
+			for (var i in unit.caravan) {
+				if (unit.caravan[i].type.canPassenger) {
+					view.focus.unit = unit.caravan[i];
+					view.displayUnit(unit.caravan[i]);
+				};
+			};
+		};
+		if (unit.inTransit) {
+			var numberRefugees = Math.max(Math.floor(Math.random() * 12 << 0),10);
+			var passageString = "You come across "+numberRefugees+" people shuffling down the road.  They look tired and half-starved; who knows if they'll make it to where they're going.";
+			if (unit.type.canPassenger) {
+				var choiceArray = [new Choice("Give Them a Ride",events.roadRefugeesTake,[numberRefugees]),new Choice("Split Provisions with Them",events.roadRefugeesFeed,[numberRefugees]),new Choice("Leave Them")];
+			} else {
+				var choiceArray = [new Choice("Split Provisions with Them",events.roadRefugeesFeed,[numberRefugees]),new Choice("Wish Them Luck")];
+			};
+			gamen.displayPassage(new Passage(passageString,choiceArray));
+		};
+	},
+	
+	roadRefugeesTake: function(numberRefugees) {
+		view.focus.unit.commodities.push({commodity:'Passengers',qty:numberRefugees*10});
+	},
+	
+	roadRefugeesFeed: function(numberRefugees) {
+		var fed = 0;
+		var caravan = [view.focus.unit];
+		if (view.focus.unit.caravan !== undefined) {
+			caravan = view.focus.unit.caravan;
+		};
+		for (var u in caravan) {
+			for (var i in caravan[u].commodities) {
+				if (fed < numberRefugees * 10 && caravan[u].commodities[i].commodity == 'food') {
+					fed += caravan[u].commodities[i].qty / 2;
+					caravan[u].commodities[i].qty /= 2;
+				};
+			};
+		};
+		view.displayUnit(view.focus.unit);
+		gamen.displayPassage(new Passage("The refugees gratefully accept your generosity, showering you with well wishes and blessings."));
+	},
 		
 	// Mysterious Site Arrival Events
 	

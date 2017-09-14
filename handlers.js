@@ -22,10 +22,10 @@ var handlers = {
 	clockPause: function() {
 		if (model.clock.running) {
 			model.clock.running = false;
-			document.getElementById('clockPauseBtn').innerHTML = '<span class="fa fa-play"></span>';
+			document.getElementById('clockPauseBtn').className = 'fa fa-play';
 		} else {
 			model.clock.running = true;
-			document.getElementById('clockPauseBtn').innerHTML = '<span class="fa fa-pause"></span>';
+			document.getElementById('clockPauseBtn').className = 'fa fa-pause';
 			model.clock.go();
 		};
 	},

@@ -1,20 +1,20 @@
 Down the Phoenix Road To Do List
 
 
-- Slider Speed Control
 
 
 IMMEDIATE
 
 NEAR FUTURE
 
-- displaySiteDetails to show threat territory if you've visited
+
 - Post Office as a infrastructure box
 	- only one or two mails available at a time
 	- addressed to specific destination site?
-- Threats
+- Playing with Threats
 	- you can discover their home base
 	- you can nullify a threat / reduce its strength
+	- view.displaySiteDetails to show threat territory if you've visited
 	- arrival events
 		- ask for intel, which increases danger of knownSites
 		- tax goods (can take percentage of loads)
