@@ -297,7 +297,7 @@ var data = {
 			visible: false,
 			inputs: ['fuel'],
 			housing:20,
-			defense:5,
+			defense:2,
 			jobs: 1,
 		},
 		cisterns: {
@@ -348,7 +348,7 @@ var data = {
 			goodwill: 5,
 			visible: true,
 			inputs: ['fuel'],
-			defense:10,
+			defense:4,
 			jobs: 10,
 		},
 		granary: {
@@ -528,7 +528,7 @@ var data = {
 			replaces: ['woodenPallisade'],
 			goodwill: 2,
 			visible: true,
-			defense:5,
+			defense:2,
 		},
 		tannery: {
 			name:'Tannery',
@@ -565,7 +565,7 @@ var data = {
 			buildTime: 6,
 			goodwill: 1,
 			visible: true,
-			defense:2,
+			defense:1,
 		},
 		watermill: {
 			name: 'Watermill',
@@ -592,7 +592,7 @@ var data = {
 			buildTime: 6,
 			goodwill: 1,
 			visible: true,
-			defense:3,
+			defense:1,
 		},
 	},
 	

@@ -35,7 +35,7 @@ var model = {
 		model.clock.logEventIn(8.64e+7,'eachDay');
 		model.clock.logEventIn(8.64e+7*10*Math.random(),'randomEvent');
 		
-		model.newMap();
+		var safeIndex = model.newMap();
 		units = [];
 		players.p1 = {unitsUnlocked:{},eventLog:{}};
 		
@@ -44,7 +44,7 @@ var model = {
 		players.p1.knownLandmarks = [];
 		players.p1.recruitProgress = {};
 		
-		var startUnit = new Unit(players.p1,undefined,data.units.donkeyCart);
+		var startUnit = new Unit(players.p1,sites[Math.random() * safeIndex << 0],data.units.donkeyCart);
 		if (startUnit.location.neighbors.length == 0) {
 			startUnit.location = sites[Math.random() * sites.length << 0];
 		};
@@ -227,31 +227,41 @@ var model = {
 		
 		// Threats
 		var threats = [];
-		for (var i=0;i<totalThreats;i++) {
-			threats.push({x:-100 + Math.random() * 1200 >> 0,y:-100 + Math.random() * 1200 >> 0});
+		for (var i=sites.length-1;i>sites.length-totalThreats-1;i--) {
+// 			threats.push({x:-100 + Math.random() * 1200 >> 0,y:-100 + Math.random() * 1200 >> 0});
+			threats.push(sites[i]);
+			sites[i].threat = {
+				name: model.threatName(sites[i]),
+				strength: 3 + Math.random() * 7 << 0,
+				targets: [],
+			};
 		};
 		for (var s in sites) {
-			var nearestThreat = Infinity;
+			var nearestThreatDist = Infinity;
+			var nearestThreat = undefined;
 			var distance;
 			for (var t in threats) {
 				distance = Math.pow(Math.pow(threats[t].x - sites[s].x,2) + Math.pow(threats[t].y - sites[s].y,2) ,0.5)
-				if (distance < nearestThreat) {
-					nearestThreat = distance;
+				if (distance < nearestThreatDist) {
+					nearestThreatDist = distance;
+					nearestThreat = threats[t];
 				};
 			};
-			sites[s].danger = Math.round(5000 / distance,0);
+			sites[s].nearestThreat = nearestThreat;
+			nearestThreat.threat.targets.push({siteIndex:s,distance:nearestThreatDist});
 		};
 		
 		// Ghost Towns
-		for (var i=0;i<ghostTowns;i++) {
-			var ghostTown = sites[Math.random() * sites.length << 0];
-			ghostTown.ghost();
+		for (i=i;i>sites.length-totalThreats-1-ghostTowns;i--) {
+			sites[i].ghost();
 		};
 		
 		// Pile into Map Object
 		map.sites = sites;
 		map.landmarks = landmarks;
 		map.threats = threats;
+		
+		return i;
 		
 	},
 	
@@ -271,6 +281,13 @@ var model = {
 			};
 		};
 		return string.charAt(0).toUpperCase() + string.slice(1);
+	},
+	
+	threatName: function(site) {
+		var prefices = ["","Howling","Hell's","The","Great","The Supreme"];
+		var roots = ["","Jackal","Unitarian-Universalist","White","Demon","Angel"];
+		var suffices = ["Kings","Queens","Sovereigns","Gang","Army","Nation","Division","Militia","Horde"];
+		return prefices[Math.random() * prefices.length >> 0] + " " + roots[Math.random() * roots.length >> 0] + " " + suffices[Math.random() * suffices.length >> 0]
 	},
 	
 	knownValues: function() {
@@ -523,7 +540,7 @@ var model = {
 		for (var s in saveGame.sites) {
 			var newSite = new Site();
 		};
-		var simples = ['name','adjustment','carpet','commodities','danger','goodwill','hasVisited','hasSurveyed','population','reputation','trash','wages','x','y'];
+		var simples = ['name','adjustment','carpet','commodities','goodwill','hasVisited','hasSurveyed','population','reputation','threat','trash','wages','x','y'];
 		for (var s in saveGame.sites) {
 			for (var d of simples) {
 				sites[s][d] = saveGame.sites[s][d];
@@ -543,6 +560,8 @@ var model = {
 			for (var i of saveGame.sites[s].infrastructureKeys) {
 				sites[s].infrastructure.push(data.infrastructure[i]);
 			};
+			
+			sites[s].nearestThreat = sites[saveGame.sites[s].nearestThreatIndex];
 		};
 		
 		players = saveGame.players;
@@ -602,7 +621,6 @@ function Site(mapSize) {
 	
 	this.population = 4 + Math.random() * Math.random() * 496 << 0;
 	this.wages = (Math.random() * Math.random() + 0.25) * (data.commodities.food.baseValue + data.commodities.water.baseValue);
-	this.danger = 20;
 	
 	this.commodities = {};
 	for (var c in data.commodities) {
@@ -715,7 +733,7 @@ function Site(mapSize) {
 	this.flat = function() {
 		var flat = {};
 		
-		var simples = ['name','adjustment','carpet','commodities','danger','goodwill','hasVisited','hasSurveyed','population','reputation','trash','wages','x','y'];
+		var simples = ['name','adjustment','carpet','commodities','goodwill','hasVisited','hasSurveyed','population','reputation','threat','trash','wages','x','y'];
 		for (var i of simples) {
 			flat[i] = this[i];
 		};
@@ -740,6 +758,8 @@ function Site(mapSize) {
 				};
 			};
 		};
+		
+		flat.nearestThreatIndex = sites.indexOf(this.nearestThreat);
 
 		return flat;
 	};
@@ -803,14 +823,15 @@ function Site(mapSize) {
 		var housingDesc = '<strong>Housing</strong><br />'+housing+' beds / '+this.population+' souls ';
 		array.push({label:housingLabels[housingLabels.length * housingRatio * 0.99 << 0],completion:housingRatio,desc:housingDesc});
 		
-		var safety = Math.min(1,defense / this.danger);
+		var safety = Math.min(1,defense / this.nearestThreat.threat.strength);
 		var safetyLabels = [
 			'scared',
 			'cowering',
 			'vigilant',
 			'bold'
 		];
-		var safetyDesc = '<strong>Safety</strong><br />'+defense+' defense / '+this.danger+' danger';
+		var safetyDesc = '<strong>Safety</strong><br />'+defense+' defense / '+this.nearestThreat.threat.strength+' danger';
+		safetyDesc += '<br />('+this.nearestThreat.threat.name+' territory)';
 		array.push({label:safetyLabels[safetyLabels.length * safety * 0.99 << 0],completion:safety,desc:safetyDesc});
 		
 		return array;

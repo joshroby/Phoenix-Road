@@ -180,10 +180,10 @@ var events = {
 			} else if (Math.random() * 10 < unit.type.crew) {
 				passageString += "  Through a bit of quick thinking, the crew manages to escape their would-be attackers.";
 			} else {
-				passageString += "  The outlaws strip the " + unit.type.name + " of its valuables.";
+				passageString += "  The outlaws ransack the " + unit.type.name + " of its valuables.";
 				for (var i in unit.commodities) {
-					if (unit.commodities[i].qty > 50) {
-						unit.commodities[i].qty = 0;
+					if (unit.commodities[i].qty > 50 && (unit.commodities[i].commodity !== 'food' && unit.commodities[i].commodity !== 'water') ) {
+						unit.commodities[i].qty = 10;
 					};
 				};
 			};
@@ -342,9 +342,15 @@ var events = {
 		refugees: function()  {
 			var site = sites[Math.random() * sites.length << 0];
 			var number = Math.ceil(Math.random() * Math.random() * 80 + 20);
+			var commodities = ['clothing','fuel','tack'];
+			var commoditiesList = [];
+			for (var i of commodities) {
+				site.commodities[i] *= (number * site.population) / site.population;
+				commoditiesList.push(view.commodityIcon(i)+" "+data.commodities[i].name);
+			};
 			site.population += number;
 			if (site.hasVisited.p1) {
-				gamen.displayPassage(new Passage("A bedraggled band of " +number+ " refugees arrive at " + site.name + ".  The locals begrudgingly tolerate the newcomers settling in."));
+				gamen.displayPassage(new Passage("A bedraggled band of " +number+ " refugees arrive at " + site.name + ".  The locals begrudgingly tolerate the newcomers settling in.  The values of " + gamen.prettyList(commoditiesList) + " rise."));
 			};
 		},
 	
@@ -360,8 +366,10 @@ var events = {
 				potentialNames.push(s);
 			};
 		};
+		var suffix = potentialNames[Math.random() * potentialNames.length << 0].name
+		suffix = suffix.split(" ").splice(-1);
 		var prefices = ['Lost ','Abandoned ','Old ','Empty ','Ruined '];
-		site.name = prefices[Math.random() * prefices.length << 0] + potentialNames[Math.random() * potentialNames.length << 0].name;
+		site.name = prefices[Math.random() * prefices.length << 0] + suffix;
 		gamen.displayPassage(new Passage("Nothing but a ghost town, long abandoned."));
 	},
 	
