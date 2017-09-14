@@ -874,6 +874,16 @@ function Site(mapSize) {
 		
 		return array;
 	};
+	
+	this.defenses = function() {
+		var defense = 0;
+		for (var i in this.infrastructure) {
+			if (this.infrastructure[i].defense > 0) {
+				defense += this.infrastructure[i].defense;
+			};
+		};
+		return defense;
+	};
 
 	this.arrivalEvents = function() {
 		if (!players.p1.eventLog.tutorialStarted && model.options.tutorials) {

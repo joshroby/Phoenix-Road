@@ -397,12 +397,47 @@ var events = {
 		};
 	},
 	
-// 		raid: function()  {
-// 			var site = sites[Math.random() * sites.length << 0];
-// 			if (site.hasVisited.p1) {
-// 				gamen.displayPassage(new Passage("Raid on " + site.name + "."));
-// 			};
-// 		},
+	raid: function()  {
+		var threat = sites[Math.random() * sites.length << 0].nearestThreat.threat;
+		var targetList = [];
+		var furthestTarget = 0;
+		for (var i of threat.targets) {
+			if (i.distance > furthestTarget) {
+				furthestTarget = i.distance
+			};
+		};
+		for (var d=0;d<furthestTarget;d=d+furthestTarget/5) {
+			for (i of threat.targets) {
+				if (i.distance < d && sites[i.siteIndex].population > 0) {
+					targetList.push(sites[i.siteIndex]);
+				};
+			};
+		};
+		var site = targetList[Math.random() * targetList.length << 0];
+		var passageString = threat.name + " launches a raid against " + site.name + ".";
+		if (Math.random() > site.defenses() / threat.strength) {
+			passageString += "<p>The raiders crash against the town defenses, but do not breach them.";
+		} else {
+			passageString += "<p>The town's defenses collapse in the face of the attack.  Raiders ransack the town, looting stockpiles and stores.";
+			for (var i in site.trading()) {
+				site.logTransaction(i,Math.random()*5 << 0);
+			};
+			if (Math.random() < 0.2) {
+				var burnIndex = Math.random() * site.infrastructure.length << 0
+				passageString += "<p>Worse, the town's " + site.infrastructure[burnIndex].name + " is destroyed in the fighting.";
+				site.infrastructure.splice(burnIndex,1);
+				var kills = Math.floor(site.population * Math.random() / 5);
+				if (kills > 0) {
+					passageString += " " + kills + " souls are lost in the battle.";
+					site.population -= kills;
+				};
+			};
+		};
+		
+		if (site.hasVisited.p1) {
+			gamen.displayPassage(new Passage(passageString));
+		};
+	},
 	
 	refugees: function()  {
 		var site = sites[Math.random() * sites.length << 0];
@@ -419,7 +454,7 @@ var events = {
 		};
 	},
 		
-	// Mysterious Site Events
+	// Mysterious Site Arrival Events
 	
 	ghostTown: function(site) {
 		var potentialNames = [];

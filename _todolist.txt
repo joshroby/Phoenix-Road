@@ -1,21 +1,14 @@
 Down the Phoenix Road To Do List
 
 
-- threat home bases have reduced wages
-- players can choose to use their selfDefense score to defend drivers from attacks on the road
-	- angry aurochs
-	- bandits
-- arena to train your drivers to defend themselves from bandits, etc (upgrade)
-- if you run out of food/water/fuel on the road, stuff happens.
-	- food and water makes you stop to scavenge
-	- fuel makes you stop at the roadside
+Raids!
 
 IMMEDIATE
 
 NEAR FUTURE
 
-- Proper Event Stack
-
+- Slider Speed Control
+- displaySiteDetails to show threat territory if you've visited
 - Post Office as a infrastructure box
 	- only one or two mails available at a time
 	- addressed to specific destination site?
@@ -26,15 +19,13 @@ NEAR FUTURE
 		- ask for intel, which increases danger of knownSites
 		- tax goods (can take percentage of loads)
 		- confiscate goods (take a whole load)
-- overhaul production buildings affect on values
+- overhaul production buildings effect on values
 	- port it over to the adjustments code
 	- make adjustments go up and down pipelines
 	- infrastructure with no local source for inputs does not decrease outputs
 - SVG tinkering
 	- movement animation/transition
-	- shading on landmarks
-	- fix unit svgs to have no overlapping paths
-		- then can implement the background stroke
+	- landmark draw functions
 - Zoom is still wonky
 	- need to set a center point (defaults to 500,500 or focus unit?)
 	- zoom in / out pays no attention to the location of the mouse
@@ -45,7 +36,7 @@ NEAR FUTURE
 	- Cisterns fight fire events (50%)
 	- Fire Station kills fire events (100%)
 	- Clinic/Hospital for Plague?
-- Slider Speed Control
+- Populate and test the Event Stack
 
 
 GAMEN
@@ -59,11 +50,11 @@ FAR FUTURE
 - a 'notes' file that saves with game so you can tell Future Self what your strategy is
 - how do you affect wages?
 	- union house
+	- house of worship
 - what benefit do YOU get for building defenses and housing?
 - rejigger site labels for legibility… somehow
 - trailblazing
 - building outposts / new sites
-- warlord territory
 - warehousing
 	- works like trash pile except it doesn't disappear
 	- build costs will need to take warehouses into account
