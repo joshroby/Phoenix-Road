@@ -1,6 +1,8 @@
 Down the Phoenix Road To Do List
 
 
+	- adjust label text size so it does not zoom along with map
+
 
 
 IMMEDIATE
@@ -30,7 +32,6 @@ NEAR FUTURE
 	- need to set a center point (defaults to 500,500 or focus unit?)
 	- zoom in / out pays no attention to the location of the mouse
 		- or takes its value initially but then ignores it until zoom is done?
-	- adjust label text size so it does not zoom along with map
 - New Infrastructure
 	- Canals for flood control (and other benefits?)
 	- Cisterns fight fire events (50%)
@@ -71,7 +72,6 @@ FAR FUTURE
 EVENTS
 - plague event which slowly increases values and kills population, can deliver medicine commodities to cure them
 - increasing / decreasing danger
-- consequences for suboptimal needs?
 - events that earn you reputation in towns
 
 

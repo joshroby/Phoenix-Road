@@ -294,6 +294,7 @@ var view = {
 			};
 			siteLabel.setAttribute('x',players.p1.knownSites[i].x + 10);
 			siteLabel.setAttribute('y',players.p1.knownSites[i].y + 5);
+			siteLabel.setAttribute('font-size',view.zoom.z * .03);
 			siteLabel.setAttribute('onmouseover','handlers.displaySiteDetails('+siteIndex+')');
 			siteLabel.innerHTML = players.p1.knownSites[i].name;
 			sitesGroup.appendChild(siteLabel);
@@ -435,8 +436,8 @@ var view = {
 			viewbox.height = view.zoom.z;
 
 			var viewboxString = viewbox.minX + ' ' + viewbox.minY + ' ' + viewbox.width + ' ' + viewbox.height;
-			mapSVG.setAttribute('viewBox',viewboxString);
 			view.zoom.viewbox = viewbox;
+			view.displayMap();
 		};
 	},
 	
