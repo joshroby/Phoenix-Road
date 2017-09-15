@@ -2,10 +2,19 @@ Down the Phoenix Road To Do List
 
 
 	- adjust label text size so it does not zoom along with map
-
+	- events use Site.logTransaction instead of directly changing commodity values
+	- routes no longer deleted incorrectly in mysterious site cleanup
 
 
 IMMEDIATE
+
+- Refugees on Road happens too often (Bandits too, probably)
+- Make basic industry work according to commodity values
+	- low-value clothing gets Seamstress, etc
+
+- gamen Passages need to be flagged for unavoidable / default dismiss click Choice
+
+- aurochs encounter on inTransit
 
 NEAR FUTURE
 

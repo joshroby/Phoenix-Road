@@ -398,7 +398,10 @@ var model = {
 					};
 					if (unitsAtSite.length == 0) {
 						for (var i in sites) {
-							sites[i].neighbors.splice(sites[i].neighbors.indexOf(sites[s]),1);
+							var neighborIndex = sites[i].neighbors.indexOf(sites[s]);
+							if (neighborIndex !== -1) {
+								sites[i].neighbors.splice(neighborIndex,1);
+							};
 						}
 						players.p1.knownSites.splice(players.p1.knownSites.indexOf(sites[s]),1);
 						sites.splice(sites.indexOf(sites[s]),1);

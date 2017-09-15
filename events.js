@@ -164,10 +164,12 @@ var events = {
 		
 	aurochs: function() {
 		var unit = units[Math.random() * units.length << 0];
-		view.focus.unit = unit;
-		var passageString = unit.name + " encounters a wandering aurochs.  This huge bovine beast stands as tall as a small hut, and has horns bigger than a farmer's thigh.";
-		var choiceArray = [new Choice('Avoid The Beast',events.aurochsAvoid),new Choice("That's Dinner!",events.aurochsAttack)];
-		gamen.displayPassage(new Passage(passageString,choiceArray));
+		if (unit.inTransit) {
+			view.focus.unit = unit;
+			var passageString = unit.name + " encounters a wandering aurochs.  This huge bovine beast stands as tall as a small hut, and has horns bigger than a farmer's thigh.";
+			var choiceArray = [new Choice('Avoid The Beast',events.aurochsAvoid),new Choice("That's Dinner!",events.aurochsAttack)];
+			gamen.displayPassage(new Passage(passageString,choiceArray));
+		};
 	},
 	
 	aurochsAttack: function(unitIndex) {
@@ -275,7 +277,7 @@ var events = {
 		var passageString = "A terrible fire rips through " + site.name + ".  Their " + site.infrastructure[index].name + " is completely destroyed.";
 		if (site.infrastructure[index].outputs !== undefined) {
 			for (var o of site.infrastructure[index].outputs) {
-				site.commodities[o] *= 1.25;
+				site.logTransaction(o,5);
 				outputs.push(view.commodityIcon(o)+" "+data.commodities[o].name);
 			};
 			passageString += " The value of " + gamen.prettyList(outputs) + " rises.";
@@ -294,7 +296,7 @@ var events = {
 			var passageString = "The river floods in " + site.name + ".  The " + site.infrastructure[index].name + " is completely destroyed.";
 			if (site.infrastructure[index].outputs !== undefined) {
 				for (var o of site.infrastructure[index].outputs) {
-					site.commodities[o] *= 1.25;
+					site.logTransaction(o,5);
 					outputs.push(view.commodityIcon(o)+" "+data.commodities[o].name);
 				};
 				passageString += " The value of " + gamen.prettyList(outputs) + " rises.";
@@ -380,7 +382,7 @@ var events = {
 		var commodities = ['clothing','fuel','metals'];
 		var commoditiesList = [];
 		for (var i of commodities) {
-			site.commodities[i] *= (Math.random() + Math.random())/4 + 0.5;
+			site.logTransaction(i,Math.random() * Math.random() * 10);
 			commoditiesList.push(view.commodityIcon(i)+" "+data.commodities[i].name);
 		};
 		if (site.hasVisited.p1) {
@@ -445,7 +447,7 @@ var events = {
 		var commodities = ['clothing','fuel','tack'];
 		var commoditiesList = [];
 		for (var i of commodities) {
-			site.commodities[i] *= (number * site.population) / site.population;
+			site.logTransaction(i,number)
 			commoditiesList.push(view.commodityIcon(i)+" "+data.commodities[i].name);
 		};
 		site.population += number;
