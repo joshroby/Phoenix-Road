@@ -1,24 +1,62 @@
 Down the Phoenix Road To Do List
 
 
-	- adjust label text size so it does not zoom along with map
-	- events use Site.logTransaction instead of directly changing commodity values
-	- routes no longer deleted incorrectly in mysterious site cleanup
+- aurochs encounter only inTransit
+- Infrastructure boxes do not display on Ghost Towns
+- auto-scuttle bug finally fixed?
+- upgrade cost rounded for display
+- upgrade now actually charges
+- Basic industries set up by commodity values (cheap clothing => Seamstress)
+- bolded the commodity listing of things produced locally
 
 
 IMMEDIATE
 
-- Refugees on Road happens too often (Bandits too, probably)
-- Make basic industry work according to commodity values
-	- low-value clothing gets Seamstress, etc
+- place rivers in sites with low water value
+
+- inputs should not add commodities to the Site.trading() list
+
+- players.p1.hometown not saving
+- descriptor for selfDefense not displaying correctly
+- Unit.moveStep checks for food but not the whole caravan?
+- caravan food stores do not disappear at 0%
+- still not taking commodities out of non-focus unitsAtSite
 
 - gamen Passages need to be flagged for unavoidable / default dismiss click Choice
 
-- aurochs encounter on inTransit
+- refugee camps throw the knownValues off
+
+- a loaded game does not pause when a random event comes up?
+
+- make the randomevents list sequester what just happened so you don't get repeats
+	- slowly feed sequestered events back in
+
+- event log (ie, 'crap what did I just click past?')
+
+- bandit event
+	- bandit event needs a 'run for it'?
+	- bandits do not select stuff that you've got qty < 10
+
+- when a unit arrives at a site, switch off Offroad automatically
+
+- when you drop passengers into a ghost town with no neighbors, check to see if nearest neighbor is within max dist and create a road (both ways)
+
+- random events
+	- threat gains strength
+	- threat loses strength
+	- site discovers resource
+- respawn random event
+	- checks if Tinker Camp, Cartwright, Mechanic, Arena, Lensmeister exist
+	- if one doesn't, it spawns one.
+	- notifies you if it's a town you've visited
+	- if Tinker Camp / Mechanic is destroyed in an event, game becomes nigh-unwinnable.
+
 
 NEAR FUTURE
 
 
+
+- event log (ie, 'crap what did I just click past?')
 - Post Office as a infrastructure box
 	- only one or two mails available at a time
 	- addressed to specific destination site?
@@ -32,14 +70,14 @@ NEAR FUTURE
 		- confiscate goods (take a whole load)
 - overhaul production buildings effect on values
 	- port it over to the adjustments code
-	- make adjustments go up and down pipelines
+	- make eachDay's adjustments go up and down pipelines
 	- infrastructure with no local source for inputs does not decrease outputs
 - SVG tinkering
 	- movement animation/transition
 	- landmark draw functions
 - Zoom is still wonky
-	- need to set a center point (defaults to 500,500 or focus unit?)
 	- zoom in / out pays no attention to the location of the mouse
+		- need to set a center point (defaults to 500,500 or focus unit?)
 		- or takes its value initially but then ignores it until zoom is done?
 - New Infrastructure
 	- Canals for flood control (and other benefits?)
@@ -47,7 +85,7 @@ NEAR FUTURE
 	- Fire Station kills fire events (100%)
 	- Clinic/Hospital for Plague?
 - Populate and test the Event Stack
-
+- Cancel route while in the midst of route.  Use "Roadside" code.
 
 GAMEN
 	index.html content setup/injection
@@ -61,8 +99,8 @@ FAR FUTURE
 - how do you affect wages?
 	- union house
 	- house of worship
-- what benefit do YOU get for building defenses and housing?
-- rejigger site labels for legibility… somehow
+- what benefit do YOU get for building housing?
+	- housing defends against plague and… what other random events?
 - trailblazing
 - building outposts / new sites
 - warehousing
@@ -70,13 +108,17 @@ FAR FUTURE
 	- build costs will need to take warehouses into account
 - other only-findable infrastructures?
 	- some kind of cult?
-	
 - responsive design in the CSS
 - what do you do that starts passively spreading civilization / greening needs?
 - two builder units building the same thing at the same time
-
+- swamp 'resource' that can be drained to get… something
 - what can you DISCOVER that greatly helps a lot of towns directly?
 
+- link up the sites with rivers (ha ha, that's funny hard)
+	- make a list of all sites with rivers
+	- find each river-site's nearest river-site neighbor
+	- link up like normal neighbors with a curvy river segment
+	- (how to avoid overlapping other sites?)
 
 EVENTS
 - plague event which slowly increases values and kills population, can deliver medicine commodities to cure them

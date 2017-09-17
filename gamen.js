@@ -11,6 +11,13 @@ var gamen = {
 		if (loadGameDiv !== undefined) {
 			gamen.displayLoadGameDiv();
 		};
+		
+		if (model.gameDivContents !== undefined) {
+			var gameDivContents = model.gameDivContents();
+			for (var i of gameDivContents) {
+				document.getElementById('gameDiv').appendChild(i);
+			};
+		};
 	},
 	
 	prettyList: function(list,andor) {
@@ -271,3 +278,4 @@ function Choice(label,execute,argsArray,disabled) {
 	this.argsArray = argsArray;
 	this.disabled = disabled;
 };
+

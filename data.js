@@ -448,7 +448,7 @@ var data = {
 			goodwill: 1,
 			visible: true,
 			inputs: ['water'],
-			outputs: ['food','lumber'],
+			outputs: ['food'],
 			jobs: 10,
 		},
 		openPitMine: {
@@ -528,7 +528,7 @@ var data = {
 			buildTime: 8,
 			goodwill: 2,
 			visible: false,
-			inputs: ['fiber','cloth','leather'],
+			inputs: ['cloth','leather'],
 			outputs: ['clothing'],
 			jobs: 4,
 		},

@@ -151,8 +151,8 @@ var handlers = {
 		model.buildUnit(index,buildUnit);
 	},
 	
-	upgrade: function(stat) {
-		model.upgrade(stat);
+	upgrade: function(stat,cost) {
+		model.upgrade(stat,cost);
 		view.displayMap();
 		view.displaySiteDetails(view.focus.unit.location);
 	},

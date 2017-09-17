@@ -167,7 +167,7 @@ var events = {
 		if (unit.inTransit) {
 			view.focus.unit = unit;
 			var passageString = unit.name + " encounters a wandering aurochs.  This huge bovine beast stands as tall as a small hut, and has horns bigger than a farmer's thigh.";
-			var choiceArray = [new Choice('Avoid The Beast',events.aurochsAvoid),new Choice("That's Dinner!",events.aurochsAttack)];
+			var choiceArray = [new Choice("Fire up the Barbeque!",events.aurochsAttack),new Choice('Avoid The Beast',events.aurochsAvoid)];
 			gamen.displayPassage(new Passage(passageString,choiceArray));
 		};
 	},
@@ -447,7 +447,7 @@ var events = {
 		var commodities = ['clothing','fuel','tack'];
 		var commoditiesList = [];
 		for (var i of commodities) {
-			site.logTransaction(i,number)
+			site.logTransaction(i,number/10)
 			commoditiesList.push(view.commodityIcon(i)+" "+data.commodities[i].name);
 		};
 		site.population += number;
@@ -470,7 +470,7 @@ var events = {
 		};
 		if (unit.inTransit) {
 			var numberRefugees = Math.max(Math.floor(Math.random() * 12 << 0),10);
-			var passageString = "You come across "+numberRefugees+" people shuffling down the road.  They look tired and half-starved; who knows if they'll make it to where they're going.";
+			var passageString = unit.name + " comes across "+numberRefugees+" people shuffling down the road.  They look tired and half-starved; who knows if they'll make it to where they're going.";
 			if (unit.type.canPassenger) {
 				var choiceArray = [new Choice("Give Them a Ride",events.roadRefugeesTake,[numberRefugees]),new Choice("Split Provisions with Them",events.roadRefugeesFeed,[numberRefugees]),new Choice("Leave Them")];
 			} else {

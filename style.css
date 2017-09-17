@@ -1,51 +1,5 @@
-body {
-	font-family: sans-serif;
-	padding-top: 5vw;
-	}
-
-div:after {
-	content: "";
-	display: table;
-	clear: both;
-	}
-
-.tipAnchor {
-	}
-
-.tipAnchor span.tooltip {
-	display: none;
-	z-index: 100;
-	}
-
-a.tipAnchor:hover span.tooltip {
-	position: absolute;
-	margin-top: 2vh;
-	display: inline;
-	background-color: white;
-	border: 1px solid darkorange;
-	padding: 0.5vh;
-	max-width: 15vw;
-	}
-
 .narrowMargin {
 	margin: 2px;
-	}
-
-#mainMenuDiv {
-	background-color: darkslategray;
-	color: white;
-	height: 3vw;
-	text-align: center;
-	padding-top: 1vw;
-	position: absolute;
-	top: 0;
-	left: 0;
-	width: 100%;
-	}
-
-#titleHead {
-	display: inline;
-	padding-right: 15vw;
 	}
 
 #optionsDiv {
@@ -329,6 +283,10 @@ a.tipAnchor:hover span.tooltip {
 
 .unitCommoditiesNameCell {
 	width: 40%;
+	}
+
+.localCommodity {
+	font-weight: bolder;
 	}
 
 .addBtn {

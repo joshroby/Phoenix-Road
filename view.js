@@ -633,6 +633,11 @@ var view = {
 				} else if (site.commodities[c] < knownValues[c]*.5){
 					siteCommoditiesValueCell.innerHTML += ' (---)';
 				};
+				for (var i in site.infrastructure) {
+					if (site.infrastructure[i].outputs !== undefined && site.infrastructure[i].outputs.indexOf(c) !== -1) {
+						siteCommoditiesItem.className = 'localCommodity';
+					};
+				};
 				siteCommoditiesItem.appendChild(siteCommoditiesValueCell);
 				var unitPresent = false;
 				for (var u in units) {
@@ -690,7 +695,7 @@ var view = {
 		};
 		
 			
-		if (site.hasVisited.p1) {
+		if (site.hasVisited.p1 && site.population > 0) {
 			for (var i in site.infrastructure) {
 				if (site.infrastructure[i].buildUnits !== undefined) {
 					var infrastructureDiv = document.createElement('div');
@@ -729,7 +734,7 @@ var view = {
 					buildInfoDiv.className = 'buildInfoDiv';
 					infrastructureDiv.appendChild(buildInfoDiv);
 				} else if (site.infrastructure[i].upgrade !== undefined) {
-					var cost = site.infrastructure[i].cost('p1');
+					var cost = Math.round(site.infrastructure[i].cost('p1'),0);
 					var infrastructureDiv = document.createElement('div');
 					var infrastructureHead = document.createElement('h3');
 					infrastructureHead.className = 'infrastructureHead';
@@ -740,7 +745,7 @@ var view = {
 					infrastructureDiv.appendChild(infrastructureUpgradeText);
 					var infrastructureUpgradeButton = document.createElement('button');
 					infrastructureUpgradeButton.innerHTML = 'Upgrade ' + site.infrastructure[i].upgradeDisplay + " (" +cost+ ")";
-					infrastructureUpgradeButton.setAttribute('onclick','handlers.upgrade("'+site.infrastructure[i].upgrade+'")');
+					infrastructureUpgradeButton.setAttribute('onclick','handlers.upgrade("'+site.infrastructure[i].upgrade+'",'+cost+')');
 					if(cost > site.reputation.p1) {
 						infrastructureUpgradeButton.disabled = true;
 					};
@@ -1357,7 +1362,11 @@ var view = {
 		
 		if (infrastructure.requiredResource !== undefined) {
 			var unitBuildRequirementP = document.createElement('p');
-			unitBuildRequirementP.innerHTML = '<strong>Requires:</strong> ' + gamen.prettyList(infrastructure.requiredResource,'or');
+			var requirements = [];
+			for (var i of infrastructure.requiredResource) {
+				requirements.push(data.resources[i]);
+			};
+			unitBuildRequirementP.innerHTML = '<strong>Requires:</strong> ' + gamen.prettyList(requirements,'or');
 			unitBuildPreviewDiv.appendChild(unitBuildRequirementP);
 		};
 		
@@ -1382,7 +1391,11 @@ var view = {
 	infrastructureDescription: function(infrastructure) {
 		var string = '';
 		if (infrastructure.requiredResource !== undefined) {
-			string += 'Upgrades a ' + infrastructure.requiredResource + '. ';
+			var requirements = [];
+			for (var i of infrastructure.requiredResource) {
+				requirements.push(data.resources[i]);
+			};
+			string += 'Requires a ' + gamen.prettyList(requirements,'or') + '. ';
 		};
 		if (infrastructure.housing > 0) {
 			string += 'Provides housing for ' + infrastructure.housing + '. ';

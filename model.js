@@ -347,15 +347,17 @@ var model = {
 	
 	eachDay: function() {
 		
-		for (var q in units) {
-			units[q].eat();
-			if (units[q].inTransit) {
-				units[q].moveStep();
-			} else if (units[q].surveyComplete <= model.clock.time) {
-				units[q].surveyResult();
-			} else if (units[q].buildComplete <= model.clock.time) {
-				units[q].buildResult();
+		model.clock.logEventIn(8.64e+7,'eachDay');
+		
+		for (var unit of units) {
+			if (unit.inTransit) {
+				unit.moveStep();
+			} else if (unit.surveyComplete <= model.clock.time) {
+				unit.surveyResult();
+			} else if (unit.buildComplete <= model.clock.time) {
+				unit.buildResult();
 			};
+			unit.eat();
 		};
 		
 		for (var s in sites) {
@@ -384,7 +386,7 @@ var model = {
 			if (sites[s].trash.length > 0 && Math.random() < 0.05) {
 				sites[s].trash.splice(sites[s].trash.length * Math.random() >> 0,1);
 			};
-			if (sites[s].infrastructure.length == 0 && sites[s].resources.length == 0 && sites[s].trash.length == 0) {
+			if (sites[s].infrastructure.length == 0 && sites[s].trash.length == 0) {
 				if (sites[s].population > 0) {
 					if (Math.random() < 0.05) {
 						sites[s].population -= Math.random() * Math.random() * 50 << 0;
@@ -417,8 +419,6 @@ var model = {
 		
 		view.displayUnit(view.focus.unit);
 		view.displayMap();
-		
-		model.clock.logEventIn(8.64e+7,'eachDay');
 		
 	},
 	
@@ -458,7 +458,7 @@ var model = {
 		view.displayUnit(newUnit);
 	},
 	
-	upgrade: function(stat) {
+	upgrade: function(stat,cost) {
 		if (stat == 'vision') {
 			players.p1[stat] *= 2;
 			for (u in units) {
@@ -467,6 +467,7 @@ var model = {
 		} else if (stat == 'selfDefense') {
 			players.p1[stat] += 0.2;
 		};
+		view.focus.unit.location.reputation.p1 -= cost;
 	},
 	
 	victoryProgress: function() {
@@ -684,6 +685,9 @@ function Site(mapSize) {
 	this.resources = [];
 	this.hasSurveyed = {};
 	this.hasSurveyed.p1 = [];
+	if (this.commodities.water < 0.05) {
+		this.resources.push(data.resources.river);
+	};
 	var resourcesNum = 1 + Math.random() * Math.random() * 5 << 0;
 	for (var r=0;r<resourcesNum;r++) {
 		var resources = Object.keys(data.resources);
@@ -711,40 +715,57 @@ function Site(mapSize) {
 	};
 
 	// Basic Industry
-	if (Math.random() < 0.9 - this.infrastructure.length * 0.4) {
-		var industry = undefined;
-		if (this.commodities.stone < 0.3 && this.resources.indexOf(data.resources.outcropping) == -1 && Math.random() < 0.1) {
-			industry = data.infrastructure.quarry;
-		};
-		if (this.commodities.ore < 0.3 && this.resources.indexOf(data.resources.mineralVein) == -1 && Math.random() < 0.1 && industry == undefined) {
-			industry = data.infrastructure.mine;
-		};
-		if (this.commodities.crudeOil < 0.6 && this.resources.indexOf(data.resources.oilReservoir) == -1 && Math.random() < 0.05 && industry == undefined) {
-			industry = data.infrastructure.oilWell;
-		};
-		if (industry == undefined) {
-			var buildings = ['cartwright','foundry','refinery','loom','saddler','seamstress','tannery','loom','saddler','seamstress','tannery'];
-			industry = data.infrastructure[buildings[Math.random() * buildings.length << 0]];
-			var totalInputs = 0;
-			var totalOutputs = 0;
-			for (c in industry.inputs) {
-				this.commodities[industry.inputs[c]] /= 0.8;
-				totalInputs += this.commodities[industry.inputs[c]];
-			};
-			for (c in industry.outputs) {
-				this.commodities[industry.outputs[c]] *= 0.8;
-				totalOutputs += this.commodities[industry.outputs[c]];
-			};
-			if (industry.inputs !== undefined && industry.outputs !== undefined) {
-				totalInputs /= industry.inputs.length;
-				totalOutputs /= industry.outputs.length;
-				if (totalInputs > totalOutputs * 0.8) {
-					for (c in industry.outputs) {
-						this.commodities[industry.outputs[c]] *= totalInputs / ( totalOutputs * 0.8 );
-					};
-				};
-			};
-		};
+	var industry = undefined;
+	if (this.commodities.stone < 0.3 && this.resources.indexOf(data.resources.outcropping) == -1 && Math.random() < 0.1) {
+		industry = data.infrastructure.quarry;
+	};
+	if (this.commodities.ore < 0.3 && this.resources.indexOf(data.resources.mineralVein) == -1 && Math.random() < 0.1 && industry == undefined) {
+		industry = data.infrastructure.mine;
+	};
+	if (this.commodities.crudeOil < 0.6 && this.resources.indexOf(data.resources.oilReservoir) == -1 && Math.random() < 0.05 && industry == undefined) {
+		industry = data.infrastructure.oilWell;
+	};
+	if (this.commodities.cloth < 0.6 && industry == undefined) {
+		industry = data.infrastructure.loom;
+	};
+	if (this.commodities.clothing < 0.4 && industry == undefined) {
+		industry = data.infrastructure.seamstress;
+	};
+	if (this.commodities.leather < 0.4 && industry == undefined) {
+		industry = data.infrastructure.tannery;
+	};
+	if (this.commodities.tack < 0.6 && industry == undefined) {
+		industry = data.infrastructure.saddler;
+	};
+	if (this.commodities.metals < 0.8 && industry == undefined) {
+		industry = data.infrastructure.foundry;
+	};
+	if (this.commodities.fuel < 0.8 && industry == undefined) {
+		industry = data.infrastructure.refinery;
+	};
+	if (industry == undefined && Math.random() < 0.2) {
+		industry = data.infrastructure.cartwright;
+	}
+// 		var totalInputs = 0;
+// 		var totalOutputs = 0;
+// 		for (c in industry.inputs) {
+// 			this.commodities[industry.inputs[c]] /= 0.8;
+// 			totalInputs += this.commodities[industry.inputs[c]];
+// 		};
+// 		for (c in industry.outputs) {
+// 			this.commodities[industry.outputs[c]] *= 0.8;
+// 			totalOutputs += this.commodities[industry.outputs[c]];
+// 		};
+// 		if (industry.inputs !== undefined && industry.outputs !== undefined) {
+// 			totalInputs /= industry.inputs.length;
+// 			totalOutputs /= industry.outputs.length;
+// 			if (totalInputs > totalOutputs * 0.8) {
+// 				for (c in industry.outputs) {
+// 					this.commodities[industry.outputs[c]] *= totalInputs / ( totalOutputs * 0.8 );
+// 				};
+// 			};
+// 		};
+	if (industry !== undefined ) {
 		this.infrastructure.push(industry);
 	};
 
@@ -920,11 +941,10 @@ function Site(mapSize) {
 		if (this.population > 0) {
 			var industrial = [];
 			for (var b in this.infrastructure) {
-				industrial = industrial.concat(this.infrastructure[b].inputs);
+// 				industrial = industrial.concat(this.infrastructure[b].inputs);
 				industrial = industrial.concat(this.infrastructure[b].outputs);
 			};
 			for (var d in this.commodities) {
-				errors.v426 = d;
 				if (data.commodities[d].common) {
 					commodities[d] = this.commodities[d];
 				};
@@ -1713,7 +1733,6 @@ var gamenEventPointers = {
 		var randomEventList = ["aurochs", "bandits", "drought", "fire", "flood", "mysteriousSite", "oldWorldCache", "plague", "refugees", "roadRefugees"];
 		randomEventList = randomEventList.concat(players.p1.specialEventStack);
 		var event = randomEventList[Math.random() * randomEventList.length << 0];
-		console.log(event);
 		events[event]();
 		model.clock.logEventIn( 8.64e+7 * ( 10 * Math.random() + 5 ),'randomEvent');		
 	},
