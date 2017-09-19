@@ -257,6 +257,32 @@ var view = {
 			landmarksGroup.appendChild(newLandmark);
 		};
 		
+// 		for (var i of players.p1.knownSites) {
+// 			if (i.riverNeighbors !== undefined) {
+// 				for (var n of i.riverNeighbors) {
+// 					var newRiver = document.createElementNS('http://www.w3.org/2000/svg','line');
+// 					newRiver.setAttribute('stroke','lightblue');
+// 					newRiver.setAttribute('stroke-width',5);
+// 					newRiver.setAttribute('x1',i.x);
+// 					newRiver.setAttribute('y1',i.y);
+// 					newRiver.setAttribute('x2',n.site.x);
+// 					newRiver.setAttribute('y2',n.site.y);
+// 					landmarksGroup.appendChild(newRiver);
+// 				};
+// 			};
+// 		};
+		
+		for (r of players.p1.knownRivers) {
+			var riverSegment = document.createElementNS('http://www.w3.org/2000/svg','path');
+			riverSegment.setAttribute('fill','none');
+			riverSegment.setAttribute('stroke','darkseagreen');
+			riverSegment.setAttribute('stroke-width',r.width);
+			riverSegment.setAttribute('stroke-linecap','round');
+			var d = 'M' + r.x1 + ',' + r.y1 + ' C ' + r.c1x + ' ' + r.c1y + ' ' + r.c2x + ' ' + r.c2y + ' ' + r.x2 + ' ' + r.y2;
+			riverSegment.setAttribute('d',d);
+			landmarksGroup.appendChild(riverSegment);
+		};
+
 		var routesGroup = document.createElementNS('http://www.w3.org/2000/svg','g');
 		routesGroup.id = 'routesGroup';
 		svg.appendChild(routesGroup);

@@ -1,25 +1,20 @@
 Down the Phoenix Road To Do List
 
 
-- aurochs encounter only inTransit
-- Infrastructure boxes do not display on Ghost Towns
-- auto-scuttle bug finally fixed?
-- upgrade cost rounded for display
-- upgrade now actually charges
-- Basic industries set up by commodity values (cheap clothing => Seamstress)
-- bolded the commodity listing of things produced locally
 
 
-IMMEDIATE
-
-- place rivers in sites with low water value
+IMMEDIATE FIXES
 
 - inputs should not add commodities to the Site.trading() list
 
 - players.p1.hometown not saving
+
 - descriptor for selfDefense not displaying correctly
+
 - Unit.moveStep checks for food but not the whole caravan?
+
 - caravan food stores do not disappear at 0%
+
 - still not taking commodities out of non-focus unitsAtSite
 
 - gamen Passages need to be flagged for unavoidable / default dismiss click Choice
@@ -28,23 +23,36 @@ IMMEDIATE
 
 - a loaded game does not pause when a random event comes up?
 
+- two builder units building the same thing at the same time
+
+
+NEXT FEATURE / OPTIMIZATION
+
+
+- when a unit arrives at a site, switch off Offroad automatically
+
 - make the randomevents list sequester what just happened so you don't get repeats
 	- slowly feed sequestered events back in
-
-- event log (ie, 'crap what did I just click past?')
 
 - bandit event
 	- bandit event needs a 'run for it'?
 	- bandits do not select stuff that you've got qty < 10
 
-- when a unit arrives at a site, switch off Offroad automatically
+- event log (ie, 'crap what did I just click past?')
 
 - when you drop passengers into a ghost town with no neighbors, check to see if nearest neighbor is within max dist and create a road (both ways)
 
-- random events
+- New Random Events
 	- threat gains strength
 	- threat loses strength
 	- site discovers resource
+	- events that earn you reputation in towns
+	- plague events
+		- slowly increases values
+		- population loss
+		- spreads town to town
+		- can deliver medicine commodities to cure them (not an event, but still)
+	
 - respawn random event
 	- checks if Tinker Camp, Cartwright, Mechanic, Arena, Lensmeister exist
 	- if one doesn't, it spawns one.
@@ -52,14 +60,12 @@ IMMEDIATE
 	- if Tinker Camp / Mechanic is destroyed in an event, game becomes nigh-unwinnable.
 
 
-NEAR FUTURE
-
-
-
 - event log (ie, 'crap what did I just click past?')
+
 - Post Office as a infrastructure box
 	- only one or two mails available at a time
 	- addressed to specific destination site?
+	
 - Playing with Threats
 	- you can discover their home base
 	- you can nullify a threat / reduce its strength
@@ -92,12 +98,13 @@ GAMEN
 	color palette
 	pronoun substitution
 	prettyNumber(2) -> "two"
+	responsive design in the CSS
 
-FAR FUTURE
-- eventually, enough findable locations that not all of them appear in each play
+FUTURE EXPANSIONS
 - a 'notes' file that saves with game so you can tell Future Self what your strategy is
 - how do you affect wages?
 	- union house
+	- school
 	- house of worship
 - what benefit do YOU get for building housing?
 	- housing defends against plague and… what other random events?
@@ -108,9 +115,8 @@ FAR FUTURE
 	- build costs will need to take warehouses into account
 - other only-findable infrastructures?
 	- some kind of cult?
-- responsive design in the CSS
+	- eventually, enough findable locations that not all of them appear in each play
 - what do you do that starts passively spreading civilization / greening needs?
-- two builder units building the same thing at the same time
 - swamp 'resource' that can be drained to get… something
 - what can you DISCOVER that greatly helps a lot of towns directly?
 
@@ -119,12 +125,6 @@ FAR FUTURE
 	- find each river-site's nearest river-site neighbor
 	- link up like normal neighbors with a curvy river segment
 	- (how to avoid overlapping other sites?)
-
-EVENTS
-- plague event which slowly increases values and kills population, can deliver medicine commodities to cure them
-- increasing / decreasing danger
-- events that earn you reputation in towns
-
 
 
 

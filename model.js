@@ -1,6 +1,7 @@
 var map = {};
 var sites = [];
 var landmarks = [];
+var rivers = [];
 var units = [];
 var players = {};
 players.p1 = {};
@@ -43,6 +44,7 @@ var model = {
 		players.p1.selfDefense = 0.5;
 		players.p1.knownSites = [];
 		players.p1.knownLandmarks = [];
+		players.p1.knownRivers = [];
 		players.p1.recruitProgress = {};
 		players.p1.specialEventStack = [];
 		
@@ -226,6 +228,68 @@ var model = {
 					landmarks.push({x:x,y:y,type:Math.random(),size:Math.random()});
 				};
 			};
+		};
+		
+		// Rivers
+		riverSites = [];
+		rivers = [];
+		for (var s in sites) {
+			if (sites[s].resources.indexOf(data.resources.river) !== -1) {
+				riverSites.push(sites[s]);
+			};
+		};
+		for (var i=0;i<50;i++) {
+			riverSites.push(landmarks[Math.random() * landmarks.length << 0]);
+		};
+		for (s in riverSites) {
+				riverSites[s].portX = riverSites[s].x + Math.random() * 40 - 20;
+				riverSites[s].portY = riverSites[s].y + Math.random() * 40 - 20;
+		};
+		for (var s in riverSites) {
+			if (riverSites[s].population !== undefined) {
+				riverSites[s].riverNeighbors = [];
+				var riverNeighbors = [];
+				for (var r in riverSites) {
+					var distance = Math.pow(Math.pow(riverSites[s].x - riverSites[r].x,2)+Math.pow(riverSites[s].y - riverSites[r].y,2),0.5);
+					if (r !== s) {
+						riverNeighbors.push({site:riverSites[r],distance:distance});
+					}
+				}; 
+				var smallest = {site:undefined,distance:Infinity};
+				var secondSmallest = {site:undefined,distance:Infinity};
+				for (var r in riverNeighbors) {
+					if (riverNeighbors[r].distance < smallest.distance) {
+						smallest = riverNeighbors[r];
+					} else if (riverNeighbors[r].distance < secondSmallest.distance) {
+						secondSmallest = riverNeighbors[r]
+					};
+				};
+				var smallestAngle = Math.atan2(riverSites[s].y - smallest.site.y,riverSites[s].x - smallest.site.x) * 180 / Math.PI;
+				var secondSmallestAngle = Math.atan2(riverSites[s].y - secondSmallest.site.y,riverSites[s].x - secondSmallest.site.x) * 180 / Math.PI;
+				var angleDiff = smallestAngle - secondSmallestAngle;
+				if ((360 - minAngle < angleDiff || angleDiff < minAngle) && angleDiff !== 0) {
+					riverSites[s].riverNeighbors = [smallest];
+					rivers.push({x1:riverSites[s].portX,y1:riverSites[s].portY,x2:smallest.site.portX,y2:smallest.site.portY});
+				} else {
+					riverSites[s].riverNeighbors = [smallest,secondSmallest];
+					rivers.push({x1:riverSites[s].portX,y1:riverSites[s].portY,x2:smallest.site.portX,y2:smallest.site.portY});
+					rivers.push({x1:riverSites[s].portX,y1:riverSites[s].portY,x2:secondSmallest.site.portX,y2:secondSmallest.site.portY});
+				};
+			};
+		};
+		for (r in rivers) {
+			for (s=r;s<rivers.length;s++) {
+				if (rivers[r].x1 == rivers[s].x2 && rivers[r].y1 == rivers[s].y2 && rivers[r].x2 == rivers[s].x1 && rivers[r].y2 == rivers[s].y1) {
+					rivers.splice(s,1);
+				};
+			};
+		};
+		for (r of rivers) {
+			r.c1x = r.x1 + Math.random() * (r.x2-r.x1);
+			r.c1y = r.y1 + Math.random() * (r.y2-r.y1);
+			r.c2x = r.x2 + Math.random() * (r.x1-r.x2);
+			r.c2y = r.y2 + Math.random() * (r.y1-r.y2);
+			r.width = 5 + Math.random() * 5 << 0;
 		};
 		
 		// Threats
@@ -685,7 +749,7 @@ function Site(mapSize) {
 	this.resources = [];
 	this.hasSurveyed = {};
 	this.hasSurveyed.p1 = [];
-	if (this.commodities.water < 0.05) {
+	if (this.commodities.water < 0.1) {
 		this.resources.push(data.resources.river);
 	};
 	var resourcesNum = 1 + Math.random() * Math.random() * 5 << 0;
@@ -1500,6 +1564,11 @@ function Unit(owner,startLoc,type) {
 		for (var i in landmarks) {
 			if (( Math.pow(Math.pow(landmarks[i].x - unitX,2) + Math.pow(landmarks[i].y - unitY,2),.5) < this.owner.vision + 60 ) && this.owner.knownLandmarks.indexOf(landmarks[i]) == -1) {
 				this.owner.knownLandmarks.push(landmarks[i]);
+			};
+		};
+		for (var i in rivers) {
+			if ( ( Math.pow(Math.pow(rivers[i].x1 - unitX,2) + Math.pow(rivers[i].y1 - unitY,2),0.5) < this.owner.vision + 60 || Math.pow(Math.pow(rivers[i].x2 - unitX,2) + Math.pow(rivers[i].y2 - unitY,2),0.5) < this.owner.vision + 60 ) && this.owner.knownRivers.indexOf(rivers[i]) == -1) {
+				this.owner.knownRivers.push(rivers[i]);
 			};
 		};
 	};
