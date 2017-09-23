@@ -4,6 +4,7 @@ var events = {
 
 	disableTutorial: function() {
 		model.options.tutorials = false;
+		players.p1.eventLog.firstArrival = true;
 		gamen.passageQueue = [];
 	},
 
@@ -17,8 +18,7 @@ var events = {
 		};
 		var passageText = "You start your journey from your hometown of "+units[0].location.name+".  You can see your donkey cart marked in red on the map above, just below the town.<p>There "+roadsOut+" out of town.  There are little more than rumors about what you'll find down each one.  The townsfolk are pretty sure on the names of the towns out there, but no one's quite sure what you'll find down each road.";
 		var choiceArray = [new Choice('Continue',events.tutorial_002),new Choice('Turn off Tutorial',events.disableTutorial)];
-		gamen.displayPassage(new Passage(passageText,choiceArray));
-		gamen.displayPassage(new Passage("Did you want to disable the tutorial?",choiceArray));
+		gamen.displayPassage(new Passage(passageText,choiceArray,false));
 	},
 
 	tutorial_002: function() {
@@ -26,8 +26,7 @@ var events = {
 		view.displaySiteDetails(units[0].location);
 		var passageText = "Since you grew up here, you have a respectable reputation as a trustworthy individual.  Townsfolk will just give you most of what you ask for, trusting you to do something worthwhile with the materials.  You've spent your whole life doing the same, sharing what you have with townsfolk who need it.<p>Of course, your reputation has its limits.  If you ask for too much, you'll get turned down. Some things, too, are more valuable than your reputation merits.  You can see a measure of your reputation in the town on the right, in green.  Your reputation here is "+Math.floor(units[0].location.reputation.p1)+".";
 		var choiceArray = [new Choice('Continue',events.tutorial_003),new Choice('Turn off Tutorial',events.disableTutorial)];
-		gamen.displayPassage(new Passage(passageText,choiceArray));
-		gamen.displayPassage(new Passage("Did you want to disable the tutorial?",choiceArray));
+		gamen.displayPassage(new Passage(passageText,choiceArray,false));
 	},
 
 	tutorial_003: function() {
@@ -52,8 +51,7 @@ var events = {
 		};
 		view.displaySiteDetails(units[0].location);
 		var choiceArray = [new Choice('Continue',events.tutorial_004),new Choice('Turn off Tutorial',events.disableTutorial)];
-		gamen.displayPassage(new Passage(passageText,choiceArray));
-		gamen.displayPassage(new Passage("Did you want to disable the tutorial?",choiceArray));
+		gamen.displayPassage(new Passage(passageText,choiceArray,false));
 	},
 
 	tutorial_004: function() {
@@ -62,14 +60,13 @@ var events = {
 		view.displayUnit(units[0]);
 		var passageText = "You've loaded up your Grams' old donkey cart with " +view.commodityIcon('food')+ " Food and " +view.commodityIcon('water')+ " Water for the journey, plus a load of your town's most plentiful commodity: " + view.commodityIcon(cargo) + data.commodities[cargo].name + ".<p>The food is for you and your friend.  The water is for the donkey.  The " + view.commodityIcon(cargo) + data.commodities[cargo].name + " is for somebody out there who needs it more than you do.  Maybe they'll have something they don't need, something plentiful in their town, for which the people here have a dire need.";
 		var choiceArray = [new Choice('Continue',events.tutorial_005),new Choice('Turn off Tutorial',events.disableTutorial)];
-		gamen.displayPassage(new Passage(passageText,choiceArray));
-		gamen.displayPassage(new Passage("Did you want to disable the tutorial?",choiceArray));
+		gamen.displayPassage(new Passage(passageText,choiceArray,false));
 	},
 	
 	tutorial_005: function() {
 		gamen.passageQueue = [];
 		var cargo = units[0].commodities[2].commodity;
-		gamen.displayPassage(new Passage("It's time to hit the road.  After you've dismissed this message, click on your donkey cart to select it.<p>You can then click on another town on the map and you'll start heading there.<p>Before you go, though, you might want to request another load of a commodity.  Click on any of the <span class='fa fa-cart-plus'></span> icons next to the commodity you want to ask for and then click on the Trade button below the map.  Your cart can carry one more load.  Do you want another " + view.commodityIcon(cargo) + data.commodities[cargo].name + ", or something different? "+data.commodities[units[0].commodities[2].commodity].name+" is cheap, but carrying two different commodities increases the chances that the people out there will find what you've got useful."));
+		gamen.displayPassage(new Passage("It's time to hit the road.  After you've dismissed this message, click on your donkey cart to select it.<p>You can then click on another town on the map and you'll start heading there.<p>Before you go, though, you might want to request another load of a commodity.  Click on any of the <span class='fa fa-cart-plus'></span> icons next to the commodity you want to ask for and then click on the Trade button below the map.  Your cart can carry one more load.  Do you want another " + view.commodityIcon(cargo) + data.commodities[cargo].name + ", or something different? "+data.commodities[units[0].commodities[2].commodity].name+" is cheap, but carrying two different commodities increases the chances that the people out there will find what you've got useful.",undefined,false));
 	},
 	
 	tutorial_firstArrival: function() {
@@ -119,14 +116,14 @@ var events = {
 		} else {
 			passageString += "You could trade your cargo for " + gamen.prettyList(potentialTrades,'or') + ".";
 		};
-		gamen.displayPassage(new Passage(passageString));
+		gamen.displayPassage(new Passage(passageString,undefined,false));
 		if (potentialTrades.length > 0) {
 			events.tutorial_howToTrade();
 		};
 	},
 	
 	tutorial_howToTrade: function() {
-		gamen.displayPassage(new Passage('To set up a trade, click on the <span class="fa fa-cart-arrow-down"></span> on your cart display on the left and the <span class="fa fa-cart-plus"></span> icons in the town display on the right.<p>This will send those commodities down to the Trade Window underneath the map.  The change in your reputation that the trade will produce is displayed in the center of the Trade Window.  As long as that number is green, the people here will make the trade.<p>After the trade is complete, the values for the traded commodities will slowly change in this town.  Commodities that you delivered will reduce in value.  Commodities that you took will rise in value.<p>Dismiss this message and make your trade, then head back home with your treasures.'));
+		gamen.displayPassage(new Passage('To set up a trade, click on the <span class="fa fa-cart-arrow-down"></span> on your cart display on the left and the <span class="fa fa-cart-plus"></span> icons in the town display on the right.<p>This will send those commodities down to the Trade Window underneath the map.  The change in your reputation that the trade will produce is displayed in the center of the Trade Window.  As long as that number is green, the people here will make the trade.<p>After the trade is complete, the values for the traded commodities will slowly change in this town.  Commodities that you delivered will reduce in value.  Commodities that you took will rise in value.<p>Dismiss this message and make your trade, then head back home with your treasures.',undefined,false));
 	},
 	
 	tutorial_returnHome: function() {
@@ -147,12 +144,12 @@ var events = {
 		} else {
 			passageString += "without much to show for your troubles.<p>Never fear, however.  You can swap out your cargo for something else.  While you're here, you can also click on the <span class='fa fa-refresh'></span> icons to refresh your food and water.  Then head back out there and find somebody who needs what you've got."
 		};
-		gamen.displayPassage(new Passage(passageString));
+		gamen.displayPassage(new Passage(passageString,undefined,false));
 		if (further) {events.tutorial_further()};
 	},
 	
 	tutorial_further: function() {
-		gamen.displayPassage(new Passage("Your first trip down the Phoenix Road has proven that you can connect the disparate towns of the wasteland together with trade and mutual support.  You <em>can</em> make this blasted world a better place.<p>Take a look at the progress bars in the upper right hand corner of your screen. These bars track the needs of your community: Hunger, Shelter, and Safety.  As you continue to move commodities and better living conditions, you may notice these progress bars shift, both in your hometown and in the places your travels take you.<p>Pushing those progress bars to completion indicates that you have recreated the security and comforts of the world before.  Completing all progress bars in all towns indicates that you have rebuilt civilization.<p>The power is in your hands.  A world of plenty and safety is waiting for you... down the Phoenix Road."));
+		gamen.displayPassage(new Passage("Your first trip down the Phoenix Road has proven that you can connect the disparate towns of the wasteland together with trade and mutual support.  You <em>can</em> make this blasted world a better place.<p>Take a look at the progress bars in the upper right hand corner of your screen. These bars track the needs of your community: Hunger, Shelter, and Safety.  As you continue to move commodities and better living conditions, you may notice these progress bars shift, both in your hometown and in the places your travels take you.<p>Pushing those progress bars to completion indicates that you have recreated the security and comforts of the world before.  Completing all progress bars in all towns indicates that you have rebuilt civilization.<p>The power is in your hands.  A world of plenty and safety is waiting for you... down the Phoenix Road.",undefined,false));
 	},
 	
 	tutorial_cartwright: function() {
@@ -167,15 +164,16 @@ var events = {
 		if (unit.inTransit) {
 			view.focus.unit = unit;
 			var passageString = unit.name + " encounters a wandering aurochs.  This huge bovine beast stands as tall as a small hut, and has horns bigger than a farmer's thigh.";
+			passageString += "<p>Your "+model.selfDefense(unit,'display')+" drivers do enjoy a good steak...";
 			var choiceArray = [new Choice("Fire up the Barbeque!",events.aurochsAttack),new Choice('Avoid The Beast',events.aurochsAvoid)];
-			gamen.displayPassage(new Passage(passageString,choiceArray));
+			gamen.displayPassage(new Passage(passageString,choiceArray,false));
 		};
 	},
 	
 	aurochsAttack: function(unitIndex) {
 		var unit = view.focus.unit;
 		var passageString = "Your crew chases down the beast until it's cornered.";
-		var defenseScore = unit.type.crew * players.p1.selfDefense * Math.random();
+		var defenseScore = model.selfDefense(unit);
 		var attackScore = 5 * Math.random();
 		if (defenseScore > attackScore) {
 			passageString += "<p>The aurochs fights like the bovine monster it is, but your crew prevails.  They carve up the carcass and add it to their provisions.";
@@ -199,29 +197,12 @@ var events = {
 		if (unit.location == undefined || unit.location.infrastructure.length == 0) {
 			view.focus.unit = unit;
 			view.displayUnit(unit);
-// 			var threat = {name:"the wilderness",strength: 2};
-// 			var threatDistance = Infinity;
-// 			for (var i in sites) {
-// 				var distance = Math.pow(Math.pow(sites[i].x - unit.route[0].x,2) + Math.pow(sites[i].y - unit.route[0].y,2),0.5);
-// 				if (sites[i].threat !== undefined && distance < threatDistance) {
-// 					threatDistance = distance;
-// 					threat = sites[i].threat;
-// 				};
-// 			};
 			var threat = model.nearestThreat(unit.route[0].x,unit.route[0].y).threat;
 			var cargoIndex = Math.random() * unit.commodities.length << 0;
 			var passageString = unit.name + " is beset by bandits from "+threat.name+"!<p>They demand you turn over your load of "+view.commodityIcon(unit.commodities[cargoIndex].commodity)+" "+data.commodities[unit.commodities[cargoIndex].commodity].name+" or face the consequences.";
-			var defenders = unit.type.crew;
-			if (unit.caravan !== undefined) {
-				defenders = 0;
-				for (var i of unit.caravan) {
-					defenders += i.type.crew;
-				};
-			};
-			var selfDefenseDescriptor = data.selfDefense[Math.min((players.p1.selfDefense) * 5 - 2.5,6)];
-			passageString += "<p>It is your "+defenders+" "+selfDefenseDescriptor+" drivers against "+threat.strength+" dangerous bandits.";
+			passageString += "<p>It is your "+model.selfDefense(unit,'display')+" drivers against "+threat.strength+" dangerous bandits. ("+threat.strength+"<span class='fa fa-hand-rock-o'></span>)";
 			var choiceArray = [new Choice('Surrender the Goods',events.banditsSurrender,[cargoIndex]),new Choice('Defend the Cargo',events.banditsDefend,[threat])];
-			gamen.displayPassage(new Passage(passageString,choiceArray));
+			gamen.displayPassage(new Passage(passageString,choiceArray,false));
 		};
 	},
 	
@@ -234,7 +215,7 @@ var events = {
 	
 	banditsDefend: function(threat) {
 		var unit = view.focus.unit;
-		var defenseScore = unit.type.crew * players.p1.selfDefense * Math.random();
+		var defenseScore = model.selfDefense(unit);
 		var attackScore = threat.strength * Math.random();
 		if (defenseScore > attackScore) {
 			passageString = "<p>With a bit of quick thinking, the crew manages to overcome their would-be attackers and make an escape.";
@@ -476,7 +457,7 @@ var events = {
 			} else {
 				var choiceArray = [new Choice("Split Provisions with Them",events.roadRefugeesFeed,[numberRefugees]),new Choice("Wish Them Luck")];
 			};
-			gamen.displayPassage(new Passage(passageString,choiceArray));
+			gamen.displayPassage(new Passage(passageString,choiceArray,false));
 		};
 	},
 	

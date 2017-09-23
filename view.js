@@ -957,6 +957,7 @@ var view = {
 		};
 	
 		for (var u in unitsAtSite) {
+			
 			unit = unitsAtSite[u];
 			unitIndex = units.indexOf(unit);
 			var unitPane = document.createElement('div');
@@ -1032,22 +1033,22 @@ var view = {
 			var consumptionFood = 0;
 			var consumptionWater = 0;
 			var consumptionFuel = 0;
-			for (var u in unitsInCaravan) {
-				for (var c in unitsInCaravan[u].commodities) {
-					if (unitsInCaravan[u].commodities[c].commodity == 'food') {
-						provisionsFood += unitsInCaravan[u].commodities[c].qty;
-					} else if (unitsInCaravan[u].commodities[c].commodity == 'water') {
-						provisionsWater += unitsInCaravan[u].commodities[c].qty;
-					} else if (unitsInCaravan[u].commodities[c].commodity == 'fuel') {
-						provisionsFuel += unitsInCaravan[u].commodities[c].qty;
+			for (var d in unitsInCaravan) {
+				for (var c in unitsInCaravan[d].commodities) {
+					if (unitsInCaravan[d].commodities[c].commodity == 'food') {
+						provisionsFood += unitsInCaravan[d].commodities[c].qty;
+					} else if (unitsInCaravan[d].commodities[c].commodity == 'water') {
+						provisionsWater += unitsInCaravan[d].commodities[c].qty;
+					} else if (unitsInCaravan[d].commodities[c].commodity == 'fuel') {
+						provisionsFuel += unitsInCaravan[d].commodities[c].qty;
 					};
 				};
-				consumptionFood += unitsInCaravan[u].type.crew;
-				if (unitsInCaravan[u].type.fuel.water !== undefined) {
-					consumptionWater += unitsInCaravan[u].type.fuel.water;
+				consumptionFood += unitsInCaravan[d].type.crew;
+				if (unitsInCaravan[d].type.fuel.water !== undefined) {
+					consumptionWater += unitsInCaravan[d].type.fuel.water;
 				};
-				if (unitsInCaravan[u].type.fuel.fuel !== undefined) {
-					consumptionFuel += unitsInCaravan[u].type.fuel.fuel;
+				if (unitsInCaravan[d].type.fuel.fuel !== undefined) {
+					consumptionFuel += unitsInCaravan[d].type.fuel.fuel;
 				};
 			};
 			provisionsFood /= consumptionFood;
@@ -1095,9 +1096,9 @@ var view = {
 					var unitCaravanP = document.createElement('p');
 					unitCaravanP.innerHTML = 'In Caravan with';
 					var caravanNamesList = [];
-					for (var u in unit.caravan) {
-						if (unit.caravan[u] !== unit) {
-							caravanNamesList.push(unit.caravan[u].name);
+					for (var d in unit.caravan) {
+						if (unit.caravan[d] !== unit) {
+							caravanNamesList.push(unit.caravan[d].name);
 						};
 					};
 					unitCaravanP.innerHTML = 'In Caravan with' + gamen.prettyList(caravanNamesList);
@@ -1419,7 +1420,7 @@ var view = {
 		if (infrastructure.requiredResource !== undefined) {
 			var requirements = [];
 			for (var i of infrastructure.requiredResource) {
-				requirements.push(data.resources[i]);
+				requirements.push(data.resources[i].name);
 			};
 			string += 'Requires a ' + gamen.prettyList(requirements,'or') + '. ';
 		};

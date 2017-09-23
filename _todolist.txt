@@ -2,31 +2,22 @@ Down the Phoenix Road To Do List
 
 
 
-- inputs do not add commodities to the Site.trading() list
+- Unit.moveStep checks for food in the whole caravan
 
-- players.p1.hometown saves
+- load game registers the clock with the gamen object (so passages now pause the game)
 
-- rivers and knownRivers saves
+- gamen Passages can be flagged as undismissable so outside-the-div clicks cannot dismiss it
+	- tutorials and events with choices have been made undismissable
 
-- refugee camps no longer considered when calculating knownValues
+- two builder units cannot build the same thing at the same time
+
+- descriptor for selfDefense displays correctly
 
 
 
 IMMEDIATE FIXES
 
-- descriptor for selfDefense not displaying correctly
-
-- Unit.moveStep checks for food but not the whole caravan?
-
-- caravan food stores do not disappear at 0%
-
 - still not taking commodities out of non-focus unitsAtSite
-
-- gamen Passages need to be flagged for unavoidable / default dismiss click Choice
-
-- a loaded game does not pause when a random event comes up?
-
-- two builder units building the same thing at the same time
 
 
 NEXT FEATURE / OPTIMIZATION
@@ -95,6 +86,8 @@ NEXT FEATURE / OPTIMIZATION
 	- Clinic/Hospital for Plague?
 - Populate and test the Event Stack
 - Cancel route while in the midst of route.  Use "Roadside" code.
+
+- If you get hit by bandits and surrender the cargo before you get to your first destination, the tutorial craps out.  Maybe prevent bandits from spawning for the first ten days or something?
 
 GAMEN
 	index.html content setup/injection

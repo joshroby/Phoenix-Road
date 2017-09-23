@@ -1,5 +1,9 @@
 var gamen = {
 
+	focus: {
+		passage: undefined,
+	},
+
 	init: function() {
 		var titleHead = document.getElementById('titleHead');
 		var gameTitle = model.gameTitle;
@@ -124,12 +128,12 @@ var gamen = {
 	displayPassage: function(passage) {
 
 		if (document.getElementById('gamenModalBacksplash').style.display !== 'block') {
+		
+			gamen.focus.passage = passage;
 			
 			for (var i in gamen.clocks) {
 				gamen.clocks[i].paused = true;
 			};
-		
-// 			this.passageUp = true;
 		
 			var gamenModalTextDiv = document.getElementById('gamenModalTextDiv');
 		
@@ -159,29 +163,31 @@ var gamen = {
 		};
 	},
 	
-	dismissPassage: function() {
-// 		this.passageUp = false;
+	dismissPassage: function(choiceSelected) {
 		
-		for (var i in gamen.clocks) {
-			gamen.clocks[i].resume();
-		};
+		if (gamen.focus.passage.dismissable || choiceSelected) {
+		
+			for (var i in gamen.clocks) {
+				gamen.clocks[i].resume();
+			};
 		
 
-		document.getElementById('gamenModalBustDiv').innerHTML = '';
-		document.getElementById('gamenModalTextDiv').innerHTML = '';
+			document.getElementById('gamenModalBustDiv').innerHTML = '';
+			document.getElementById('gamenModalTextDiv').innerHTML = '';
 		
-		document.getElementById('gamenModalBacksplash').style.display = 'none';
+			document.getElementById('gamenModalBacksplash').style.display = 'none';
 		
-		if (gamen.passageQueue.length > 0) {
-			var nextPassage = gamen.passageQueue.shift();
-			gamen.displayPassage(nextPassage);
+			if (gamen.passageQueue.length > 0) {
+				var nextPassage = gamen.passageQueue.shift();
+				gamen.displayPassage(nextPassage);
+			};
 		};
 	},
 	
 	passageChoice: function(choice) {
 		
 		if (choice.execute !== undefined) {choice.execute.apply(this,choice.argsArray);};
-		gamen.dismissPassage();
+		gamen.dismissPassage(choice);
 	},
 
 };
@@ -190,7 +196,7 @@ var gamen = {
 window.onclick = function(event) {
 	var dialogueBacksplash = document.getElementById('gamenModalBacksplash');
 	if (event.target == dialogueBacksplash) {
-		gamen.dismissPassage();
+		gamen.dismissPassage(false);
 	};
 };
 
@@ -255,13 +261,16 @@ function Clock(start) {
 	};
 };
 
-function Passage(text,choiceArray,speaker,bust,bustPosition) {
+function Passage(text,choiceArray,dismissable,speaker,bust,bustPosition) {
 	if (text == undefined) {text = 'No text'};
 	if (choiceArray == undefined) { choiceArray = [new Choice()]; };
+	if (dismissable == undefined) {dismissable = true;};
 	
 	this.text = text;
 	
 	this.choiceArray = choiceArray;
+	
+	this.dismissable = dismissable;
 	
 	this.speaker = speaker;
 	this.bust = bust;

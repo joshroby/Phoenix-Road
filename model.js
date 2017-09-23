@@ -370,6 +370,24 @@ var model = {
 		return threat;
 	},
 	
+	selfDefense: function(unit,odds) {
+		var defenders = unit.type.crew;
+		if (unit.caravan !== undefined) {
+			defenders = 0;
+			for (var i of unit.caravan) {
+				defenders += i.type.crew;
+			};
+		};
+		var selfDefenseIndex = Math.round(players.p1.selfDefense * 5 - 2.5);
+		var selfDefenseDescriptor = data.selfDefense[Math.min(selfDefenseIndex,6)];
+		console.log(selfDefenseIndex);
+		if (odds = 'display') {
+			return defenders + ' ' + selfDefenseDescriptor + ' drivers (' + Math.round(defenders * players.p1.selfDefense * 10)/10 + ' <span class="fa fa-hand-rock-o"></span>)';
+		} else {
+			return defenders * players.p1.selfDefense * Math.random();
+		};
+	},
+	
 	knownValues: function() {
 		var knownValues = {};
 		var totalSites = {};
@@ -651,6 +669,7 @@ var model = {
 				model.clock.logEventWhen(new Date(parseInt(saveGame.eventQueue[e].time)),f);
 			};
 		};
+		gamen.clocks = [model.clock];
 
 		landmarks = saveGame.landmarks;
 		rivers = saveGame.rivers;
@@ -1413,16 +1432,26 @@ function Unit(owner,startLoc,type) {
 		var foodStore = 0;
 		var waterStore = 0;
 		var fuelStore = 0;
+		var caravan = [];
 		for (var i in this.commodities) {
 			if (data.commodities[this.commodities[i].commodity].cargo) {
 				load++;
 			};
-			if (this.commodities[i].commodity == 'food') {
-				foodStore += this.commodities[i].qty;
-			} else if (this.commodities[i].commodity == 'water') {
-				waterStore += this.commodities[i].qty;
-			} else if (this.commodities[i].commodity == 'fuel') {
-				fuelStore += this.commodities[i].qty;
+		};
+		if (this.caravan == undefined) {
+			caravan = [this];
+		} else {
+			caravan = this.caravan;
+		};
+		for (var c in caravan) {
+			for (var i in caravan[c].commodities) {
+				if (caravan[c].commodities[i].commodity == 'food') {
+					foodStore += caravan[c].commodities[i].qty;
+				} else if (caravan[c].commodities[i].commodity == 'water') {
+					waterStore += caravan[c].commodities[i].qty;
+				} else if (caravan[c].commodities[i].commodity == 'fuel') {
+					fuelStore += caravan[c].commodities[i].qty;
+				};
 			};
 		};
 		if (load > this.type.cargo) {
@@ -1611,12 +1640,23 @@ function Unit(owner,startLoc,type) {
 	};
 	
 	this.build = function(infrastructure) {
-		this.isBuilding = true;
-		this.buildProject = infrastructure;
-		this.buildComplete = new Date(model.clock.time.getTime() + (infrastructure.buildTime * 8.64e+7));
-		this.location.useCommodities(infrastructure.buildCost);
-		view.displayUnit(this);
-		model.checkClock();
+		var projectStarted = false;
+		for (var u in units) {
+			if (units[u].location !== undefined && units[u].location == this.location && units[u].isBuilding && units[u].buildProject == infrastructure) {
+				projectStarted = true;
+				var otherUnit = units[u];
+			};
+		}
+		if (!projectStarted) {
+			this.isBuilding = true;
+			this.buildProject = infrastructure;
+			this.buildComplete = new Date(model.clock.time.getTime() + (infrastructure.buildTime * 8.64e+7));
+			this.location.useCommodities(infrastructure.buildCost);
+			view.displayUnit(this);
+			model.checkClock();
+		} else {
+			gamen.displayPassage(new Passage(otherUnit.name + ' is already building that here.'));
+		};
 	};
 	
 	this.buildResult = function() {
