@@ -2,12 +2,17 @@ Down the Phoenix Road To Do List
 
 
 
+- inputs do not add commodities to the Site.trading() list
+
+- players.p1.hometown saves
+
+- rivers and knownRivers saves
+
+- refugee camps no longer considered when calculating knownValues
+
+
 
 IMMEDIATE FIXES
-
-- inputs should not add commodities to the Site.trading() list
-
-- players.p1.hometown not saving
 
 - descriptor for selfDefense not displaying correctly
 
@@ -18,8 +23,6 @@ IMMEDIATE FIXES
 - still not taking commodities out of non-focus unitsAtSite
 
 - gamen Passages need to be flagged for unavoidable / default dismiss click Choice
-
-- refugee camps throw the knownValues off
 
 - a loaded game does not pause when a random event comes up?
 

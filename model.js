@@ -378,7 +378,7 @@ var model = {
 			totalSites[c] = 0;
 		};
 		for (var s in players.p1.knownSites) {
-			if (players.p1.knownSites[s].hasVisited.p1) {
+			if (players.p1.knownSites[s].hasVisited.p1 && players.p1.knownSites[s].infrastructure.length > 0) {
 				for (var c in knownValues) {
 					var traded = players.p1.knownSites[s].trading();
 					if (traded[c] !== undefined) {
@@ -589,13 +589,16 @@ var model = {
 		};
 		
 		flatGame.landmarks = landmarks;
+		flatGame.rivers = rivers;
 		
+		var nextPlayer;
 		flatGame.players = {};
 		for (var player in players) {
 			nextPlayer = {};
 			nextPlayer.unitsUnlocked = players[player].unitsUnlocked;
 			nextPlayer.vision = players[player].vision;
 			nextPlayer.selfDefense = players[player].selfDefense;
+			nextPlayer.hometown = sites.indexOf(players[player].hometown);
 			nextPlayer.knownSiteIndices = [];
 			for (var i of players[player].knownSites) {
 				for (var s in sites) {
@@ -609,6 +612,14 @@ var model = {
 				for (var s in landmarks) {
 					if (landmarks[s] == i) {
 						nextPlayer.knownLandmarkIndices.push(s)
+					};
+				};
+			};
+			nextPlayer.knownRiverIndices = [];
+			for (var i of players[player].knownRivers) {
+				for (var s in rivers) {
+					if (rivers[s] == i) {
+						nextPlayer.knownRiverIndices.push(s)
 					};
 				};
 			};
@@ -642,6 +653,7 @@ var model = {
 		};
 
 		landmarks = saveGame.landmarks;
+		rivers = saveGame.rivers;
 		
 		sites = [];
 		for (var s in saveGame.sites) {
@@ -683,6 +695,12 @@ var model = {
 				players[p].knownLandmarks.push(landmarks[l]);
 			};
 			delete players[p].knownLandmarkIndices ;
+			players[p].knownRivers = [];
+			for (l of players[p].knownRiverIndices) {
+				players[p].knownRivers.push(rivers[l]);
+			};
+			delete players[p].knownRiverIndices ;
+			players[p].hometown = sites[players[p].hometown];
 		};
 		
 		units = [];
@@ -810,25 +828,6 @@ function Site(mapSize) {
 	if (industry == undefined && Math.random() < 0.2) {
 		industry = data.infrastructure.cartwright;
 	}
-// 		var totalInputs = 0;
-// 		var totalOutputs = 0;
-// 		for (c in industry.inputs) {
-// 			this.commodities[industry.inputs[c]] /= 0.8;
-// 			totalInputs += this.commodities[industry.inputs[c]];
-// 		};
-// 		for (c in industry.outputs) {
-// 			this.commodities[industry.outputs[c]] *= 0.8;
-// 			totalOutputs += this.commodities[industry.outputs[c]];
-// 		};
-// 		if (industry.inputs !== undefined && industry.outputs !== undefined) {
-// 			totalInputs /= industry.inputs.length;
-// 			totalOutputs /= industry.outputs.length;
-// 			if (totalInputs > totalOutputs * 0.8) {
-// 				for (c in industry.outputs) {
-// 					this.commodities[industry.outputs[c]] *= totalInputs / ( totalOutputs * 0.8 );
-// 				};
-// 			};
-// 		};
 	if (industry !== undefined ) {
 		this.infrastructure.push(industry);
 	};
