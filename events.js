@@ -165,7 +165,7 @@ var events = {
 			view.focus.unit = unit;
 			var passageString = unit.name + " encounters a wandering aurochs.  This huge bovine beast stands as tall as a small hut, and has horns bigger than a farmer's thigh.";
 			passageString += "<p>Your "+model.selfDefense(unit,'display')+" drivers do enjoy a good steak...";
-			var choiceArray = [new Choice("Fire up the Barbeque!",events.aurochsAttack),new Choice('Avoid The Beast',events.aurochsAvoid)];
+			var choiceArray = [new Choice("Fire up the Barbeque!",events.aurochsAttack),new Choice('Avoid The Beast')];
 			gamen.displayPassage(new Passage(passageString,choiceArray,false));
 		};
 	},
@@ -188,9 +188,9 @@ var events = {
 		gamen.displayPassage(new Passage(passageString));
 	},
 	
-	aurochsAvoid: function() {
-		gamen.displayPassage(new Passage("You give the aurochs a wide berth and continue on your way."));
-	},
+// 	aurochsAvoid: function() {
+// 		gamen.displayPassage(new Passage("You give the aurochs a wide berth and continue on your way."));
+// 	},
 	
 	bandits: function() {
 		var unit = units[Math.random() * units.length << 0];
@@ -481,6 +481,25 @@ var events = {
 		};
 		view.displayUnit(view.focus.unit);
 		gamen.displayPassage(new Passage("The refugees gratefully accept your generosity, showering you with well wishes and blessings."));
+	},
+	
+	war: function() {
+		var spoils = sites[Math.random() * sites.length << 0];
+		var threatA = spoils.nearestThreat.threat;
+		var threatB = sites[Math.random() * sites.length << 0].nearestThreat.threat;
+		if (threatA == threatB) {
+			var passageString = threatB.name+" sparks a petty war with "+threatA.name+", fighting over the town of "+spoils.name+".<p>";
+			if (Math.random() > 0.5) {
+				passageString += "The fighting is intense but brief, and in the end, "+threatB.name+" wins the day.  "+threatB.name+" grows powerful while "+threatA.name+" is crippled.";
+				threatB.strength++;
+				threatA.strength--;
+			} else {
+				passageString += "The fighting is intense but brief, but in the end, "+threatA.name+" defends its turf.  "+threatA.name+" grows powerful while "+threatB.name+" is crippled.";
+				threatB.strength++;
+				threatA.strength--;
+			};
+			gamen.displayPassage(new Passage(passageString));
+		};
 	},
 		
 	// Mysterious Site Arrival Events

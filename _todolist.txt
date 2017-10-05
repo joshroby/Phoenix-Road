@@ -1,57 +1,73 @@
 Down the Phoenix Road To Do List
 
 
+DONE
 
-- Unit.moveStep checks for food in the whole caravan
+- double wages calculation
 
-- load game registers the clock with the gamen object (so passages now pause the game)
+- increase survey time
 
-- gamen Passages can be flagged as undismissable so outside-the-div clicks cannot dismiss it
-	- tutorials and events with choices have been made undismissable
+- Mechanic and Hanger events have the name of the town as the passage speaker
 
-- two builder units cannot build the same thing at the same time
+- units scale in zoom like site names do
 
-- descriptor for selfDefense displays correctly
 
 
 
 IMMEDIATE FIXES
 
+- cache has trading items?
+
 - still not taking commodities out of non-focus unitsAtSite
 
+- increase the borders of the map, even though the used bit is never more than 1000x1000
+	- this will help zoom
+
+- ghost towns do not display infrastructure… including recruitables like the burnt-out bus
+
+- when unit scuttles, only sell what is traded there; warehouse/trash the rest
+
+- aurochs event (and probably banditry) relies on focus.unit which isn't getting reliably set by event initialization
+
+- 'drought in <ghost town>' is silly
 
 NEXT FEATURE / OPTIMIZATION
 
+- a site with inputs should BUY those inputs but not sell them.  Figure that chestnut out.
+	- split Site.trading() into Site.buying() and Site.selling()
 
 - when a unit arrives at a site, switch off Offroad automatically
+	- pop up notification?
+
+- event pop up when you use an upgrade site
+
+- marker on map to indicate amount of credit you have at different sites
 
 - make the randomevents list sequester what just happened so you don't get repeats
 	- slowly feed sequestered events back in
 
-- bandit event
-	- bandit event needs a 'run for it'?
-	- bandits do not select stuff that you've got qty < 10
-
 - event log (ie, 'crap what did I just click past?')
 
 - when you drop passengers into a ghost town with no neighbors, check to see if nearest neighbor is within max dist and create a road (both ways)
+
+- tinker pulldown displays something to indicate what can and can't be built
 
 - New Random Events
 	- threat gains strength
 	- threat loses strength
 	- site discovers resource
 	- events that earn you reputation in towns
+	- increase to your self-defense
 	- plague events
 		- slowly increases values
 		- population loss
 		- spreads town to town
 		- can deliver medicine commodities to cure them (not an event, but still)
-	
-- respawn random event
-	- checks if Tinker Camp, Cartwright, Mechanic, Arena, Lensmeister exist
-	- if one doesn't, it spawns one.
-	- notifies you if it's a town you've visited
-	- if Tinker Camp / Mechanic is destroyed in an event, game becomes nigh-unwinnable.
+	- respawn event
+		- checks if Tinker Camp, Cartwright, Mechanic, Arena, Lensmeister exist
+		- if one doesn't, it spawns one.
+		- notifies you if it's a town you've visited
+		- if Tinker Camp / Mechanic is destroyed in an event, game goes unwinnable.
 
 
 - event log (ie, 'crap what did I just click past?')
@@ -90,7 +106,6 @@ NEXT FEATURE / OPTIMIZATION
 - If you get hit by bandits and surrender the cargo before you get to your first destination, the tutorial craps out.  Maybe prevent bandits from spawning for the first ten days or something?
 
 GAMEN
-	index.html content setup/injection
 	color palette
 	pronoun substitution
 	prettyNumber(2) -> "two"
@@ -113,6 +128,7 @@ FUTURE EXPANSIONS
 	- some kind of cult?
 	- eventually, enough findable locations that not all of them appear in each play
 - what do you do that starts passively spreading civilization / greening needs?
+	- once you get a site in the green on all counts, it starts pushing help outward
 - swamp 'resource' that can be drained to get… something
 - what can you DISCOVER that greatly helps a lot of towns directly?
 

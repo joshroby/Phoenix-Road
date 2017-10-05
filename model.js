@@ -18,8 +18,8 @@ var model = {
 		autoplay: true,
 		zoom: true,
 		newGame: {
-			mapSize: 1000,
-			totalSites: 50,
+			mapSize: 750,
+			totalSites: 30,
 			minDist: 40,
 			maxDist: 2.6,
 			totalThreats: 5,
@@ -380,7 +380,6 @@ var model = {
 		};
 		var selfDefenseIndex = Math.round(players.p1.selfDefense * 5 - 2.5);
 		var selfDefenseDescriptor = data.selfDefense[Math.min(selfDefenseIndex,6)];
-		console.log(selfDefenseIndex);
 		if (odds = 'display') {
 			return defenders + ' ' + selfDefenseDescriptor + ' drivers (' + Math.round(defenders * players.p1.selfDefense * 10)/10 + ' <span class="fa fa-hand-rock-o"></span>)';
 		} else {
@@ -764,7 +763,7 @@ function Site(mapSize) {
 	this.hasVisited = {};
 	
 	this.population = 4 + Math.random() * Math.random() * 496 << 0;
-	this.wages = (Math.random() * Math.random() + 0.25) * (data.commodities.food.baseValue + data.commodities.water.baseValue);
+	this.wages = (Math.random() + 0.5) * (data.commodities.food.baseValue + data.commodities.water.baseValue);
 	
 	this.commodities = {};
 	for (var c in data.commodities) {
@@ -999,7 +998,7 @@ function Site(mapSize) {
 		};
 		for (var i of this.infrastructure) {
 			if (i.passage !== undefined) {
-				gamen.displayPassage(new Passage(i.passage));
+				gamen.displayPassage(new Passage(i.passage,undefined,undefined,this.name));
 			};
 		};
 		if (!players.p1.eventLog.cartwright && model.options.tutorials && this.infrastructure.indexOf(data.infrastructure.cartwright) !== -1) {
@@ -1841,8 +1840,9 @@ var gamenEventPointers = {
 		var randomEventList = ["aurochs", "bandits", "drought", "fire", "flood", "mysteriousSite", "oldWorldCache", "plague", "refugees", "roadRefugees"];
 		randomEventList = randomEventList.concat(players.p1.specialEventStack);
 		var event = randomEventList[Math.random() * randomEventList.length << 0];
+		console.log(event);
 		events[event]();
-		model.clock.logEventIn( 8.64e+7 * ( 10 * Math.random() + 5 ),'randomEvent');		
+		model.clock.logEventIn( 8.64e+7 * ( 10 * Math.random() + 10 ),'randomEvent');		
 	},
 	
 };

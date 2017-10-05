@@ -775,8 +775,8 @@ var data = {
 			speed: 8,
 			offroadSpeed: 2,
 			canSurvey: true,
-			surveyTime: 7,
-			surveyResources: ['mineralVein','oilReservoir','pasture','spring'],
+			surveyTime: 14,
+			surveyResources: ['mineralVein','oilReservoir','pasture','ruins','spring'],
 			buildCost: {lumber:2,fiber:2,stone:1,tack:1,food:1,fuel:2,water:1},
 		},
 		
