@@ -1037,6 +1037,7 @@ function Site(mapSize) {
 				industrial = industrial.concat(this.infrastructure[b].outputs);
 			};
 			for (var d in this.commodities) {
+				model.error1040 = this;
 				if (data.commodities[d].common) {
 					commodities[d] = this.commodities[d];
 				};

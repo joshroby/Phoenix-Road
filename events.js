@@ -450,7 +450,9 @@ var events = {
 		};
 		for (var s in sites) {
 			for (var i of infrastructure) {
-				if (sites[s].population < 1) {sites[s].infrastructure.splice(sites[s].infrastructure.indexOf(data.infrastructure[i]),1);};
+				if (sites[s].population < 1 && sites[s].infrastructure.indexOf(data.infrastructure[i]) !== -1) {
+					sites[s].infrastructure.splice(sites[s].infrastructure.indexOf(data.infrastructure[i]),1);
+				};
 				if (sites[s].infrastructure.indexOf(data.infrastructure[i]) !== -1) {infrastructureCheck[i] = true;};
 			};
 		};
