@@ -3,16 +3,16 @@ Down the Phoenix Road To Do List
 
 DONE
 
-- respawn event
-	- checks if Tinker Camp, Cartwright, Mechanic, Arena, Lensmeister exist
-	- if one doesn't, it spawns one.
-	- notifies you if it's a town you've visited
-	- if Tinker Camp / Mechanic is destroyed in an event, game goes unwinnable.
-	- also removes these infrastructures from ghost towns
+- Set Points code to bring prices back down after you drive them up
+	- in setup, back up commodities to duplicate object, commoditiesSetPoints
+		- setpoints need to be saved and loaded
+	- when an adjustment ends, set adjustment value to string 'return to set point'
+	- eachDay() adjustment then slowly returns towards set point
+	- new transactions reset the adjustment count (instead of add/subtract)
+		- infrastructure affects affect setpoints
+		- events that destroy infrastructure affect setpoints
 
-- build infrastructure preview properly lists requirements, not [object Object]
 
-- plague event says 'half the population' or similar
 
 IMMEDIATE FIXES
 
@@ -24,18 +24,11 @@ IMMEDIATE FIXES
 
 - river event seemed to flood a site that doesn't have a river?
 
+- game defeat should stop the clock
+
 NEXT FEATURE / OPTIMIZATION
 
-- Nothing brings prices back down after you drive them up
-	- in setup, back up commodities to duplicate object, commoditiesSetPoints
-		- setpoints need to be saved and loaded
-	- when an adjustment ends, set adjustment value to string 'return to set point'
-	- eachDay() adjustment then slowly returns towards set point
-	- new transactions reset the adjustment count (instead of add/subtract)
-	- changes to a site's circumstances (like infrastructure builds) affect setpoints
-		- supplying inputs should reduce associated output values (as transactions)
-		- infrastructure builds affect setpoints
-		- events that destroy infrastructure affect setpoints
+- supplying inputs should reduce associated output values (as transactions)
 
 - Build Complete passage needs a 'take me there' button
 

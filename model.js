@@ -459,8 +459,17 @@ var model = {
 					} else if (sites[s].adjustment[a] < -0.09) {
 						sites[s].adjustment[a] += 0.1;
 						sites[s].commodities[a] *= magnitude;
+					} else if (sites[s].adjustment[a] == 'return to set point') {
+						if (sites[s].commodities[a] > sites[s].commoditiesSetPoints[a] + 0.01) {
+							sites[s].commodities[a] *= 0.9985;
+						} else if (sites[s].commodities[a] < sites[s].commoditiesSetPoints[a] - 0.01) {
+							sites[s].commodities[a] /= 0.9985;
+						} else {
+							sites[s].commodities[a] = sites[s].commoditiesSetPoints[a];
+							delete sites[s].adjustment[a];
+						};
 					} else {
-						delete sites[s].adjustment[a];
+						sites[s].adjustment[a] = 'return to set point';
 					};
 				};
 			};
@@ -616,6 +625,7 @@ var model = {
 			nextPlayer.vision = players[player].vision;
 			nextPlayer.selfDefense = players[player].selfDefense;
 			nextPlayer.hometown = sites.indexOf(players[player].hometown);
+			nextPlayer.specialEventStack = players[player].specialEventStack;
 			nextPlayer.knownSiteIndices = [];
 			for (var i of players[player].knownSites) {
 				for (var s in sites) {
@@ -677,7 +687,7 @@ var model = {
 		for (var s in saveGame.sites) {
 			var newSite = new Site();
 		};
-		var simples = ['name','adjustment','carpet','commodities','goodwill','hasVisited','hasSurveyed','population','reputation','threat','trash','wages','x','y'];
+		var simples = ['name','adjustment','carpet','commodities','commoditiesSetPoints','goodwill','hasVisited','hasSurveyed','population','reputation','threat','trash','wages','x','y'];
 		for (var s in saveGame.sites) {
 			for (var d of simples) {
 				sites[s][d] = saveGame.sites[s][d];
@@ -766,6 +776,7 @@ function Site(mapSize) {
 	this.wages = (Math.random() + 0.5) * (data.commodities.food.baseValue + data.commodities.water.baseValue);
 	
 	this.commodities = {};
+	this.commoditiesSetPoints = {};
 	for (var c in data.commodities) {
 		this.commodities[c] = data.commodities[c].baseValue;
 		var randomFactor = 0;
@@ -774,6 +785,7 @@ function Site(mapSize) {
 		};
 		randomFactor = 2 * randomFactor / data.commodities[c].stability;
 		this.commodities[c] *= randomFactor / 100;
+		this.commoditiesSetPoints[c] = this.commodities[c];
 	};
 	this.adjustment = {};
 	
@@ -877,7 +889,7 @@ function Site(mapSize) {
 	this.flat = function() {
 		var flat = {};
 		
-		var simples = ['name','adjustment','carpet','commodities','goodwill','hasVisited','hasSurveyed','population','reputation','threat','trash','wages','x','y'];
+		var simples = ['name','adjustment','carpet','commodities','commoditiesSetPoints','goodwill','hasVisited','hasSurveyed','population','reputation','threat','trash','wages','x','y'];
 		for (var i of simples) {
 			flat[i] = this[i];
 		};
@@ -1092,10 +1104,16 @@ function Site(mapSize) {
 	
 	this.buildInfrastructure = function(infrastructure) {
 		for (var c in infrastructure.inputs) {
-			this.commodities[infrastructure.inputs[c]] /= 0.8;
+			this.commoditiesSetPoints[infrastructure.inputs[c]] /= 0.8;
+			if (this.adjustment[infrastructure.outputs[c]] == undefined) {
+				this.adjustment[infrastructure.outputs[c]] = 'return to set point';
+			};
 		};
 		for (var c in infrastructure.outputs) {
-			this.commodities[infrastructure.outputs[c]] *= 0.8;
+			this.commoditiesSetPoints[infrastructure.outputs[c]] *= 0.8;
+			if (this.adjustment[infrastructure.outputs[c]] == undefined) {
+				this.adjustment[infrastructure.outputs[c]] = 'return to set point';
+			};
 		};
 		for (var i in infrastructure.replaces) {
 			for (b in this.infrastructure) {
@@ -1106,6 +1124,25 @@ function Site(mapSize) {
 		};
 		this.goodwill.p1 += infrastructure.goodwill;
 		this.infrastructure.push(infrastructure);
+	};
+	
+	this.destroyInfrastructure = function(infrastructure) {
+		console.log(infrastructure);
+		if (this.infrastructure.indexOf(infrastructure) !== -1) {
+			for (var c in infrastructure.inputs) {
+				this.commoditiesSetPoints[infrastructure.inputs[c]] /= 0.8;
+				if (this.adjustment[infrastructure.inputs[c]] == undefined) {
+					this.adjustment[infrastructure.inputs[c]] = 'return to set point';
+				};
+			};
+			for (var c in infrastructure.outputs) {
+				this.commoditiesSetPoints[infrastructure.inputs[c]] *= 0.8;
+				if (this.adjustment[infrastructure.inputs[c]] == undefined) {
+					this.adjustment[infrastructure.inputs[c]] = 'return to set point';
+				};
+			};
+			this.infrastructure.splice(this.infrastructure.indexOf(infrastructure),1);
+		};
 	};
 	
 	this.useCommodities = function(useList) {
@@ -1138,7 +1175,7 @@ function Site(mapSize) {
 	};
 	
 	this.logTransaction = function(commodityKey,adjustment) {
-		if (this.adjustment[commodityKey] !== undefined) {
+		if (this.adjustment[commodityKey] !== undefined && this.adjustment[commodityKey] !== 'return to set point') {
 			this.adjustment[commodityKey] += adjustment;
 		} else {
 			this.adjustment[commodityKey] = adjustment;

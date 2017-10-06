@@ -207,13 +207,6 @@ var view = {
 		background.setAttribute('height','3000');
 		svg.appendChild(background);
 		
-// 		<filter id=”roughpaper” x=”0%” y=”0%” width=”100%” height=”100%”>
-// 		<feTurbulence type=”fractalNoise” baseFrequency=”0.04” numOctaves=”5” result=”noise”/>
-// 		<feDiffuseLighting in=”noise” lighting-color=”white” surfaceScale=”2” result=”diffLight”>
-// 		<feDistantLight azimuth=”45” elevation=”35”/>
-// 		</feDiffuseLighting>
-// 		</filter>
-
 		var terrainFilter = document.createElementNS('http://www.w3.org/2000/svg','filter');
 		defs.appendChild(terrainFilter);
 		terrainFilter.id = 'terrainFilter';
@@ -240,7 +233,7 @@ var view = {
 		background.setAttribute('y','0');
 		background.setAttribute('width','1000');
 		background.setAttribute('height','1000');
-		background.setAttribute('filter','url(#terrainFilter)');
+// 		background.setAttribute('filter','url(#terrainFilter)');
 		svg.appendChild(background);
 		
 		var carpetGroup = document.createElementNS('http://www.w3.org/2000/svg','g');

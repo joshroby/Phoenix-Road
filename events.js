@@ -263,7 +263,8 @@ var events = {
 			};
 			passageString += " The value of " + gamen.prettyList(outputs) + " rises.";
 		};
-		site.infrastructure.splice(index,1);
+// 		site.infrastructure.splice(index,1);
+		site.destroyInfrastructure(site.infrastructure[index]);
 		if (site.hasVisited.p1) {
 			gamen.displayPassage(new Passage(passageString));
 		};
@@ -283,7 +284,8 @@ var events = {
 				};
 				passageString += " The value of " + gamen.prettyList(outputs) + " rises.";
 			};
-			site.infrastructure.splice(index,1);
+// 			site.infrastructure.splice(index,1);
+			site.destroyInfrastructure(site.infrastructure[index]);
 			if (site.hasVisited.p1) {
 				gamen.displayPassage(new Passage(passageString));
 			};
@@ -410,7 +412,8 @@ var events = {
 			if (Math.random() < 0.2) {
 				var burnIndex = Math.random() * site.infrastructure.length << 0
 				passageString += "<p>Worse, the town's " + site.infrastructure[burnIndex].name + " is destroyed in the fighting.";
-				site.infrastructure.splice(burnIndex,1);
+// 				site.infrastructure.splice(burnIndex,1);
+				site.destroyInfrastructure(site.infrastructure[burnIndex]);
 				var kills = Math.floor(site.population * Math.random() / 5);
 				if (kills > 0) {
 					passageString += " " + kills + " souls are lost in the battle.";
