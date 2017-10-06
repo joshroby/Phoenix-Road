@@ -63,7 +63,7 @@ var data = {
 		
 		fuel: {
 			name: 'Fuel',
-			common: true,
+			common: false,
 			baseValue: 100,
 			stability: 2,
 			cargo: true,
@@ -370,7 +370,7 @@ var data = {
 			replaces: ['bunker'],
 			goodwill: 5,
 			visible: true,
-			inputs: ['fuel'],
+			inputs: ['fuel','metals'],
 			defense:4,
 			jobs: 10,
 		},
@@ -405,7 +405,7 @@ var data = {
 			buildTime: 14,
 			goodwill:2,
 			visible:false,
-			outputs: ['lumber'],
+			outputs: ['lumber','metals'],
 			jobs: 10,
 		},
 		manorHouse: {
@@ -414,7 +414,6 @@ var data = {
 			buildTime: 28,
 			goodwill: -1,
 			visible: false,
-			inputs: ['fuel'],
 			housing:20,
 			jobs: 2,
 		},
@@ -438,6 +437,7 @@ var data = {
 			goodwill: 3,
 			visible: true,
 			outputs: ['crudeOil'],
+			inputs: ['metals'],
 			jobs: 20,
 		},
 		orchards: {
@@ -488,7 +488,7 @@ var data = {
 			buildTime: 28,
 			goodwill: 5,
 			visible: true,
-			inputs: ['crudeOil'],
+			inputs: ['crudeOil','metals'],
 			outputs: ['fuel'],
 			jobs: 15,
 		},

@@ -825,7 +825,7 @@ function Site(mapSize) {
 	if (this.commodities.crudeOil < 0.6 && this.resources.indexOf(data.resources.oilReservoir) == -1 && Math.random() < 0.05 && industry == undefined) {
 		industry = data.infrastructure.oilWell;
 	};
-	if (this.commodities.cloth < 0.6 && industry == undefined) {
+	if (this.commodities.cloth < 0.5 && industry == undefined) {
 		industry = data.infrastructure.loom;
 	};
 	if (this.commodities.clothing < 0.4 && industry == undefined) {
@@ -1022,13 +1022,28 @@ function Site(mapSize) {
 		if (this.population > 0) {
 			var industrial = [];
 			for (var b in this.infrastructure) {
-// 				industrial = industrial.concat(this.infrastructure[b].inputs);
 				industrial = industrial.concat(this.infrastructure[b].outputs);
 			};
 			for (var d in this.commodities) {
 				if (data.commodities[d].common) {
 					commodities[d] = this.commodities[d];
 				};
+			};
+			for (var d in this.commodities) {
+				if (industrial.indexOf(d) !== -1) {
+					commodities[d] = this.commodities[d];
+				};
+			};
+		};
+		return commodities;
+	};
+	
+	this.buying = function() {
+		var commodities = {};
+		var industrial = [];
+		if (this.population > 0) {
+			for (var b in this.infrastructure) {
+				industrial = industrial.concat(this.infrastructure[b].inputs);
 			};
 			for (var d in this.commodities) {
 				if (industrial.indexOf(d) !== -1) {
@@ -1837,9 +1852,10 @@ var gamenEventPointers = {
 	},
 	
 	randomEvent: function() {
-		var randomEventList = ["aurochs", "bandits", "drought", "fire", "flood", "mysteriousSite", "oldWorldCache", "plague", "refugees", "roadRefugees"];
+		var randomEventList = ["aurochs", "bandits", "drought", "fire", "flood", "mysteriousSite", "oldWorldCache", "plague", "refugees", "respawnInfrastructure", "roadRefugees"];
 		randomEventList = randomEventList.concat(players.p1.specialEventStack);
 		var event = randomEventList[Math.random() * randomEventList.length << 0];
+		console.log(randomEventList);
 		console.log(event);
 		events[event]();
 		model.clock.logEventIn( 8.64e+7 * ( 10 * Math.random() + 10 ),'randomEvent');		

@@ -191,18 +191,7 @@ var view = {
 		stop.setAttribute('stop-color','darkorange');
 		stop.setAttribute('stop-opacity',0.1);
 		landmarkGradient.appendChild(stop);
-		
-		var landmarkShadow = document.createElementNS('http://www.w3.org/2000/svg','clipPath');
-		landmarkShadow.id = 'landmarkShadow';
-		defs.appendChild(landmarkShadow);
-		var rect = document.createElementNS('http://www.w3.org/2000/svg','rect');
-		rect.setAttribute('x',0);
-		rect.setAttribute('y',0);
-		rect.setAttribute('width',20);
-		rect.setAttribute('height',20);
-// 		rect.setAttribute('transform','rotate(45)');
-		landmarkShadow.appendChild(rect);
-		
+				
 		for (var i in data.units) {
 			if (draw[i] !== undefined) {
 				var svgNodes = draw[i]();
@@ -218,12 +207,40 @@ var view = {
 		background.setAttribute('height','3000');
 		svg.appendChild(background);
 		
+// 		<filter id=”roughpaper” x=”0%” y=”0%” width=”100%” height=”100%”>
+// 		<feTurbulence type=”fractalNoise” baseFrequency=”0.04” numOctaves=”5” result=”noise”/>
+// 		<feDiffuseLighting in=”noise” lighting-color=”white” surfaceScale=”2” result=”diffLight”>
+// 		<feDistantLight azimuth=”45” elevation=”35”/>
+// 		</feDiffuseLighting>
+// 		</filter>
+
+		var terrainFilter = document.createElementNS('http://www.w3.org/2000/svg','filter');
+		defs.appendChild(terrainFilter);
+		terrainFilter.id = 'terrainFilter';
+		var feTurbulence = document.createElementNS('http://www.w3.org/2000/svg','feTurbulence');
+		terrainFilter.appendChild(feTurbulence);
+		feTurbulence.setAttribute('type','fractalNoise');
+		feTurbulence.setAttribute('baseFrequency',0.01);
+		feTurbulence.setAttribute('numOctaves',1);
+		feTurbulence.setAttribute('result','noise');
+		var feDiffuseLighting = document.createElementNS('http://www.w3.org/2000/svg','feDiffuseLighting');
+		terrainFilter.appendChild(feDiffuseLighting);
+		feDiffuseLighting.setAttribute('in','noise');
+		feDiffuseLighting.setAttribute('lighting-color','#FFAA00');
+		feDiffuseLighting.setAttribute('surfaceScale',5);
+		feDiffuseLighting.setAttribute('result','diffLight');
+		var feDistantLight = document.createElementNS('http://www.w3.org/2000/svg','feDistantLight');
+		feDiffuseLighting.appendChild(feDistantLight);
+		feDistantLight.setAttribute('azimuth',45);
+		feDistantLight.setAttribute('elevation',35);
+
 		var background = document.createElementNS('http://www.w3.org/2000/svg','rect');
 		background.setAttribute('fill','#FFAA00');
 		background.setAttribute('x','0');
 		background.setAttribute('y','0');
 		background.setAttribute('width','1000');
 		background.setAttribute('height','1000');
+		background.setAttribute('filter','url(#terrainFilter)');
 		svg.appendChild(background);
 		
 		var carpetGroup = document.createElementNS('http://www.w3.org/2000/svg','g');
@@ -253,6 +270,7 @@ var view = {
 		var landmarksGroup = document.createElementNS('http://www.w3.org/2000/svg','g');
 		landmarksGroup.id = 'landmarksGroup';
 		svg.appendChild(landmarksGroup);
+// 		landmarksGroup.setAttribute('filter','url(#landmarkFilter)');
 
 		for (var i in players.p1.knownLandmarks) {
 			var newLandmark = document.createElementNS('http://www.w3.org/2000/svg','ellipse');
@@ -265,6 +283,10 @@ var view = {
 			landmarksGroup.appendChild(newLandmark);
 		};
 		
+		var riversGroup = document.createElementNS('http://www.w3.org/2000/svg','g');
+		riversGroup.id = 'riversGroup';
+		svg.appendChild(riversGroup);
+		
 		for (r of players.p1.knownRivers) {
 			var riverSegment = document.createElementNS('http://www.w3.org/2000/svg','path');
 			riverSegment.setAttribute('fill','none');
@@ -273,7 +295,7 @@ var view = {
 			riverSegment.setAttribute('stroke-linecap','round');
 			var d = 'M' + r.x1 + ',' + r.y1 + ' C ' + r.c1x + ' ' + r.c1y + ' ' + r.c2x + ' ' + r.c2y + ' ' + r.x2 + ' ' + r.y2;
 			riverSegment.setAttribute('d',d);
-			landmarksGroup.appendChild(riverSegment);
+			riversGroup.appendChild(riverSegment);
 		};
 
 		var routesGroup = document.createElementNS('http://www.w3.org/2000/svg','g');
@@ -454,7 +476,6 @@ var view = {
 				var viewbox = view.zoom.viewbox;
 				viewbox.minX = (100-e.deltaY)*viewbox.minX/100;
 				viewbox.minY = (100-e.deltaY)*viewbox.minY/100;
-				console.log(e.deltaY);
 
 				var viewboxString = viewbox.minX + ' ' + viewbox.minY + ' ' + viewbox.width + ' ' + viewbox.height;
 				view.zoom.viewbox = viewbox;
@@ -638,6 +659,13 @@ var view = {
 	
 		if (site.hasVisited.p1) {
 			var commoditiesTraded = site.trading();
+			var commoditiesBought = site.buying();
+			var commoditiesListed = site.trading();
+			for (var b in commoditiesBought) {
+				if (commoditiesListed[b] == undefined) {
+					commoditiesListed[b] = commoditiesBought[b];
+				};
+			};
 			var siteCommoditiesTable = document.createElement('table');
 			siteCommoditiesTable.className = 'commoditiesTable';
 			siteCommoditiesDiv.appendChild(siteCommoditiesTable);
@@ -645,7 +673,7 @@ var view = {
 			siteCommoditiesTableTitle.innerHTML = 'Commodity Values';
 			siteCommoditiesTable.appendChild(siteCommoditiesTableTitle);
 			var knownValues = model.knownValues();
-			for (var c in commoditiesTraded) {
+			for (var c in commoditiesListed) {
 				var siteCommoditiesItem = document.createElement('tr');
 				siteCommoditiesTable.appendChild(siteCommoditiesItem);
 				var siteCommoditiesNameCell = document.createElement('td');
@@ -653,23 +681,25 @@ var view = {
 				siteCommoditiesNameCell.innerHTML = icon + ' ' + data.commodities[c].name;
 				siteCommoditiesItem.appendChild(siteCommoditiesNameCell);
 				var siteCommoditiesValueCell = document.createElement('td');
-				siteCommoditiesValueCell.innerHTML = Math.round(100 * site.commodities[c],0);
-				if (site.commodities[c] > knownValues[c]*2) {
+				siteCommoditiesValueCell.innerHTML = Math.round(100 * commoditiesListed[c],0);
+				if (commoditiesListed[c] > knownValues[c]*2) {
 					siteCommoditiesValueCell.innerHTML += ' (+++)';
-				} else if (site.commodities[c] > knownValues[c]*1.5) {
+				} else if (commoditiesListed[c] > knownValues[c]*1.5) {
 					siteCommoditiesValueCell.innerHTML += ' (++)';
-				} else if (site.commodities[c] > knownValues[c]*1.25) {
+				} else if (commoditiesListed[c] > knownValues[c]*1.25) {
 					siteCommoditiesValueCell.innerHTML += ' (+)';
-				} else if (site.commodities[c] < knownValues[c]*.8){
+				} else if (commoditiesListed[c] < knownValues[c]*.8){
 					siteCommoditiesValueCell.innerHTML += ' (-)';
-				} else if (site.commodities[c] < knownValues[c]*.66){
+				} else if (commoditiesListed[c] < knownValues[c]*.66){
 					siteCommoditiesValueCell.innerHTML += ' (--)';
-				} else if (site.commodities[c] < knownValues[c]*.5){
+				} else if (commoditiesListed[c] < knownValues[c]*.5){
 					siteCommoditiesValueCell.innerHTML += ' (---)';
 				};
 				for (var i in site.infrastructure) {
 					if (site.infrastructure[i].outputs !== undefined && site.infrastructure[i].outputs.indexOf(c) !== -1) {
 						siteCommoditiesItem.className = 'localCommodity';
+					} else if (commoditiesTraded[c] == undefined) {
+						siteCommoditiesItem.className = 'marketCommodity';
 					};
 				};
 				siteCommoditiesItem.appendChild(siteCommoditiesValueCell);
@@ -679,7 +709,7 @@ var view = {
 						unitPresent = true;
 					};
 				};
-				if (unitPresent) {
+				if (unitPresent && commoditiesTraded[c] !== undefined) {
 					var siteCommoditiesTradeCell = document.createElement('td');
 					siteCommoditiesTradeCell.innerHTML = '<span class="fa fa-cart-plus"></span>';
 					siteCommoditiesTradeCell.setAttribute('onclick','handlers.addFromSite("'+c+'")');
@@ -1128,6 +1158,12 @@ var view = {
 			var cargo = 0;
 			if (unit.location !== undefined) {
 				var trading = unit.location.trading();
+				var buying = unit.location.buying();
+				for (var c in buying) {
+					if (trading[c] == undefined) {
+						trading[c] = buying[c];
+					};
+				};
 			} else {
 				var trading = {};
 			};
@@ -1399,7 +1435,7 @@ var view = {
 			var unitBuildRequirementP = document.createElement('p');
 			var requirements = [];
 			for (var i of infrastructure.requiredResource) {
-				requirements.push(data.resources[i]);
+				requirements.push(data.resources[i].name);
 			};
 			unitBuildRequirementP.innerHTML = '<strong>Requires:</strong> ' + gamen.prettyList(requirements,'or');
 			unitBuildPreviewDiv.appendChild(unitBuildRequirementP);

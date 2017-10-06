@@ -3,35 +3,45 @@ Down the Phoenix Road To Do List
 
 DONE
 
-- double wages calculation
+- respawn event
+	- checks if Tinker Camp, Cartwright, Mechanic, Arena, Lensmeister exist
+	- if one doesn't, it spawns one.
+	- notifies you if it's a town you've visited
+	- if Tinker Camp / Mechanic is destroyed in an event, game goes unwinnable.
+	- also removes these infrastructures from ghost towns
 
-- increase survey time
+- build infrastructure preview properly lists requirements, not [object Object]
 
-- Mechanic and Hanger events have the name of the town as the passage speaker
-
-- units scale in zoom like site names do
-
-
-
+- plague event says 'half the population' or similar
 
 IMMEDIATE FIXES
 
 - cache has trading items?
 
-- still not taking commodities out of non-focus unitsAtSite
-
-- increase the borders of the map, even though the used bit is never more than 1000x1000
-	- this will help zoom
-
-- ghost towns do not display infrastructure… including recruitables like the burnt-out bus
-
 - when unit scuttles, only sell what is traded there; warehouse/trash the rest
 
 - aurochs event (and probably banditry) relies on focus.unit which isn't getting reliably set by event initialization
 
-- 'drought in <ghost town>' is silly
+- river event seemed to flood a site that doesn't have a river?
 
 NEXT FEATURE / OPTIMIZATION
+
+- Nothing brings prices back down after you drive them up
+	- in setup, back up commodities to duplicate object, commoditiesSetPoints
+		- setpoints need to be saved and loaded
+	- when an adjustment ends, set adjustment value to string 'return to set point'
+	- eachDay() adjustment then slowly returns towards set point
+	- new transactions reset the adjustment count (instead of add/subtract)
+	- changes to a site's circumstances (like infrastructure builds) affect setpoints
+		- supplying inputs should reduce associated output values (as transactions)
+		- infrastructure builds affect setpoints
+		- events that destroy infrastructure affect setpoints
+
+- Build Complete passage needs a 'take me there' button
+
+- drag needs to take zoom into account
+
+- start new game with zoomed in map on hometown
 
 - a site with inputs should BUY those inputs but not sell them.  Figure that chestnut out.
 	- split Site.trading() into Site.buying() and Site.selling()
@@ -63,11 +73,10 @@ NEXT FEATURE / OPTIMIZATION
 		- population loss
 		- spreads town to town
 		- can deliver medicine commodities to cure them (not an event, but still)
-	- respawn event
-		- checks if Tinker Camp, Cartwright, Mechanic, Arena, Lensmeister exist
-		- if one doesn't, it spawns one.
-		- notifies you if it's a town you've visited
-		- if Tinker Camp / Mechanic is destroyed in an event, game goes unwinnable.
+
+- 'drought in <ghost town>' is silly
+- 'drought in <riverside town>' could be filtered out
+- 'fire in <ghost town>' however, should burn down all or nearly all the infrastructure
 
 
 - event log (ie, 'crap what did I just click past?')
@@ -91,10 +100,9 @@ NEXT FEATURE / OPTIMIZATION
 - SVG tinkering
 	- movement animation/transition
 	- landmark draw functions
-- Zoom is still wonky
-	- zoom in / out pays no attention to the location of the mouse
-		- need to set a center point (defaults to 500,500 or focus unit?)
-		- or takes its value initially but then ignores it until zoom is done?
+- zoom in / out pays no attention to the location of the mouse
+	- need to set a center point (defaults to 500,500 or focus unit?)
+	- or takes its value initially but then ignores it until zoom is done?
 - New Infrastructure
 	- Canals for flood control (and other benefits?)
 	- Cisterns fight fire events (50%)
@@ -129,14 +137,9 @@ FUTURE EXPANSIONS
 	- eventually, enough findable locations that not all of them appear in each play
 - what do you do that starts passively spreading civilization / greening needs?
 	- once you get a site in the green on all counts, it starts pushing help outward
+	- people start migrating out of shitty sites and into green sites (event)
 - swamp 'resource' that can be drained to get… something
 - what can you DISCOVER that greatly helps a lot of towns directly?
-
-- link up the sites with rivers (ha ha, that's funny hard)
-	- make a list of all sites with rivers
-	- find each river-site's nearest river-site neighbor
-	- link up like normal neighbors with a curvy river segment
-	- (how to avoid overlapping other sites?)
 
 
 

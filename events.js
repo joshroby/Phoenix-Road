@@ -274,6 +274,7 @@ var events = {
 		if (site.resources.indexOf(data.resources.river !== -1)) {
 			var index = Math.random() * site.infrastructure.length << 0;
 			var outputs = [];
+			console.log(index);
 			var passageString = "The river floods in " + site.name + ".  The " + site.infrastructure[index].name + " is completely destroyed.";
 			if (site.infrastructure[index].outputs !== undefined) {
 				for (var o of site.infrastructure[index].outputs) {
@@ -374,9 +375,10 @@ var events = {
 	plague: function()  {
 		var site = sites[Math.random() * sites.length << 0];
 		var deaths = Math.ceil(site.population * Math.random() * Math.random());
+		var deathRatio = Math.ceil(deaths/site.population * 100);
 		site.population -= deaths;
 		if (site.hasVisited.p1) {
-			gamen.displayPassage(new Passage("Plague in " + site.name + ".  " + deaths + " people perish."));
+			gamen.displayPassage(new Passage("Plague in " + site.name + ".  " + deaths + " people ("+deathRatio+"% of the population) perish."));
 		};
 	},
 	
@@ -428,12 +430,39 @@ var events = {
 		var commodities = ['clothing','fuel','tack'];
 		var commoditiesList = [];
 		for (var i of commodities) {
-			site.logTransaction(i,number/10)
+			site.logTransaction(i,number/20)
 			commoditiesList.push(view.commodityIcon(i)+" "+data.commodities[i].name);
 		};
 		site.population += number;
 		if (site.hasVisited.p1) {
 			gamen.displayPassage(new Passage("A bedraggled band of " +number+ " refugees arrive at " + site.name + ".  The locals begrudgingly tolerate the newcomers settling in.  The values of " + gamen.prettyList(commoditiesList) + " rise."));
+		};
+	},
+	
+	respawnInfrastructure: function() {
+		var infrastructure = ['cartwright','mechanic','arena','lensmeister','hangar'];
+		var infrastructureCheck = {};
+		for (var i of infrastructure) {
+			infrastructureCheck[i] = false;
+		};
+		for (var s in sites) {
+			for (var i of infrastructure) {
+				if (sites[s].population < 1) {sites[s].infrastructure.splice(sites[s].infrastructure.indexOf(data.infrastructure[i]),1);};
+				if (sites[s].infrastructure.indexOf(data.infrastructure[i]) !== -1) {infrastructureCheck[i] = true;};
+			};
+		};
+		var respawned = false;
+		for (var i in infrastructureCheck) {
+			if (!infrastructureCheck[i] && !respawned) {
+				respawned = true;
+				var newSite = sites[Math.random() * sites.length << 0];
+				if (newSite.population > 0) {
+					newSite.infrastructure.push(data.infrastructure[i]);
+					if (newSite.hasVisited.p1) {
+						gamen.displayPassage(new Passage ('A new '+data.infrastructure[i].name+' is built in '+newSite.name+'.'));
+					};
+				};
+			};
 		};
 	},
 	
