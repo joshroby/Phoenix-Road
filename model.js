@@ -1225,6 +1225,16 @@ function Site(mapSize) {
 				};
 			};
 		};
+		for (var i of this.infrastructure) {
+			for (var c of infrastructure.outputs) {
+				if (i.inputs.indexOf(c) !== -1) {
+					for (o of i.outputs) {
+						this.commoditiesSetPoints[o] *= 0.9
+						this.logTransaction(o,-0.5);
+					};
+				};
+			};
+		};
 		this.goodwill.p1 += infrastructure.goodwill;
 		this.infrastructure.push(infrastructure);
 	};
@@ -1279,6 +1289,14 @@ function Site(mapSize) {
 			this.adjustment[commodityKey] += adjustment;
 		} else {
 			this.adjustment[commodityKey] = adjustment;
+		};
+		for (var i in this.infrastructure) {
+			if (this.infrastructure[i].inputs !== undefined && this.infrastructure[i].outputs !== undefined && this.infrastructure[i].inputs.indexOf(commodityKey) !== -1) {
+				console.log(this.infrastructure[i]);
+				for (o of this.infrastructure[i].outputs) {
+					this.logTransaction(o,adjustment/2);
+				};
+			};
 		};
 	};
 	
@@ -1795,7 +1813,7 @@ function Unit(owner,startLoc,type) {
 		this.surveyComplete = undefined;
 		model.clock.running = false;
 		view.focus.unit = this;
-		view.displayUnit(this);
+		view.displayUnit(this,true);
 	};
 	
 	this.build = function(infrastructure) {
@@ -1826,7 +1844,7 @@ function Unit(owner,startLoc,type) {
 		this.buildComplete = undefined;
 		model.clock.running = false;
 		view.focus.unit = this;
-		view.displayUnit(this);
+		view.displayUnit(this,true);
 	};
 
 	this.cancelRoute = function() {

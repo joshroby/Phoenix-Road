@@ -1419,6 +1419,9 @@ var view = {
 					unitTab.style.backgroundColor = '#AFEEEE';
 					unitTab.innerHTML += ' <span class="fa fa-2x fa-spinner fa-pulse"></span>';
 				};
+				if (unitsAtSite[u] == view.focus.unit) {
+					unitTab.className += ' unitTabSelect';
+				};
 				unitTabsDiv.appendChild(unitTab);
 			};
 		};
@@ -1490,33 +1493,37 @@ var view = {
 	
 	infrastructureDescription: function(infrastructure) {
 		var string = '';
-		if (infrastructure.requiredResource !== undefined) {
-			var requirements = [];
-			for (var i of infrastructure.requiredResource) {
-				requirements.push(data.resources[i].name);
+		if (infrastructure.description == undefined) {
+			if (infrastructure.requiredResource !== undefined) {
+				var requirements = [];
+				for (var i of infrastructure.requiredResource) {
+					requirements.push(data.resources[i].name);
+				};
+				string += 'Requires a ' + gamen.prettyList(requirements,'or') + '. ';
 			};
-			string += 'Requires a ' + gamen.prettyList(requirements,'or') + '. ';
-		};
-		if (infrastructure.housing > 0) {
-			string += 'Provides housing for ' + infrastructure.housing + '. ';
-		};
-		if (infrastructure.defense > 0) {
-			string += 'Provides defense of ' + infrastructure.defense + '. ';
-		};
-		if (infrastructure.outputs !== undefined) {
-			string += 'Produces ' + gamen.prettyList(infrastructure.outputs) + '. ';
-		};
-		if (infrastructure.inputs !== undefined) {
-			string += 'Increases value of ' + gamen.prettyList(infrastructure.inputs) + '. ';
-		};
-		if (infrastructure.jobs !== undefined) {
-			string += 'Provides ' + infrastructure.jobs + ' jobs. ';
-		};
-		if (infrastructure.goodwill > 0) {
-			string += 'Gains the builder ' + infrastructure.goodwill + ' reputation each fortnight.';
-		} else if (infrastructure.goodwill < 0) {
-			string += 'Costs the builder ' + infrastructure.goodwill + ' reputation each fortnight.';
+			if (infrastructure.housing > 0) {
+				string += 'Provides housing for ' + infrastructure.housing + '. ';
+			};
+			if (infrastructure.defense > 0) {
+				string += 'Provides defense of ' + infrastructure.defense + '. ';
+			};
+			if (infrastructure.outputs !== undefined) {
+				string += 'Produces ' + gamen.prettyList(infrastructure.outputs) + '. ';
+			};
+			if (infrastructure.inputs !== undefined) {
+				string += 'Increases value of ' + gamen.prettyList(infrastructure.inputs) + '. ';
+			};
+			if (infrastructure.jobs !== undefined) {
+				string += 'Provides ' + infrastructure.jobs + ' jobs. ';
+			};
+			if (infrastructure.goodwill > 0) {
+				string += 'Gains the builder ' + infrastructure.goodwill + ' reputation each fortnight.';
+			} else if (infrastructure.goodwill < 0) {
+				string += 'Costs the builder ' + infrastructure.goodwill + ' reputation each fortnight.';
 
+			};
+		} else {
+			string += infrastructure.description;
 		};
 		return string;
 	},

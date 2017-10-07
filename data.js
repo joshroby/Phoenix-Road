@@ -639,37 +639,45 @@ var data = {
 			name: "Forest",
 			visible: true,
 			suffices: [' Wood','wood',' Glen','dale'],
+			description: "A nearby wood full of lumberable trees and huntable game.",
 		},
 		mineralVein: {
 			name: "Mineral Vein",
 			visible: false,
+			description: "A vein of minerals that can be mined.",
 		},
 		oilReservoir: {
 			name: "Oil Reservoir",
 			visible: false,
+			description: "A vast underground reservoir of crude oil that can be pumped to the surface.",
 		},
 		outcropping: {
 			name: "Outcropping",
 			visible: true,
 			suffices: [' Rock',' Spire'],
+			description: "A great tower of useful stone that can be quarried.",
 		},
 		pasture: {
 			name: "Pasture",
 			visible: false,
+			description: "Broad expanses of verdant land suitable for raising livestock.",
 		},
 		spring: {
 			name: "Spring",
 			visible: false,
+			description: "An underground river or stream bubbles up here, providing a source of water for the community.",
 		},
 		river: {
 			name: "River",
 			visible: true,
 			suffices: [' River',' Creek',' Port','side','bank'],
+			description: "This town has access to a running river, providing a source of water as well as fish.  The power of the river can also be tapped with a watermill.",
 		},
 		ruins: {
 			name: "Old World Ruin",
 			visible: false,
 			suffices: [' Pile'],
+			description: "An all but forgotten ruin of an Old World structure.  There may be useful materials inside, and the bones of the structure might still prove habitable.",
 		},
 	
 	},

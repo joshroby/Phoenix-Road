@@ -3,21 +3,17 @@ Down the Phoenix Road To Do List
 
 DONE
 
-fixed many problems with destroyInfrastructure()
+- tool tips for resources
 
-units loaded from save with routes no longer have their randomized locations
+- limited size of site carpets by site population - little towns have little footprints
 
-model.startscore moved to player object and saved/loaded
+- select tabs on bottom of unit pane have stronger border line on current selection
 
-ghost towns do not display your rep
+- building infrastructure to support existing infrastructure (tannery for saddler) reduces set point value of that existing infrastructure's outputs
 
-when you depopulate a ghost town, your rep there is erased
-	
-'unit has run out of food' passage now has a 'well buy some food, stupid' button
+- supplying inputs used by infrastructure reduces associated output values
+	- (supplying leather reduces cost of tack)
 
-zeppelins no longer encounter aurochs, bandits, or refugees on the road
-
-raid and wars registered with random events so will now occur
 
 IMMEDIATE FIXES
 
@@ -26,13 +22,11 @@ IMMEDIATE FIXES
 
 NEXT FEATURE / OPTIMIZATION
 
-- tool tips for resources
+
 
 - how many no-result surveys have happened at a site?
 
 - construction crew upgrades to industry infrastructure?
-
-- limit size of site carpets by site population - little towns have little footprints
 
 - Gamen Crowdfunding Support Link
 
@@ -40,26 +34,14 @@ NEXT FEATURE / OPTIMIZATION
 
 - Wooden Palisade seems too common?
 
-- select tabs on bottom of unit pane need stronger border line on current selection
-
-- when building new infrastructure that produces a new commodity
-	- modify the commodity set point
-	- set adjustment to 'return to set point'
-
-- supplying inputs should reduce associated output values (as transactions)
-
 - Build Complete passage needs a 'take me there' button
 
 - drag needs to take zoom into account
-
-- start new game with zoomed in map on hometown
 
 - when a unit arrives at a site, switch off Offroad automatically
 	- but not zeppelins
 
 - event pop up when you use an upgrade site
-
-- marker on map to indicate amount of credit you have at different sites
 
 - make the randomevents list sequester what just happened so you don't get repeats
 	- slowly feed sequestered events back in

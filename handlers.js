@@ -64,7 +64,7 @@ var handlers = {
 	
 	switchUnitPane: function(unitIndex,paneIndex) {
 		view.switchUnitPane(paneIndex);
-		view.focus.unit = units[unitIndex];
+		view.displayUnit(units[unitIndex]);
 		view.updateTradeDiv();
 	},
 	

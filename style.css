@@ -147,7 +147,11 @@
 	background-color: lightgrey;
 	padding: 0.5vw;
 	margin: 0.25vw;
-	border: 0.5px solid darkgrey;
+	border: 1px solid darkgrey;
+	}
+
+.unitTabSelect {
+	border: 1px solid black;
 	}
 	
 #centerColumn {
