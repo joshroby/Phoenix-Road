@@ -165,12 +165,14 @@ var view = {
 		var stop = document.createElementNS('http://www.w3.org/2000/svg','stop');
 		stop.setAttribute('offset','20%');
 		stop.setAttribute('stop-color','green');
-		stop.setAttribute('stop-opacity',0.05);
+// 		stop.setAttribute('stop-opacity',0.05);
+		stop.setAttribute('stop-opacity',1);
 		greenGradient.appendChild(stop);
 		var stop = document.createElementNS('http://www.w3.org/2000/svg','stop');
 		stop.setAttribute('offset','80%');
 		stop.setAttribute('stop-color','green');
-		stop.setAttribute('stop-opacity',0.02);
+// 		stop.setAttribute('stop-opacity',0.02);
+		stop.setAttribute('stop-opacity',0.2);
 		greenGradient.appendChild(stop);
 		var stop = document.createElementNS('http://www.w3.org/2000/svg','stop');
 		stop.setAttribute('offset','100%');
@@ -200,7 +202,7 @@ var view = {
 		};
 				
 		var background = document.createElementNS('http://www.w3.org/2000/svg','rect');
-		background.setAttribute('fill','saddlebrown');
+		background.setAttribute('fill','darkorange');
 		background.setAttribute('x','-1000');
 		background.setAttribute('y','-1000');
 		background.setAttribute('width','3000');
@@ -250,8 +252,12 @@ var view = {
 				var r = 0;
 				var needs = players.p1.knownSites[i].needs();
 				for (var n in needs) {
-					r += needs[n].completion * ( 400 / needs.length);
+					r += needs[n].completion / needs.length;
 				};
+				players.p1.knownSites[i].needsCompletion = r;
+				newCarpet.setAttribute('opacity',r/5);
+				r *= 300;
+				r = Math.min(r,players.p1.knownSites[i].population*2);
 				
 				newCarpet.setAttribute('rx',(0.5 * players.p1.knownSites[i].carpet[c].squish + 0.25) * r);
 				newCarpet.setAttribute('ry',(1 - (0.5 * players.p1.knownSites[i].carpet[c].squish + 0.25)) * r);
@@ -328,15 +334,17 @@ var view = {
 			};
 			siteLabel.setAttribute('x',players.p1.knownSites[i].x + 10);
 			siteLabel.setAttribute('y',players.p1.knownSites[i].y + 5);
-			siteLabel.setAttribute('font-size',view.zoom.z * .03);
+			siteLabel.setAttribute('font-size',view.zoom.z * .02);
 			siteLabel.setAttribute('onmouseover','handlers.displaySiteDetails('+siteIndex+')');
 			siteLabel.innerHTML = players.p1.knownSites[i].name;
 			sitesGroup.appendChild(siteLabel);
 
 			var newSite = document.createElementNS('http://www.w3.org/2000/svg','circle');
 			newSite.id = 'site_' + i;
-			if (players.p1.knownSites[i].hasVisited.p1) {
+			if (players.p1.knownSites[i].hasVisited.p1 && players.p1.knownSites[i].population > 0) {
 				newSite.setAttribute('fill','black');
+			} else if (players.p1.knownSites[i].hasVisited.p1) {
+				newSite.setAttribute('fill','#FFAA00');
 			} else {
 				newSite.setAttribute('fill','dimgray');
 			};
@@ -354,9 +362,10 @@ var view = {
 			} else {
 				newSite.setAttribute('stroke-width',5);
 			};
-			if (siteRep > 0) {
+			if (players.p1.knownSites[i].population == 0) {
+				newSite.setAttribute('stroke','yellow');
+			} else if (siteRep > 0) {
 				newSite.setAttribute('stroke','lime');
-				
 			} else if (siteRep < 0) {
 				newSite.setAttribute('stroke','red');
 			} else {
@@ -973,8 +982,33 @@ var view = {
 		};
 	},
 	
-	displayUnit: function(unit) {
+	displayUnit: function(unit,zoom) {
 		var selectedUnit = unit;
+		view.focus.unit = unit;
+		
+		if (zoom) {
+			if (unit.location !== undefined) {
+				var unitX = unit.location.x;
+				var unitY = unit.location.y;
+			} else {
+				var unitX = unit.route[0].x;
+				var unitY = unit.route[0].y;
+			};
+		
+			var inScreen = view.zoom.viewbox.minX+view.zoom.viewbox.width*0.2 < unitX && unitX < view.zoom.viewbox.minX+view.zoom.viewbox.width*0.8 && view.zoom.viewbox.minY+view.zoom.viewbox.height*0.2 < unitY && unitY < view.zoom.viewbox.minY+view.zoom.viewbox.height*0.8;
+			if (!inScreen) {
+				view.zoom = {
+					z: 500,
+					viewbox: {
+						minX: unitX-250,
+						minY: unitY-250,
+						height: 500,
+						width: 500,
+					},
+				};
+			};
+		};
+		
 		var detailsUnitDiv = document.getElementById('detailsUnitDiv');
 		detailsUnitDiv.innerHTML = '';
 		
@@ -1151,6 +1185,7 @@ var view = {
 			var cargo = 0;
 			if (unit.location !== undefined) {
 				var trading = unit.location.trading();
+				var buyable = unit.location.trading();
 				var buying = unit.location.buying();
 				for (var c in buying) {
 					if (trading[c] == undefined) {
@@ -1188,7 +1223,7 @@ var view = {
 					
 					var resupplyCell = document.createElement('td');
 					var resupplyCost = (100 - unit.commodities[c].qty) * unit.location.commodities[unit.commodities[c].commodity];
-					if (unit.commodities[c].qty < 100 && resupplyCost < unit.location.reputation.p1) {
+					if (unit.commodities[c].qty < 100 && resupplyCost < unit.location.reputation.p1 && buyable[unit.commodities[c].commodity] !== undefined) {
 						resupplyCell.innerHTML = '<a class="tipAnchor"><span class="fa fa-refresh"></span><span class="tooltip">Resupply: '+Math.ceil(resupplyCost)+' reputation</span></a>';
 						resupplyCell.setAttribute('onclick','handlers.resupply('+c+')');
 					} else if (unit.commodities[c].qty < 100) {

@@ -57,7 +57,7 @@ var events = {
 	tutorial_004: function() {
 		gamen.passageQueue = [];
 		var cargo = units[0].commodities[2].commodity;
-		view.displayUnit(units[0]);
+		view.displayUnit(units[0],true);
 		var passageText = "You've loaded up your Grams' old donkey cart with " +view.commodityIcon('food')+ " Food and " +view.commodityIcon('water')+ " Water for the journey, plus a load of your town's most plentiful commodity: " + view.commodityIcon(cargo) + data.commodities[cargo].name + ".<p>The food is for you and your friend.  The water is for the donkey.  The " + view.commodityIcon(cargo) + data.commodities[cargo].name + " is for somebody out there who needs it more than you do.  Maybe they'll have something they don't need, something plentiful in their town, for which the people here have a dire need.";
 		var choiceArray = [new Choice('Continue',events.tutorial_005),new Choice('Turn off Tutorial',events.disableTutorial)];
 		gamen.displayPassage(new Passage(passageText,choiceArray,false));
@@ -162,8 +162,8 @@ var events = {
 	aurochs: function() {
 		var unit = units[Math.random() * units.length << 0];
 		if (unit.inTransit) {
-			view.focus.unit = unit;
-			var passageString = unit.name + " encounters a wandering aurochs.  This huge bovine beast stands as tall as a small hut, and has horns bigger than a farmer's thigh.";
+			view.displayUnit(unit,true);
+			var passageString = unit.name + " encounters a wandering aurochs.  This huge bovine beast stands as tall as a small hut, and has horns bigger than a farmer's thigh (~4<span class='fa fa-hand-rock-o'></span>).";
 			passageString += "<p>Your "+model.selfDefense(unit,'display')+" drivers do enjoy a good steak...";
 			var choiceArray = [new Choice("Fire up the Barbeque!",events.aurochsAttack),new Choice('Avoid The Beast')];
 			gamen.displayPassage(new Passage(passageString,choiceArray,false));
@@ -174,14 +174,14 @@ var events = {
 		var unit = view.focus.unit;
 		var passageString = "Your crew chases down the beast until it's cornered.";
 		var defenseScore = model.selfDefense(unit);
-		var attackScore = 5 * Math.random();
+		var attackScore = 4 * Math.random();
 		if (defenseScore > attackScore) {
 			passageString += "<p>The aurochs fights like the bovine monster it is, but your crew prevails.  They carve up the carcass and add it to their provisions.";
 			unit.commodities.push({commodity:'food',qty:100});
 		} else {
 			var lostCommodityIndex = Math.random * unit.commodities.length << 0;
 			unit.commodities[lostCommodityIndex].qty /= 2;
-			view.displayUnit(unit);
+			view.displayUnit(unit,true);
 			passageString += "<p>The two-ton animal then turns on you, bellowing and stomping, its huge horns swinging left and right.  Your crew scatters, and barely manage to escape with their lives.";
 			passageString += "<p>In the chaos and confusion, the beast smashes into the "+unit.type.name+", destroying half a load of " + view.commodityIcon(unit.commodities[lostCommodityIndex].commodity) + " " + data.commodities[unit.commodities[lostCommodityIndex].commodity].name+ ".";
 		};
@@ -196,7 +196,7 @@ var events = {
 		var unit = units[Math.random() * units.length << 0];
 		if (unit.location == undefined || unit.location.infrastructure.length == 0) {
 			view.focus.unit = unit;
-			view.displayUnit(unit);
+			view.displayUnit(unit,true);
 			var threat = model.nearestThreat(unit.route[0].x,unit.route[0].y).threat;
 			var cargoIndex = Math.random() * unit.commodities.length << 0;
 			var passageString = unit.name + " is beset by bandits from "+threat.name+"!<p>They demand you turn over your load of "+view.commodityIcon(unit.commodities[cargoIndex].commodity)+" "+data.commodities[unit.commodities[cargoIndex].commodity].name+" or face the consequences.";
@@ -210,7 +210,7 @@ var events = {
 		var unit = view.focus.unit;
 		gamen.displayPassage(new Passage("The cackling bandits quickly and efficiently offload the "+view.commodityIcon(unit.commodities[cargoIndex].commodity)+" "+data.commodities[unit.commodities[cargoIndex].commodity].name+" and you get the hell out of there."));
 		unit.commodities.splice(cargoIndex,1);
-		view.displayUnit(unit);
+		view.displayUnit(unit,true);
 	},
 	
 	banditsDefend: function(threat) {
@@ -224,7 +224,7 @@ var events = {
 			for (var i in unit.commodities) {
 				unit.commodities[i].qty = Math.ceil(unit.commodities[i].qty * (20 + Math.random() * 30)/100);
 			};
-			view.displayUnit(unit);
+			view.displayUnit(unit,true);
 		};
 		gamen.displayPassage(new Passage(passageString));
 	},
@@ -272,10 +272,10 @@ var events = {
 	
 	flood: function()  {
 		var site = sites[Math.random() * sites.length << 0];
-		if (site.resources.indexOf(data.resources.river !== -1)) {
+		if (site.resources.indexOf(data.resources.river) !== -1) {
 			var index = Math.random() * site.infrastructure.length << 0;
 			var outputs = [];
-			console.log(index);
+			console.log(site,index);
 			var passageString = "The river floods in " + site.name + ".  The " + site.infrastructure[index].name + " is completely destroyed.";
 			if (site.infrastructure[index].outputs !== undefined) {
 				for (var o of site.infrastructure[index].outputs) {
@@ -284,7 +284,6 @@ var events = {
 				};
 				passageString += " The value of " + gamen.prettyList(outputs) + " rises.";
 			};
-// 			site.infrastructure.splice(index,1);
 			site.destroyInfrastructure(site.infrastructure[index]);
 			if (site.hasVisited.p1) {
 				gamen.displayPassage(new Passage(passageString));
@@ -337,6 +336,8 @@ var events = {
 					for (var i=0;i<10;i++) {
 						var randomCommodity = Object.keys(data.commodities)[Math.random() * Object.keys(data.commodities).length << 0];
 						if (randomCommodity == 'passengers') {randomCommodity = 'ore'};
+						if (randomCommodity == 'scrip') {randomCommodity = 'fuel'};
+						if (randomCommodity == 'mail') {randomCommodity = 'metals'};
 						mysteriousSite.trash.push({commodity:randomCommodity,qty:Math.ceil(Math.random()*100)});
 					};
 				} else if (mysteryType == 'crashSite') {
@@ -443,7 +444,7 @@ var events = {
 	},
 	
 	respawnInfrastructure: function() {
-		var infrastructure = ['cartwright','mechanic','arena','lensmeister','hangar'];
+		var infrastructure = ['tinkerCamp','nakedDowser','cartwright','mechanic','arena','lensmeister','hangar'];
 		var infrastructureCheck = {};
 		for (var i of infrastructure) {
 			infrastructureCheck[i] = false;
@@ -456,6 +457,8 @@ var events = {
 				if (sites[s].infrastructure.indexOf(data.infrastructure[i]) !== -1) {infrastructureCheck[i] = true;};
 			};
 		};
+		if (players.p1.unitsUnlocked.tinkersCart) {infrastructureCheck.tinkerCamp = true;};
+		if (players.p1.unitsUnlocked.dowser) {infrastructureCheck.nakedDowser = true;};
 		var respawned = false;
 		for (var i in infrastructureCheck) {
 			if (!infrastructureCheck[i] && !respawned) {
@@ -474,16 +477,16 @@ var events = {
 	roadRefugees: function() {
 		var unit = units[Math.random() * units.length << 0];
 		view.focus.unit = unit;
-		view.displayUnit(unit);
+		view.displayUnit(unit,true);
 		if (unit.caravan !== undefined) {
 			for (var i in unit.caravan) {
 				if (unit.caravan[i].type.canPassenger) {
 					view.focus.unit = unit.caravan[i];
-					view.displayUnit(unit.caravan[i]);
+					view.displayUnit(unit.caravan[i],true);
 				};
 			};
 		};
-		if (unit.inTransit) {
+		if (unit.inTransit && !unit.offroad) {
 			var numberRefugees = Math.max(Math.floor(Math.random() * 12 << 0),10);
 			var passageString = unit.name + " comes across "+numberRefugees+" people shuffling down the road.  They look tired and half-starved; who knows if they'll make it to where they're going.";
 			if (unit.type.canPassenger) {
@@ -513,7 +516,7 @@ var events = {
 				};
 			};
 		};
-		view.displayUnit(view.focus.unit);
+		view.displayUnit(view.focus.unit,true);
 		gamen.displayPassage(new Passage("The refugees gratefully accept your generosity, showering you with well wishes and blessings."));
 	},
 	

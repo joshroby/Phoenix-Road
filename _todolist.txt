@@ -3,26 +3,71 @@ Down the Phoenix Road To Do List
 
 DONE
 
+- aurochs strength listed on the event
 
+- game defeat stops the clock
 
+- river events no longer flooding sites that don't have a river
+
+- forgotten caches no longer have scrip
+
+- respawn event respawns tinker camp and naked dowser if you haven't already unlocked them
+
+- you can only refresh your fuel supply at sites that sell fuel
+
+- sites can start with open pit mines
+
+~~
+
+Upgraded Names
+Blotting out sections of proto map to create more interesting maps
+new game centers and zooms on startUnit
+view.displayUnit() centers view on selected unit if not near center of display
 
 IMMEDIATE FIXES
 
+- it appears destroyInfrastructure() is adding an 'undefined' entry to commodities
+	- both events.flood() and events.fire() creates the error
+
+- when a game is loaded, new units are assigned a random location if they are in transit
+	- on load, units with inTransit = true need to wipe their .location
+
+- model.startscore should move to player object and be saved/loaded
+
+- ghost towns should not display your rep
+	- you shouldn't have rep in a ghost town
+	
+- 'unit has run out of food' could use a 'well buy some food, stupid' button
+
+- zeppelins need to be immune from bandit attacks and aurochs
+
+- tutorial trade analysis math is way off now
+	- getting hit by bandits doesn't help
+
 - cache has trading items?
-
-- when unit scuttles, only sell what is traded there; warehouse/trash the rest
-
-- aurochs event (and probably banditry) relies on focus.unit which isn't getting reliably set by event initialization
-
-- river event seemed to flood a site that doesn't have a river?
-
-- game defeat should stop the clock
-
-- aurochs strength needs listing on the event
-
-- respawn event needs to add tinker band and dowser if you haven't already unlocked them
+	- cannot confirm
 
 NEXT FEATURE / OPTIMIZATION
+
+- tool tips for resources
+
+- how many no-result surveys have happened at a site?
+
+- construction crew upgrades to industry infrastructure?
+
+- limit size of site carpets by site population - little towns have little footprints
+
+- Gamen Crowdfunding Support Link
+
+- refugees arrive at ghost town needs different text
+
+- Wooden Palisade seems too common?
+
+- select tabs on bottom of unit pane need stronger border line on current selection
+
+- when building new infrastructure that produces a new commodity
+	- modify the commodity set point
+	- set adjustment to 'return to set point'
 
 - supplying inputs should reduce associated output values (as transactions)
 
@@ -32,11 +77,8 @@ NEXT FEATURE / OPTIMIZATION
 
 - start new game with zoomed in map on hometown
 
-- a site with inputs should BUY those inputs but not sell them.  Figure that chestnut out.
-	- split Site.trading() into Site.buying() and Site.selling()
-
 - when a unit arrives at a site, switch off Offroad automatically
-	- pop up notification?
+	- but not zeppelins
 
 - event pop up when you use an upgrade site
 
@@ -77,7 +119,6 @@ NEXT FEATURE / OPTIMIZATION
 - Playing with Threats
 	- you can discover their home base
 	- you can nullify a threat / reduce its strength
-	- view.displaySiteDetails to show threat territory if you've visited
 	- arrival events
 		- ask for intel, which increases danger of knownSites
 		- tax goods (can take percentage of loads)
@@ -100,7 +141,12 @@ NEXT FEATURE / OPTIMIZATION
 - Populate and test the Event Stack
 - Cancel route while in the midst of route.  Use "Roadside" code.
 
-- If you get hit by bandits and surrender the cargo before you get to your first destination, the tutorial craps out.  Maybe prevent bandits from spawning for the first ten days or something?
+- If you get hit by bandits and surrender the cargo before you get to your first destination, the tutorial craps out.  Maybe prevent bandits from spawning for the first fifty days or something?
+
+- Refugees Upgrade
+	- have a global count of refugees
+	- when a site's hunger gets too crazy (or the other bars?), people leave town
+	- when refugees arrive in a site or you find a camp, reduce the global refugee count
 
 GAMEN
 	color palette
@@ -109,6 +155,8 @@ GAMEN
 	responsive design in the CSS
 
 FUTURE EXPANSIONS
+- Library infrastructure (not buildable / Old World Ruins upgrade)
+	- research to discover resources in other sites
 - a 'notes' file that saves with game so you can tell Future Self what your strategy is
 - how do you affect wages?
 	- union house
@@ -121,6 +169,7 @@ FUTURE EXPANSIONS
 - warehousing
 	- works like trash pile except it doesn't disappear
 	- build costs will need to take warehouses into account
+	- scuttled units in that location stash commodities in warehouse
 - other only-findable infrastructures?
 	- some kind of cult?
 	- eventually, enough findable locations that not all of them appear in each play

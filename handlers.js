@@ -49,7 +49,7 @@ var handlers = {
 	
 	selectUnit: function(unitIndex) {
 		view.focus.unit = units[unitIndex];
-		view.displayUnit(view.focus.unit);
+		view.displayUnit(view.focus.unit,true);
 	},
 	
 	displayInfrastructurePreview: function(pane) {
@@ -203,6 +203,7 @@ var handlers = {
 	revealMap: function() {
 		players.p1.knownSites = sites;
 		players.p1.knownLandmarks = landmarks;
+		players.p1.knownRivers = rivers;
 		for (i in sites) {
 			sites[i].hasVisited.p1 = true;
 		};

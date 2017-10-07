@@ -37,6 +37,32 @@ var model = {
 		model.clock.logEventIn(8.64e+7*10*Math.random(),'randomEvent');
 		
 		var safeIndex = model.newMap();
+		
+		var nameSeedsList = ['Green','Hope','Faith','Ruin','Desolation','Old','New','Rossum','Signal','Temple','Dust','King','Queen','Sovereign','Prince'];
+		var nameSeeds = [];
+		for (var i = 0;i<nameSeedsList.length;i++) {
+			var num = Math.random() * nameSeedsList.length << 0;
+			if (nameSeeds.indexOf(num) == -1) {
+				nameSeeds.push(num);
+			};
+		};
+		for (i in nameSeeds) {
+			nameSeeds[i] = nameSeedsList[nameSeeds[i]];
+		};
+		for (i=0;i<nameSeeds.length;i++) {
+			var site = sites[Math.random() * sites.length << 0];
+			site.nameSeed = nameSeeds[i];
+			for (var n in site.neighbors) {
+				var distance = Math.pow(Math.pow(site.x - site.neighbors[n].x,2)+Math.pow(site.y - site.neighbors[n].y,2),0.5);
+				if (distance < 75) {
+					site.neighbors[0].nameSeed = nameSeeds[i];
+				};
+			};
+		};
+		for (i in sites) {
+			sites[i].upgradeName();
+		};
+		
 		units = [];
 		players.p1 = {unitsUnlocked:{},eventLog:{}};
 		
@@ -56,6 +82,16 @@ var model = {
 		
 		startUnit.look();
 		startUnit.location.reputation.p1 = 100;
+		
+		view.zoom = {
+			z: 500,
+			viewbox: {
+				minX: startUnit.location.x-250,
+				minY: startUnit.location.y-250,
+				height: 500,
+				width: 500,
+			},
+		};
 		
 		var startCargo = undefined;
 		var cheapestValue = Infinity;
@@ -114,6 +150,9 @@ var model = {
 		distantArea[Math.random() * distantArea.length << 0].infrastructure.push(data.infrastructure.hangar);
 		distantArea[Math.random() * distantArea.length << 0].infrastructure.push(data.infrastructure.burntOutBus);
 		view.focus.unit = startUnit;
+		events.respawnInfrastructure();
+		events.respawnInfrastructure();
+		events.respawnInfrastructure();
 		view.displayMap();
 		
 		model.startScore = model.victoryProgress();
@@ -130,8 +169,23 @@ var model = {
 		if (ghostTowns == undefined) {ghostTowns = model.options.newGame.ghostTowns};
 	
 		sites = [];
-		for (var i=0;i<totalSites*3;i++) {
+		for (var i=0;i<totalSites*4;i++) {
 			var newSite = new Site(mapSize);
+		};
+		
+		// Blot out sites 
+		var blots = (Math.random()+Math.random()) * 5 << 0;
+		for (var i=0;i<blots;i++) {
+			var blot = {
+				x: (1000 - mapSize)/2 + Math.random() * mapSize << 0,
+				y: (1000 - mapSize)/2 + Math.random() * mapSize << 0,
+				r: Math.random() * mapSize * 0.2 + mapSize * 0.1,
+			};
+			for (var t in sites) {
+				if (Math.pow(Math.pow(blot.x - sites[t].x,2) + Math.pow(blot.y - sites[t].y,2),.5) < blot.r) {
+					sites.splice(t,1);
+				};
+			};
 		};
 		
 		// Remove too-close sites, reduce to totalSites
@@ -284,11 +338,12 @@ var model = {
 				};
 			};
 		};
+		var controlMargin = mapSize / 50;
 		for (r of rivers) {
-			r.c1x = r.x1 + Math.random() * (r.x2-r.x1);
-			r.c1y = r.y1 + Math.random() * (r.y2-r.y1);
-			r.c2x = r.x2 + Math.random() * (r.x1-r.x2);
-			r.c2y = r.y2 + Math.random() * (r.y1-r.y2);
+			r.c1x = r.x1 - controlMargin + Math.random() * (r.x2-r.x1 + controlMargin*2);
+			r.c1y = r.y1 - controlMargin + Math.random() * (r.y2-r.y1 + controlMargin*2);
+			r.c2x = r.x2 - controlMargin + Math.random() * (r.x1-r.x2 + controlMargin*2);
+			r.c2y = r.y2 - controlMargin + Math.random() * (r.y1-r.y2 + controlMargin*2);
 			r.width = 5 + Math.random() * 5 << 0;
 		};
 		
@@ -330,24 +385,6 @@ var model = {
 		
 		return i;
 		
-	},
-	
-	siteName: function() {
-		var consonants = ['b','c','d','f','g','h','j','k','l','m','n','p','q','r','s','t','v','w','x','y','z'];
-		var vowels = ['a','e','i','o','u'];
-		var syllables = 2 + Math.random() * Math.random() * 4 << 0;
-		if (syllables == 5) { syllables = 1 }
-		var string = '';
-		for (var s=0;s<syllables;s++) {
-			if (Math.random() > 0.2) {
-				string += consonants[Math.random() * consonants.length << 0];
-			};
-			string += vowels[Math.random() * vowels.length << 0];
-			if (Math.random() > 0.5) {
-				string += consonants[Math.random() * consonants.length << 0];
-			};
-		};
-		return string.charAt(0).toUpperCase() + string.slice(1);
 	},
 	
 	threatName: function(site) {
@@ -507,7 +544,7 @@ var model = {
 			gamen.displayPassage(new Passage("Holy shit, you won the game!"));
 		};
 		
-		view.displayUnit(view.focus.unit);
+		view.displayUnit(view.focus.unit,false);
 		view.displayMap();
 		
 	},
@@ -761,12 +798,28 @@ var model = {
 };
 
 function Site(mapSize) {
+	// Name
+	var consonants = ['b','c','d','f','g','h','j','k','l','m','n','p','q','r','s','t','v','w','x','y','z'];
+	var vowels = ['a','e','i','o','u','a','e','i','o','u','a','e','i','o','u','a','e','i','o','u','a','e','i','o','u','ae','ai','au','ea','ee','ei','eu','ia','ie','io','iu','oa','oe','oi','oo','ou','ua','ue','ui','uo'];
+	var syllables = 2 + Math.random() * Math.random() * Math.random() * 4 << 0;
+	if (syllables == 5) { syllables = 1 }
+	var string = '';
+	for (var s=0;s<syllables;s++) {
+		if (Math.random() > 0.2) {
+			string += consonants[Math.random() * consonants.length << 0];
+		};
+		string += vowels[Math.random() * vowels.length << 0];
+		if (Math.random() > 0.5) {
+			string += consonants[Math.random() * consonants.length << 0];
+		};
+	};
+	this.name = string.charAt(0).toUpperCase() + string.slice(1);
+
 	if (mapSize == undefined) {mapSize = 1000};
 	var trimmed = mapSize - 50;
 	var min = (1000 - trimmed ) / 2;
 	this.x = min + Math.random() * trimmed << 0;
 	this.y = min + Math.random() * trimmed << 0;
-	this.name = model.siteName();
 	
 	this.carpet = [{tilt:Math.random(),squish:Math.random()},{tilt:Math.random(),squish:Math.random()},{tilt:Math.random(),squish:Math.random()}];
 	
@@ -832,7 +885,10 @@ function Site(mapSize) {
 		industry = data.infrastructure.quarry;
 	};
 	if (this.commodities.ore < 0.3 && this.resources.indexOf(data.resources.mineralVein) == -1 && Math.random() < 0.1 && industry == undefined) {
-		industry = data.infrastructure.mine;
+		industry = data.infrastructure.openPitMine;
+	};
+	if (this.commodities.lumber < 0.3 && this.resources.indexOf(data.resources.forest) == -1 && Math.random() < 0.1 && industry == undefined) {
+		industry = data.infrastructure.lumbermill;
 	};
 	if (this.commodities.crudeOil < 0.6 && this.resources.indexOf(data.resources.oilReservoir) == -1 && Math.random() < 0.05 && industry == undefined) {
 		industry = data.infrastructure.oilWell;
@@ -873,7 +929,7 @@ function Site(mapSize) {
 		this.infrastructure.push(data.infrastructure.fortress);
 	};
 	if (this.commodities.lumber < 0.4 && this.commodities.stone >= 0.3) {
-		this.infrastructure.push(data.infrastructure.woodenPallisade);
+		this.infrastructure.push(data.infrastructure.woodenPalisade);
 	};
 	if (this.commodities.lumber + this.commodities.stone < 0.2) {
 		this.infrastructure.push(data.infrastructure.tenements);
@@ -918,6 +974,47 @@ function Site(mapSize) {
 		flat.nearestThreatIndex = sites.indexOf(this.nearestThreat);
 
 		return flat;
+	};
+	
+	this.upgradeName = function() {
+		if (this.nameSeed !== undefined || Math.random() < 0.5) {
+			var upgradeName = this.nameSeed;
+			if (this.nameSeed == undefined) {
+				upgradeName = this.name.slice(0,3 + Math.random() * 3 <<0);
+				// Denomative Suffices
+				if (Math.random() < 0.4) {
+					var suffices = ['son','sdot','skid'];
+					upgradeName += suffices[Math.random() * suffices.length << 0];
+				};
+				if (Math.random() < 0.3 && upgradeName.substr(-1) !== 's') {
+					upgradeName += 's';
+				};
+			};
+			
+			// Compounding
+			var suffices = ['ton','ville','burg','borg',' Village',' Town',' Outpost',' Station',' Hollow','s End',' Place'];
+			for (var i in this.resources) {
+				if (this.resources[i].suffices !== undefined) {
+					suffices = suffices.concat(this.resources[i].suffices);
+				};
+			};
+			for (var i in this.infrastructure) {
+				if (this.infrastructure[i].suffices !== undefined) {
+					suffices = suffices.concat(this.infrastructure[i].suffices);
+				};
+			};
+			upgradeName += suffices[Math.random() * suffices.length << 0];
+			
+			var uniqueName = true;
+			for (var i in sites) {
+				if (sites[i].name == upgradeName) {
+					uniqueName = false;
+				};
+			};
+			if (uniqueName) {
+				this.name = upgradeName;
+			};
+		};
 	};
 	
 	this.ghost = function() {
@@ -988,6 +1085,8 @@ function Site(mapSize) {
 		var safetyDesc = '<strong>Safety</strong><br />'+defense+' defense / '+this.nearestThreat.threat.strength+' danger';
 		safetyDesc += '<br />('+this.nearestThreat.threat.name+' territory)';
 		array.push({label:safetyLabels[safetyLabels.length * safety * 0.99 << 0],completion:safety,desc:safetyDesc});
+		
+		if (this.population < 1) {array = [{label:'ghost town',completion:0,desc:'Ghost Town'}];};
 		
 		return array;
 	};
@@ -1106,8 +1205,8 @@ function Site(mapSize) {
 	this.buildInfrastructure = function(infrastructure) {
 		for (var c in infrastructure.inputs) {
 			this.commoditiesSetPoints[infrastructure.inputs[c]] /= 0.8;
-			if (this.adjustment[infrastructure.outputs[c]] == undefined) {
-				this.adjustment[infrastructure.outputs[c]] = 'return to set point';
+			if (this.adjustment[infrastructure.inputs[c]] == undefined) {
+				this.adjustment[infrastructure.inputs[c]] = 'return to set point';
 			};
 		};
 		for (var c in infrastructure.outputs) {
@@ -1144,6 +1243,7 @@ function Site(mapSize) {
 			};
 			this.infrastructure.splice(this.infrastructure.indexOf(infrastructure),1);
 		};
+		console.log(this);
 	};
 	
 	this.useCommodities = function(useList) {
@@ -1553,11 +1653,12 @@ function Unit(owner,startLoc,type) {
 				this.route = [];
 				this.inTransit = false;
 				this.departed = false;
+				this.offroad = false;
 				this.look();
 				model.clock.running = false;
 				document.getElementById('clockPauseBtn').innerHTML = '<span class="fa fa-play"></span>';
 				view.focus.unit = this;
-				view.displayUnit(this);
+				view.displayUnit(this,true);
 			};
 			view.displayMap();
 		};
@@ -1604,15 +1705,22 @@ function Unit(owner,startLoc,type) {
 
 		if (foodEaten > 0) {
 			if (!this.isOddJobbing && this.location !== undefined) {
-				gamen.displayPassage(new Passage(this.name + ' has run out of food.  The crew has taken on odd jobs in ' + this.location.name + ' to put food in their mouths.</p><p>If they are not resupplied soon, they might just settle down!'));
+				var resupplyDisabled = false;
+				if (this.location.commodities.food * 100 > this.location.reputation.p1) {
+					resupplyDisabled = true;
+				};
+				var choiceArray = [new Choice('Resupply',this.resupplyFromPassage,[this],resupplyDisabled),new Choice()];
+				gamen.displayPassage(new Passage(this.name + ' has run out of food.  The crew has taken on odd jobs in ' + this.location.name + ' to put food in their mouths.</p><p>If they are not resupplied soon, they might just settle down!',choiceArray));
 				this.isOddJobbing = true;
 				model.clock.running = false;
+				view.displayUnit(this,true);
 			};
 			if (Math.random() < 0.01) {
 				gamen.displayPassage(new Passage('The crew of ' + this.name + ' have found sweethearts in ' + this.location.name + ".  They've been accepted into the families there and have put the road behind them.  </p><p>" + this.name + " has been scuttled."));
 				this.scuttle();
 				if (units.length == 0) {
 					var rebuildScore = Math.round((model.victoryProgress() - model.startScore) * 100,0);
+					model.clock.running = false;
 					gamen.displayPassage(new Passage("As your last crew leaves the road behind them, you find yourself a place out among the scattered towns to live out the rest of your life.</p><p><strong>Final Score:</strong> You rebuilt " + rebuildScore + "% of Civilization." ));
 				};
 			};
@@ -1788,12 +1896,16 @@ function Unit(owner,startLoc,type) {
 	};
 	
 	this.resupply = function(commodityIndex) {
-	
 		this.location.reputation.p1 -= (100 - this.commodities[commodityIndex].qty) * this.location.commodities[this.commodities[commodityIndex].commodity];
 		this.commodities[commodityIndex].qty = 100;
 		view.displayUnit(this);
 		view.displaySiteDetails(view.focus.unit.location);
+	};
 	
+	this.resupplyFromPassage = function(unit) {
+		unit.commodities.push({commodity:'food',qty:0});
+		var commodityIndex = unit.commodities.length - 1;
+		unit.resupply(commodityIndex);
 	};
 	
 	this.scuttle = function() {

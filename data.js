@@ -276,7 +276,7 @@ var data = {
 				'semi',
 				'constructionCrew'
 				],
-			inputs: ['fuel'],
+			inputs: ['fuel','metals'],
 			jobs: 4,
 		},
 		
@@ -294,7 +294,7 @@ var data = {
 		},
 		bank: {
 			name:'Bank',
-			buildCost: {stone:4,lumber:2,reputation:2000},
+			buildCost: {stone:4,lumber:2},
 			buildTime: 14,
 			goodwill: -10,
 			visible: false,
@@ -314,6 +314,7 @@ var data = {
 		},
 		bunker: {
 			name:'Bunker',
+			suffices: [' Bunker',' Hold'],
 			buildCost: {stone:2,lumber:1},
 			buildTime: 6,
 			goodwill: 1,
@@ -334,6 +335,7 @@ var data = {
 		},
 		corral: {
 			name: 'Corral',
+			suffices: [' Ranch'],
 			buildCost: {lumber:2,fiber:2},
 			requiredResource: ['pasture'],
 			buildTime: 6,
@@ -344,6 +346,7 @@ var data = {
 		},
 		fields: {
 			name: 'Fields',
+			suffices: ['feld',' Farm'],
 			buildCost: {lumber:1,fiber:4},
 			requiredResource: ['river','spring'],
 			buildTime: 14,
@@ -355,6 +358,7 @@ var data = {
 		},
 		foundry: {
 			name:'Foundry',
+			suffices: [' Stacks'],
 			buildCost: {stone:6,lumber:6,cloth:2,ore:5},
 			buildTime: 20,
 			goodwill: 5,
@@ -365,6 +369,7 @@ var data = {
 		},
 		fortress: {
 			name:'Fortress',
+			suffices: [' Fort',' Castle','castle'],
 			buildCost: {stone:8,lumber:8,fiber:2,cloth:2},
 			buildTime: 56,
 			replaces: ['bunker'],
@@ -385,6 +390,7 @@ var data = {
 		},
 		hovels: {
 			name: 'Hovels & Shacks',
+			suffices: [' Hole'],
 			visible: false,
 			housing: 4,
 		},
@@ -400,16 +406,19 @@ var data = {
 		},
 		lumbermill: {
 			name: 'Lumbermill',
+			suffices: [' Mill'],
 			buildCost: {lumber:3,fiber:2},
 			requiredResource: ['forest'],
 			buildTime: 14,
 			goodwill:2,
 			visible:false,
-			outputs: ['lumber','metals'],
+			inputs: ['metals'],
+			outputs: ['lumber'],
 			jobs: 10,
 		},
 		manorHouse: {
 			name:'Manor House',
+			suffices: [' Manse',' House',' Manor',' Plantation'],
 			buildCost: {stone:2,lumber:2,cloth:4},
 			buildTime: 28,
 			goodwill: -1,
@@ -419,7 +428,7 @@ var data = {
 		},
 		mineshaft: {
 			name: 'Mineshaft',
-			buildCost: {lumber:4,metal:2,stone:2},
+			buildCost: {lumber:4,metals:2,stone:2},
 			requiredResource: ['mineralVein'],
 			buildTime: 28,
 			replaces: ['openPitMine'],
@@ -431,6 +440,7 @@ var data = {
 		},
 		oilWell: {
 			name: 'Oil Well',
+			suffices: [' Wells'],
 			buildCost: {metals:8},
 			requiredResource: ['oilReservoir'],
 			buildTime: 14,
@@ -442,6 +452,7 @@ var data = {
 		},
 		orchards: {
 			name: 'Orchards',
+			suffices: [' Stand',' Arbors'],
 			buildCost: {lumber:1},
 			requiredResource: ['forest'],
 			buildTime: 14,
@@ -453,6 +464,7 @@ var data = {
 		},
 		openPitMine: {
 			name: 'Open Pit Mine',
+			suffices: [' Mine',' Hole',' Ditch',' Pit'],
 			buildCost: {lumber:4},
 			requiredResource: ['mineralVein'],
 			buildTime: 21,
@@ -462,17 +474,18 @@ var data = {
 			outputs: ['ore','stone'],
 			jobs: 20,
 		},
-		postOffice: {
-			name: 'Post Office',
-			buildCost: {lumber:1,stone:1},
-			buildTime: 8,
-			goodwill: 1,
-			visible: false,
-			outputs: ['mail'],
-			jobs: 2,
-		},
+// 		postOffice: {
+// 			name: 'Post Office',
+// 			buildCost: {lumber:1,stone:1},
+// 			buildTime: 8,
+// 			goodwill: 1,
+// 			visible: false,
+// 			outputs: ['mail'],
+// 			jobs: 2,
+// 		},
 		quarry: {
 			name: 'Quarry',
+			suffices: [' Hole',' Ditch',' Pit'],
 			buildCost: {lumber:4},
 			requiredResource: ['outcropping'],
 			buildTime: 14,
@@ -484,6 +497,7 @@ var data = {
 		},
 		refinery: {
 			name: 'Refinery',
+			suffices: [' Stacks'],
 			buildCost: {metals:3,crudeOil:5},
 			buildTime: 28,
 			goodwill: 5,
@@ -548,7 +562,7 @@ var data = {
 			name:'Stone Wall',
 			buildCost: {stone:8,lumber:2},
 			buildTime: 28,
-			replaces: ['woodenPallisade'],
+			replaces: ['woodenPalisade'],
 			goodwill: 2,
 			visible: true,
 			defense:2,
@@ -609,8 +623,8 @@ var data = {
 			visible: false,
 			outputs: ['water'],
 		},
-		woodenPallisade: {
-			name:'Wooden Pallisade',
+		woodenPalisade: {
+			name:'Wooden Palisade',
 			buildCost: {lumber:4,fiber:2},
 			buildTime: 6,
 			goodwill: 1,
@@ -624,6 +638,7 @@ var data = {
 		forest: {
 			name: "Forest",
 			visible: true,
+			suffices: [' Wood','wood',' Glen','dale'],
 		},
 		mineralVein: {
 			name: "Mineral Vein",
@@ -636,6 +651,7 @@ var data = {
 		outcropping: {
 			name: "Outcropping",
 			visible: true,
+			suffices: [' Rock',' Spire'],
 		},
 		pasture: {
 			name: "Pasture",
@@ -648,10 +664,12 @@ var data = {
 		river: {
 			name: "River",
 			visible: true,
+			suffices: [' River',' Creek',' Port','side','bank'],
 		},
 		ruins: {
 			name: "Old World Ruin",
 			visible: false,
+			suffices: [' Pile'],
 		},
 	
 	},
@@ -712,7 +730,7 @@ var data = {
 				'lumbermill',
 				'openPitMine',
 				'orchards',
-				'postOffice',
+// 				'postOffice',
 				'rowhouses',
 				'saddler',
 				'seamstress',
@@ -722,7 +740,7 @@ var data = {
 				'well',
 				'watchtower',
 				'watermill',
-				'woodenPallisade'
+				'woodenPalisade'
 			],
 			buildCost: {lumber:4,fiber:4,tack:1,stone:1,food:1,water:1},
 		},
@@ -751,7 +769,7 @@ var data = {
 				'mineshaft',
 				'oilWell',
 				'orchards',
-				'postOffice',
+// 				'postOffice',
 				'quarry',
 				'refinery',
 				'rowhouses',
@@ -787,7 +805,7 @@ var data = {
 			cargo: 1,
 			crew: 1,
 			fuel: {},
-			speed: 15,
+			speed: 12,
 			offroadSpeed: 5,
 			buildCost: {metals:1,food:1},
 		},
@@ -858,8 +876,9 @@ var data = {
 			fuel: {fuel:3},
 			speed: 0,
 			offroadSpeed: 20,
-			buildCost: {metals:5,cloth:20,fiber:5,food:1,water:1},
+			buildCost: {metals:5,cloth:20,fiber:5,food:1,fuel:1},
 			canPassenger: true,
+			airborne: true,
 		},
 	
 	},
