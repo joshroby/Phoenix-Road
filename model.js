@@ -155,7 +155,7 @@ var model = {
 		events.respawnInfrastructure();
 		view.displayMap();
 		
-		model.startScore = model.victoryProgress();
+		players.p1.startScore = model.victoryProgress();
 		
 	},
 
@@ -658,6 +658,7 @@ var model = {
 		flatGame.players = {};
 		for (var player in players) {
 			nextPlayer = {};
+			nextPlayer.startScore = players[player].startScore;
 			nextPlayer.unitsUnlocked = players[player].unitsUnlocked;
 			nextPlayer.vision = players[player].vision;
 			nextPlayer.selfDefense = players[player].selfDefense;
@@ -782,7 +783,9 @@ var model = {
 				};
 			};
 			if (u.route !== undefined) {
-				u.route.splice(u.route.length-1,1,sites[u.route[u.route.length-1]])
+				u.route.splice(u.route.length-1,1,sites[u.route[u.route.length-1]]);
+			} else {
+				u.location = undefined;
 			};
 			if (u.buildComplete !== undefined) {
 				newUnit.buildComplete = new Date(u.buildComplete);
@@ -1230,16 +1233,12 @@ function Site(mapSize) {
 		console.log(infrastructure);
 		if (this.infrastructure.indexOf(infrastructure) !== -1) {
 			for (var c in infrastructure.inputs) {
-				this.commoditiesSetPoints[infrastructure.inputs[c]] /= 0.8;
-				if (this.adjustment[infrastructure.inputs[c]] == undefined) {
-					this.adjustment[infrastructure.inputs[c]] = 'return to set point';
-				};
+				this.commoditiesSetPoints[infrastructure.inputs[c]] *= 0.8;
+				this.logTransaction(infrastructure.inputs[c],-1);
 			};
 			for (var c in infrastructure.outputs) {
-				this.commoditiesSetPoints[infrastructure.inputs[c]] *= 0.8;
-				if (this.adjustment[infrastructure.inputs[c]] == undefined) {
-					this.adjustment[infrastructure.inputs[c]] = 'return to set point';
-				};
+				this.commoditiesSetPoints[infrastructure.outputs[c]] /= 0.8;
+				this.logTransaction(infrastructure.outputs[c],1);
 			};
 			this.infrastructure.splice(this.infrastructure.indexOf(infrastructure),1);
 		};
@@ -1906,6 +1905,7 @@ function Unit(owner,startLoc,type) {
 		unit.commodities.push({commodity:'food',qty:0});
 		var commodityIndex = unit.commodities.length - 1;
 		unit.resupply(commodityIndex);
+		model.clock.start();
 	};
 	
 	this.scuttle = function() {
@@ -1930,6 +1930,9 @@ function Unit(owner,startLoc,type) {
 		this.commodities.push({commodity:'passengers',qty:passengerQty});
 		this.location.population -= passengerQty/10;
 		this.location.reputation.p1 -= repCost;
+		if (this.location.population == 0) {
+			this.location.reptuation.p1 = 0;
+		};
 	};
 	
 	this.dropPassengers = function(repCost) {
@@ -2002,7 +2005,7 @@ var gamenEventPointers = {
 	},
 	
 	randomEvent: function() {
-		var randomEventList = ["aurochs", "bandits", "drought", "fire", "flood", "mysteriousSite", "oldWorldCache", "plague", "refugees", "respawnInfrastructure", "roadRefugees"];
+		var randomEventList = ["aurochs", "bandits", "drought", "fire", "flood", "mysteriousSite", "oldWorldCache", "plague", "raid", "refugees", "respawnInfrastructure", "roadRefugees", "war"];
 		randomEventList = randomEventList.concat(players.p1.specialEventStack);
 		var event = randomEventList[Math.random() * randomEventList.length << 0];
 		console.log(randomEventList);

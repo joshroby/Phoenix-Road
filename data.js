@@ -592,7 +592,7 @@ var data = {
 			name: 'Warehouse',
 			buildCost: {stone:2,lumber:4},
 			buildTime: 14,
-			goodwill: -1,
+			goodwill: -3,
 			visible: false,
 			jobs: 5,
 		},

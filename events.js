@@ -44,7 +44,7 @@ var events = {
 				for (var o of i.outputs) {
 					outputs.push(view.commodityIcon(o) + " " + data.commodities[o].name);
 				};
-				passageText += "<p>Your town does boast a "+i.name+", which produces "+gamen.prettyList(outputs)+".  Consequently, these commodities are a little more plentiful, and folks are more likely to hand them over.";
+				passageText += "<p>Your town does boast a "+i.name+", which produces "+gamen.prettyList(outputs)+".  Consequently, these commodities are a little more plentiful, less valuable, and folks are more likely to hand them over.";
 			};
 		} else {
 			passageText += "<p>There's no organized industry in your hometown.  Everyone's just too desperate to scrounge up enough food to eat.  Nobody has the time or resources to organize a going concern.";
@@ -70,55 +70,59 @@ var events = {
 	},
 	
 	tutorial_firstArrival: function() {
-		players.p1.eventLog.firstArrival = true;
-		var cargo = [units[0].commodities[2],units[0].commodities[3]];
-		var tradedHere = units[0].location.trading();
-		var tradedThere = players.p1.hometown.trading();
-		var cargoValueHere = tradedHere[cargo[0].commodity];
-		var cargoValueThere = tradedThere[cargo[0].commodity];
-		if (cargo[1] !== undefined) {
-			cargoValueHere += units[0].location.trading()[cargo[1].commodity];
-			cargoValueThere += players.p1.hometown.trading()[cargo[1].commodity];
-		};
-		cargoValueHere = Math.floor(cargoValueHere * 100);
-		cargoValueThere = Math.floor(cargoValueThere * 100);
-		var canBuyOne = {};
-		var canBuyTwo = {};
-		for (var i in tradedHere) {
-			if (tradedHere[i] * 100 < cargoValueHere) {
-				canBuyOne[i] = tradedHere[i];
-			};
-			if (tradedHere[i] * 200 < cargoValueHere) {
-				canBuyTwo[i] = tradedHere[i];
-			};
-		};
-		var potentialTrades = [];
-		for (i in canBuyOne) {
-			if (tradedThere[i] * 100 > cargoValueThere) {
-				potentialTrades.push('one ' + view.commodityIcon(i) + data.commodities[i].name + ", worth " + Math.floor(tradedThere[i]*100) + " back home");
-			}
-		};
-		for (i in canBuyTwo) {
-			if (tradedThere[i] * 200 > cargoValueThere) {
-				potentialTrades.push("two " + view.commodityIcon(i) + data.commodities[i].name + ", worth " + Math.floor(tradedThere[i]*200) + " back home");
-			}
-		};
-		var passageString = "You made it to "+units[0].location.name+"!<p>The people here can use the cargo you've brought.  If you give it to them, your reputation here will rise by "+cargoValueHere+".<p>";
-		if (cargoValueHere < cargoValueThere) {
-			passageString += "The people of "+units[0].location.name+" do not value your cargo as much as your neighbors back home (they'd value it around "+cargoValueThere+").  ";
+		if (units[0].location.population == 0) {
+			gamen.displayPassage(new Passage("You made it to "+units[0].location.name+" but have only discovered a Ghost Town.  There's nothing here but abandoned buildings and forgotten memories.  You'll have to find trading partners somewhere else."));
 		} else {
-			passageString += "The people of "+units[0].location.name+" value your cargo more than your neighbors back home (who'd value it around "+cargoValueThere+").  ";
-		};
-		passageString += "That doesn't especially matter, however.  What matters is if you can bring back something that the people in "+players.p1.hometown.name+" value highly.<p>";
-		if (potentialTrades.length == 0) {
-			passageString += "It doesn't appear that the townsfolk of "+units[0].location.name+" have anything that fits the bill, though.  Maybe the next town will have something that will make a good trade.";
-		players.p1.eventLog.firstArrival = false;
-		} else {
-			passageString += "You could trade your cargo for " + gamen.prettyList(potentialTrades,'or') + ".";
-		};
-		gamen.displayPassage(new Passage(passageString,undefined,false));
-		if (potentialTrades.length > 0) {
-			events.tutorial_howToTrade();
+			players.p1.eventLog.firstArrival = true;
+			var cargo = [units[0].commodities[2],units[0].commodities[3]];
+			var tradedHere = units[0].location.trading();
+			var tradedThere = players.p1.hometown.trading();
+			var cargoValueHere = tradedHere[cargo[0].commodity];
+			var cargoValueThere = tradedThere[cargo[0].commodity];
+			if (cargo[1] !== undefined) {
+				cargoValueHere += tradedHere[cargo[1].commodity];
+				cargoValueThere += tradedThere[cargo[1].commodity];
+			};
+			cargoValueHere = Math.floor(cargoValueHere * 100);
+			cargoValueThere = Math.floor(cargoValueThere * 100);
+			var canBuyOne = {};
+			var canBuyTwo = {};
+			for (var i in tradedHere) {
+				if (tradedHere[i] * 100 < cargoValueHere) {
+					canBuyOne[i] = tradedHere[i];
+				};
+				if (tradedHere[i] * 200 < cargoValueHere) {
+					canBuyTwo[i] = tradedHere[i];
+				};
+			};
+			var potentialTrades = [];
+			for (i in canBuyOne) {
+				if (tradedThere[i] * 100 > cargoValueThere) {
+					potentialTrades.push('one ' + view.commodityIcon(i) + data.commodities[i].name + ", worth " + Math.floor(tradedThere[i]*100) + " back home");
+				}
+			};
+			for (i in canBuyTwo) {
+				if (tradedThere[i] * 200 > cargoValueThere) {
+					potentialTrades.push("two " + view.commodityIcon(i) + data.commodities[i].name + ", worth " + Math.floor(tradedThere[i]*200) + " back home");
+				}
+			};
+			var passageString = "You made it to "+units[0].location.name+"!<p>The people here can use the cargo you've brought.  If you give it to them, your reputation here will rise by "+cargoValueHere+".<p>";
+			if (cargoValueHere < cargoValueThere) {
+				passageString += "The people of "+units[0].location.name+" do not value your cargo as much as your neighbors back home (they'd value it around "+cargoValueThere+").  ";
+			} else {
+				passageString += "The people of "+units[0].location.name+" value your cargo more than your neighbors back home (who'd value it around "+cargoValueThere+").  ";
+			};
+			passageString += "That doesn't especially matter, however.  What matters is if you can bring back something that the people in "+players.p1.hometown.name+" value highly.<p>";
+			if (potentialTrades.length == 0) {
+				passageString += "It doesn't appear that the townsfolk of "+units[0].location.name+" have anything that fits the bill, though.  Maybe the next town will have something that will make a good trade.";
+			players.p1.eventLog.firstArrival = false;
+			} else {
+				passageString += "You could trade your cargo for " + gamen.prettyList(potentialTrades,'or') + ".";
+			};
+			gamen.displayPassage(new Passage(passageString,undefined,false));
+			if (potentialTrades.length > 0) {
+				events.tutorial_howToTrade();
+			};
 		};
 	},
 	
@@ -139,10 +143,10 @@ var events = {
 		var passageString = "You have returned home ";
 		if (cargoValueHere + units[0].location.reputation.p1 > 100) {
 			players.p1.eventLog.returnHome = true;
-			passageString += "with a cart full of valuables your community can make good use of.<p>To give these commodities to your community, click on the <span class='fa fa-cart-arrow-down'></span> icons in your cart display on the left and hit the Trade button.<p>Your reputation here will rise by " + cargoValueHere + ".  By delivering valuable commodities to more than one community, your reputation grows.  This will allow you to move more necessary goods between even more communities.<p>Maintaining a good reputation will also allow you to refresh your provisions by clicking on the <span class='fa fa-refresh'></span> icons in your cart display on the left.  Your project runs on the bellies of you and your friends, so don't forget to top off your stocks of provisions whenever you can.";
+			passageString += "with a cart full of valuables your community can make good use of.<p>To give these commodities to your community, click on the <span class='fa fa-cart-arrow-down'></span> icons in your cart display on the left and hit the Trade button.<p>Your reputation here will rise by " + cargoValueHere + ".  By delivering valuable commodities to more than one community, your reputation grows.  This will allow you to move more necessary goods between even more communities.<p>Maintaining a good reputation will also allow you to resupply your provisions by clicking on the <span class='fa fa-refresh'></span> icons in your cart display on the left.  Your project runs on the bellies of you and your friends, so don't forget to top off your stocks of provisions whenever you can.";
 			var further = true;
 		} else {
-			passageString += "without much to show for your troubles.<p>Never fear, however.  You can swap out your cargo for something else.  While you're here, you can also click on the <span class='fa fa-refresh'></span> icons to refresh your food and water.  Then head back out there and find somebody who needs what you've got."
+			passageString += "without much to show for your troubles.<p>Never fear, however.  You can swap out your cargo for something else.  While you're here, you can also click on the <span class='fa fa-refresh'></span> icons to resupply your food and water.  Then head back out there and find somebody who needs what you've got."
 		};
 		gamen.displayPassage(new Passage(passageString,undefined,false));
 		if (further) {events.tutorial_further()};
@@ -161,7 +165,7 @@ var events = {
 		
 	aurochs: function() {
 		var unit = units[Math.random() * units.length << 0];
-		if (unit.inTransit) {
+		if (unit.inTransit && !unit.airborne) {
 			view.displayUnit(unit,true);
 			var passageString = unit.name + " encounters a wandering aurochs.  This huge bovine beast stands as tall as a small hut, and has horns bigger than a farmer's thigh (~4<span class='fa fa-hand-rock-o'></span>).";
 			passageString += "<p>Your "+model.selfDefense(unit,'display')+" drivers do enjoy a good steak...";
@@ -194,7 +198,7 @@ var events = {
 	
 	bandits: function() {
 		var unit = units[Math.random() * units.length << 0];
-		if (unit.location == undefined || unit.location.infrastructure.length == 0) {
+		if ( ( unit.location == undefined  && !unit.airborne ) || unit.location.infrastructure.length == 0) {
 			view.focus.unit = unit;
 			view.displayUnit(unit,true);
 			var threat = model.nearestThreat(unit.route[0].x,unit.route[0].y).threat;
@@ -486,7 +490,7 @@ var events = {
 				};
 			};
 		};
-		if (unit.inTransit && !unit.offroad) {
+		if (unit.inTransit && !unit.offroad && !unit.airborne) {
 			var numberRefugees = Math.max(Math.floor(Math.random() * 12 << 0),10);
 			var passageString = unit.name + " comes across "+numberRefugees+" people shuffling down the road.  They look tired and half-starved; who knows if they'll make it to where they're going.";
 			if (unit.type.canPassenger) {
@@ -524,7 +528,7 @@ var events = {
 		var spoils = sites[Math.random() * sites.length << 0];
 		var threatA = spoils.nearestThreat.threat;
 		var threatB = sites[Math.random() * sites.length << 0].nearestThreat.threat;
-		if (threatA == threatB) {
+		if (threatA != threatB) {
 			var passageString = threatB.name+" sparks a petty war with "+threatA.name+", fighting over the town of "+spoils.name+".<p>";
 			if (Math.random() > 0.5) {
 				passageString += "The fighting is intense but brief, and in the end, "+threatB.name+" wins the day.  "+threatB.name+" grows powerful while "+threatA.name+" is crippled.";
@@ -532,10 +536,12 @@ var events = {
 				threatA.strength--;
 			} else {
 				passageString += "The fighting is intense but brief, but in the end, "+threatA.name+" defends its turf.  "+threatA.name+" grows powerful while "+threatB.name+" is crippled.";
-				threatB.strength++;
-				threatA.strength--;
+				threatB.strength--;
+				threatA.strength++;
 			};
-			gamen.displayPassage(new Passage(passageString));
+			if (spoils.hasVisited.p1) {
+				gamen.displayPassage(new Passage(passageString));
+			};
 		};
 	},
 		

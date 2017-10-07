@@ -643,11 +643,12 @@ var view = {
 		siteReputationTooltip.className = 'tooltip';
 		siteReputationTooltip.innerHTML = Math.round(site.reputation.p1,4) + '<br />You earn ' + site.goodwill.p1 + ' reputation here each fortnight.';
 		siteReputationP.appendChild(siteReputationTooltip);
-		if (site.reputation.p1 > 0) {
-			siteReputationP.innerHTML += 'Your reputation here: +' + Math.round(site.reputation.p1,0);
+		if (site.population == 0) {
+		} else if (site.reputation.p1 > 0) {
+			siteReputationP.innerHTML += 'Your reputation here: +' + Math.floor(site.reputation.p1,0);
 			siteReputationP.className = 'positive';
 		} else if (site.reputation.p1 < 0) {
-			siteReputationP.innerHTML += 'You reputation here: ' + Math.round(site.reputation.p1,0);
+			siteReputationP.innerHTML += 'You reputation here: ' + Math.floor(site.reputation.p1,0);
 			siteReputationP.className = 'negative';
 		} else if (site.hasVisited.p1) {
 			siteReputationP.innerHTML += 'You have no reputation here.';

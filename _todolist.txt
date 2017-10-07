@@ -3,46 +3,23 @@ Down the Phoenix Road To Do List
 
 DONE
 
-- aurochs strength listed on the event
+fixed many problems with destroyInfrastructure()
 
-- game defeat stops the clock
+units loaded from save with routes no longer have their randomized locations
 
-- river events no longer flooding sites that don't have a river
+model.startscore moved to player object and saved/loaded
 
-- forgotten caches no longer have scrip
+ghost towns do not display your rep
 
-- respawn event respawns tinker camp and naked dowser if you haven't already unlocked them
+when you depopulate a ghost town, your rep there is erased
+	
+'unit has run out of food' passage now has a 'well buy some food, stupid' button
 
-- you can only refresh your fuel supply at sites that sell fuel
+zeppelins no longer encounter aurochs, bandits, or refugees on the road
 
-- sites can start with open pit mines
-
-~~
-
-Upgraded Names
-Blotting out sections of proto map to create more interesting maps
-new game centers and zooms on startUnit
-view.displayUnit() centers view on selected unit if not near center of display
+raid and wars registered with random events so will now occur
 
 IMMEDIATE FIXES
-
-- it appears destroyInfrastructure() is adding an 'undefined' entry to commodities
-	- both events.flood() and events.fire() creates the error
-
-- when a game is loaded, new units are assigned a random location if they are in transit
-	- on load, units with inTransit = true need to wipe their .location
-
-- model.startscore should move to player object and be saved/loaded
-
-- ghost towns should not display your rep
-	- you shouldn't have rep in a ghost town
-	
-- 'unit has run out of food' could use a 'well buy some food, stupid' button
-
-- zeppelins need to be immune from bandit attacks and aurochs
-
-- tutorial trade analysis math is way off now
-	- getting hit by bandits doesn't help
 
 - cache has trading items?
 	- cannot confirm
