@@ -511,11 +511,11 @@ var view = {
 			var diffY = e.pageY - view.zoom.dragStartY;
 			if (diffX < viewbox.minX && viewbox.minX - diffX + viewbox.width < 1000) {
 				view.zoom.dragStartX = e.pageX;
-				viewbox.minX -= diffX;
+				viewbox.minX -= diffX * view.zoom.z / 800;
 			};
 			if (diffY < viewbox.minY && viewbox.minY - diffY + viewbox.height < 1000) {
 				view.zoom.dragStartY = e.pageY;
-				viewbox.minY -= diffY;
+				viewbox.minY -= diffY * view.zoom.z / 800;
 			};
 			var viewboxString = viewbox.minX + ' ' + viewbox.minY + ' ' + viewbox.width + ' ' + viewbox.height;
 			mapSVG.setAttribute('viewBox',viewboxString);
@@ -1269,14 +1269,16 @@ var view = {
 			if (unit.isSurveying) {
 				var surveyingP = document.createElement('p');
 				var eta = Math.round(( unit.surveyComplete.getTime() - model.clock.time.getTime() ) / 8.64e+7,0);
-				surveyingP.innerHTML = "Surveying (" + eta + " days)";
+				surveyingP.innerHTML = "Surveying "+unit.location.name+" (" + eta + " days)";
 				unitPane.appendChild(surveyingP);
 			};
 		
 			// Action Buttons
 		
 			var unitOffroadButton = document.createElement('button');
-			if (unit.offroad == false) {
+			if (unit.type.airborne) {
+				unitOffroadButton.hidden = true;
+			} else if (unit.offroad == false) {
 				unitOffroadButton.innerHTML = 'Go Offroad';
 			} else if (unit.location == undefined) {
 				unitOffroadButton.innerHTML = 'Reach a Site';
@@ -1286,12 +1288,6 @@ var view = {
 			};
 			unitOffroadButton.setAttribute('onclick','handlers.toggleRoad()');
 			unitActionsDiv.appendChild(unitOffroadButton);
-		
-			var unitSurveyButton = document.createElement('button');
-			unitSurveyButton.innerHTML = 'Survey';
-			unitSurveyButton.setAttribute('onclick','handlers.survey()');
-			if (!unit.type.canSurvey || unit.isSurveying || unit.location == undefined) {unitSurveyButton.disabled = true;};
-			unitActionsDiv.appendChild(unitSurveyButton);
 		
 			var unitScuttleButton = document.createElement('button');
 			unitScuttleButton.innerHTML = 'Scuttle';
@@ -1363,8 +1359,8 @@ var view = {
 			
 			// Passengers
 			if (unit.type.canPassenger && unit.location !== undefined) {
-				unitPassengersDiv = document.createElement('div');
-				unitPassengersDiv.className = 'unitPassengersDiv';
+				var unitPassengersDiv = document.createElement('div');
+				unitPassengersDiv.className = 'unitPassengersDiv_'+u;
 				unitPane.appendChild(unitPassengersDiv);
 				
 				var takePassengersCost = unit.location.desirability();
@@ -1395,6 +1391,40 @@ var view = {
 				if (!hasPassengers) {
 					unitTakePassengersBtn.disabled = true;
 				};
+			};
+			
+			// Survey
+			
+			if (unit.type.canSurvey && unit.location !== undefined) {
+				var unitSurveyDiv = document.createElement('div');
+				unitSurveyDiv.id = 'unitSurveyDiv_'+u;
+				unitPane.appendChild(unitSurveyDiv);
+
+				unitSurveyHead = document.createElement('h3');
+				unitSurveyHead.innerHTML = 'Surveying';
+				unitSurveyDiv.appendChild(unitSurveyHead);
+				
+				var unitSurveyP = document.createElement('p');
+				unitSurveyDiv.appendChild(unitSurveyP);
+				if (unit.location.surveys.p1.length > 0) {
+					unitSurveyP.innerHTML = 'You have surveyed ' + unit.location.name + ' ' + gamen.prettyNumber(unit.location.surveys.p1.length) + ' times.  ';
+					var foundNothing = 0;
+					for (var s in unit.location.surveys.p1) {
+						if (unit.location.surveys.p1[s] == 'nothing') {
+							foundNothing++;
+						};
+					};
+					unitSurveyP.innerHTML += 'The surveys found nothing ' + gamen.prettyNumber(foundNothing) + ' times.';
+					unitSurveyP.innerHTML += '';
+				} else {
+					unitSurveyP.innerHTML = 'You have never surveyed ' + unit.location.name + '.';
+				};
+				
+				var unitSurveyButton = document.createElement('button');
+				unitSurveyButton.innerHTML = 'Survey';
+				unitSurveyButton.setAttribute('onclick','handlers.survey()');
+				if (!unit.type.canSurvey || unit.isSurveying || unit.location == undefined) {unitSurveyButton.disabled = true;};
+				unitSurveyDiv.appendChild(unitSurveyButton);
 			};
 		
 		};

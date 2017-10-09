@@ -22,6 +22,17 @@ var gamen = {
 				document.getElementById('gameDiv').appendChild(i);
 			};
 		};
+		
+		if (model.supportLink !== undefined) {
+			document.getElementById('gamenSupportBtn').hidden = false;
+			if (model.supportLinkLabel !== undefined) {
+				document.getElementById('gamenSupportBtn').innerHTML = model.supportLinkLabel;
+			};
+		};
+	},
+	
+	support: function() {
+		window.open(model.supportLink);
 	},
 	
 	prettyList: function(list,andor) {
@@ -39,6 +50,21 @@ var gamen = {
 			};
 		};
 		return prettyList;
+	},
+	
+	prettyNumber: function(integer) {
+		var result = integer;
+		if (integer < 0) {
+			var sign = 'negative ';
+			integer = Math.abs(integer);
+		};
+		if (integer < 20) {
+			result = ["zero","one","two","three",'four','five','six','seven','eight','nine','ten','eleven','twelve','thirteen','fourteen','fifteen','sixteen','seventeen','eighteen','nineteen'][integer];
+		};
+		if (sign !== undefined) {
+			result = sign + result;
+		};
+		return result;
 	},
 	
 	displayLoadGameDiv: function(saveGames,gameSavePrefix) {
@@ -60,7 +86,7 @@ var gamen = {
 			for (var i in saveGames) {
 				var saveDate = new Date(JSON.parse(localStorage[saveGames[i]]).saveDate);
 				var since = new Date() - saveDate;
-				if (since < 8.64e+7) {
+				if (since > 8.64e+7) {
 					saveDate = 
 						['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][saveDate.getDay()] + ", " +
 						['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][saveDate.getMonth()] + " " +
@@ -189,7 +215,41 @@ var gamen = {
 		if (choice.execute !== undefined) {choice.execute.apply(this,choice.argsArray);};
 		gamen.dismissPassage(choice);
 	},
+	
+	pronoun: function(object,form) {
+		if (object !== undefined) {
+			var result = object.pronouns[form];
+		};
+		if (result == undefined) {
+			result = form;
+		};
+		return result;
+	},
 
+};
+
+function they(object) {
+	return gamen.pronoun(object,'they');
+};
+
+function them(object) {
+	return gamen.pronoun(object,'them');
+};
+
+function their(object) {
+	return gamen.pronoun(object,'their');
+};
+
+function theirs(object) {
+	return gamen.pronoun(object,'theirs');
+};
+
+function themself(object) {
+	return gamen.pronoun(object,'themself');
+};
+
+function themselves(object) {
+	return gamen.pronoun(object,'themself');
 };
 
 // dismissing dialogue pane
@@ -287,4 +347,3 @@ function Choice(label,execute,argsArray,disabled) {
 	this.argsArray = argsArray;
 	this.disabled = disabled;
 };
-

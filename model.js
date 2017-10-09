@@ -12,6 +12,8 @@ var model = {
 
 	gameTitle: 'Down the Phoenix Road',
 	gameSavePrefix: 'PhoenixRoad',
+	supportLink: 'http://patreon.com/joshroby',
+	supportLinkLabel: 'Patreon',
 
 	options: {
 		tutorials: true,
@@ -72,7 +74,10 @@ var model = {
 		players.p1.knownLandmarks = [];
 		players.p1.knownRivers = [];
 		players.p1.recruitProgress = {};
-		players.p1.specialEventStack = [];
+		players.p1.eventStack = [];
+		
+		model.globalEventStack = ["respawnInfrastructure"];
+		model.globalSequesteredEvents = ["respawnInfrastructure","respawnInfrastructure","respawnInfrastructure","respawnInfrastructure","loadEvents"];
 		
 		var startUnit = new Unit(players.p1,sites[Math.random() * safeIndex << 0],data.units.donkeyCart);
 		if (startUnit.location.neighbors.length == 0) {
@@ -150,9 +155,6 @@ var model = {
 		distantArea[Math.random() * distantArea.length << 0].infrastructure.push(data.infrastructure.hangar);
 		distantArea[Math.random() * distantArea.length << 0].infrastructure.push(data.infrastructure.burntOutBus);
 		view.focus.unit = startUnit;
-		events.respawnInfrastructure();
-		events.respawnInfrastructure();
-		events.respawnInfrastructure();
 		view.displayMap();
 		
 		players.p1.startScore = model.victoryProgress();
@@ -663,7 +665,7 @@ var model = {
 			nextPlayer.vision = players[player].vision;
 			nextPlayer.selfDefense = players[player].selfDefense;
 			nextPlayer.hometown = sites.indexOf(players[player].hometown);
-			nextPlayer.specialEventStack = players[player].specialEventStack;
+			nextPlayer.eventStack = players[player].eventStack;
 			nextPlayer.knownSiteIndices = [];
 			for (var i of players[player].knownSites) {
 				for (var s in sites) {
@@ -725,7 +727,7 @@ var model = {
 		for (var s in saveGame.sites) {
 			var newSite = new Site();
 		};
-		var simples = ['name','adjustment','carpet','commodities','commoditiesSetPoints','goodwill','hasVisited','hasSurveyed','population','reputation','threat','trash','wages','x','y'];
+		var simples = ['name','adjustment','carpet','commodities','commoditiesSetPoints','goodwill','hasVisited','hasSurveyed','population','reputation','surveys','threat','trash','wages','x','y'];
 		for (var s in saveGame.sites) {
 			for (var d of simples) {
 				sites[s][d] = saveGame.sites[s][d];
@@ -853,6 +855,7 @@ function Site(mapSize) {
 	this.resources = [];
 	this.hasSurveyed = {};
 	this.hasSurveyed.p1 = [];
+	this.surveys = {p1:[]};
 	if (this.commodities.water < 0.1) {
 		this.resources.push(data.resources.river);
 	};
@@ -931,7 +934,7 @@ function Site(mapSize) {
 	if (this.commodities.stone < 0.2) {
 		this.infrastructure.push(data.infrastructure.fortress);
 	};
-	if (this.commodities.lumber < 0.4 && this.commodities.stone >= 0.3) {
+	if (this.commodities.lumber < 0.3 && this.commodities.stone >= 0.3) {
 		this.infrastructure.push(data.infrastructure.woodenPalisade);
 	};
 	if (this.commodities.lumber + this.commodities.stone < 0.2) {
@@ -948,7 +951,7 @@ function Site(mapSize) {
 	this.flat = function() {
 		var flat = {};
 		
-		var simples = ['name','adjustment','carpet','commodities','commoditiesSetPoints','goodwill','hasVisited','hasSurveyed','population','reputation','threat','trash','wages','x','y'];
+		var simples = ['name','adjustment','carpet','commodities','commoditiesSetPoints','goodwill','hasVisited','hasSurveyed','population','reputation','surveys','threat','trash','wages','x','y'];
 		for (var i of simples) {
 			flat[i] = this[i];
 		};
@@ -985,7 +988,7 @@ function Site(mapSize) {
 			if (this.nameSeed == undefined) {
 				upgradeName = this.name.slice(0,3 + Math.random() * 3 <<0);
 				// Denomative Suffices
-				if (Math.random() < 0.4) {
+				if (Math.random() < 0.2) {
 					var suffices = ['son','sdot','skid'];
 					upgradeName += suffices[Math.random() * suffices.length << 0];
 				};
@@ -1240,7 +1243,6 @@ function Site(mapSize) {
 	};
 	
 	this.destroyInfrastructure = function(infrastructure) {
-		console.log(infrastructure);
 		if (this.infrastructure.indexOf(infrastructure) !== -1) {
 			for (var c in infrastructure.inputs) {
 				this.commoditiesSetPoints[infrastructure.inputs[c]] *= 0.8;
@@ -1252,7 +1254,6 @@ function Site(mapSize) {
 			};
 			this.infrastructure.splice(this.infrastructure.indexOf(infrastructure),1);
 		};
-		console.log(this);
 	};
 	
 	this.useCommodities = function(useList) {
@@ -1292,7 +1293,6 @@ function Site(mapSize) {
 		};
 		for (var i in this.infrastructure) {
 			if (this.infrastructure[i].inputs !== undefined && this.infrastructure[i].outputs !== undefined && this.infrastructure[i].inputs.indexOf(commodityKey) !== -1) {
-				console.log(this.infrastructure[i]);
 				for (o of this.infrastructure[i].outputs) {
 					this.logTransaction(o,adjustment/2);
 				};
@@ -1670,7 +1670,7 @@ function Unit(owner,startLoc,type) {
 				this.route = [];
 				this.inTransit = false;
 				this.departed = false;
-				this.offroad = false;
+				if (!this.type.airborne) {this.offroad = false;};
 				this.look();
 				model.clock.running = false;
 				document.getElementById('clockPauseBtn').innerHTML = '<span class="fa fa-play"></span>';
@@ -1726,7 +1726,7 @@ function Unit(owner,startLoc,type) {
 				if (this.location.commodities.food * 100 > this.location.reputation.p1) {
 					resupplyDisabled = true;
 				};
-				var choiceArray = [new Choice('Resupply',this.resupplyFromPassage,[this],resupplyDisabled),new Choice()];
+				var choiceArray = [new Choice('Resupply ('+Math.ceil(this.location.commodities.food * 100)+' rep)',this.resupplyFromPassage,[this],resupplyDisabled),new Choice()];
 				gamen.displayPassage(new Passage(this.name + ' has run out of food.  The crew has taken on odd jobs in ' + this.location.name + ' to put food in their mouths.</p><p>If they are not resupplied soon, they might just settle down!',choiceArray));
 				this.isOddJobbing = true;
 				model.clock.running = false;
@@ -1805,9 +1805,10 @@ function Unit(owner,startLoc,type) {
 			this.location.hasSurveyed.p1[foundResource] = true;
 			gamen.displayPassage(new Passage(this.name + ' found a ' + this.location.resources[foundResource].name + " in " + this.location.name,choiceArray));
 			view.displaySiteDetails(this.location);
+			this.location.surveys.p1.push(this.location.resources[foundResource]);
 		} else {
-			
 			gamen.displayPassage(new Passage(this.name + ' found nothing in ' + this.location.name + '.',choiceArray));
+			this.location.surveys.p1.push('nothing');
 		};
 		this.surveyPotentials = [];
 		this.surveyComplete = undefined;
@@ -2023,9 +2024,15 @@ var gamenEventPointers = {
 	},
 	
 	randomEvent: function() {
-		var randomEventList = ["aurochs", "bandits", "drought", "fire", "flood", "mysteriousSite", "oldWorldCache", "plague", "raid", "refugees", "respawnInfrastructure", "roadRefugees", "war"];
-		randomEventList = randomEventList.concat(players.p1.specialEventStack);
-		var event = randomEventList[Math.random() * randomEventList.length << 0];
+		var randomEventList = model.globalEventStack;
+		var eventIndex = Math.random() * randomEventList.length << 0;
+		var event = randomEventList[eventIndex];
+		if (events.globalEvents.indexOf(event) !== -1) {
+			model.globalSequesteredEvents.push(event);
+		};
+		model.globalEventStack.splice(model.globalEventStack.indexOf(event),1);
+		model.globalEventStack.push(model.globalSequesteredEvents.shift());
+				
 		console.log(randomEventList);
 		console.log(event);
 		events[event]();
