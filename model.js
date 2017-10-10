@@ -40,7 +40,7 @@ var model = {
 		
 		var safeIndex = model.newMap();
 		
-		var nameSeedsList = ['Green','Hope','Faith','Ruin','Desolation','Old','New','Rossum','Signal','Temple','Dust','King','Queen','Sovereign','Prince'];
+		var nameSeedsList = ['Green','Hope','Faith','Ruin','Desolation','Old','New','Rossum','Nyarly','Signal','Temple','Dust','King','Queen','Sovereign','Prince',"People's",'Public'];
 		var nameSeeds = [];
 		for (var i = 0;i<nameSeedsList.length;i++) {
 			var num = Math.random() * nameSeedsList.length << 0;
@@ -114,7 +114,7 @@ var model = {
 		// Testing Cheats
 // 		startUnit.location.infrastructure.push(data.infrastructure.lensmeister);
 // 		startUnit.location.infrastructure.push(data.infrastructure.arena);
-		startUnit.location.infrastructure.push(data.infrastructure.cartwright);
+// 		startUnit.location.infrastructure.push(data.infrastructure.cartwright);
 // 		var dowser = new Unit(players.p1,startUnit.location,data.units.dowser);
 // 		var tinker = new Unit(players.p1,startUnit.location,data.units.tinkersCart);
 // 		var horseCart = new Unit(players.p1,startUnit.location,data.units.horseCart);
@@ -281,7 +281,7 @@ var model = {
 					};
 				};
 				if (farFromSites) {
-					landmarks.push({x:x,y:y,type:Math.random(),size:Math.random()});
+					landmarks.push({x:x+Math.random() * 50 - 25,y:y+Math.random() * 50 - 25,type:Math.random(),size:Math.random()});
 				};
 			};
 		};
@@ -294,7 +294,7 @@ var model = {
 				riverSites.push(sites[s]);
 			};
 		};
-		for (var i=0;i<50;i++) {
+		for (var i=0;i<100;i++) {
 			riverSites.push(landmarks[Math.random() * landmarks.length << 0]);
 		};
 		for (s in riverSites) {
@@ -1005,7 +1005,7 @@ function Site(mapSize) {
 					upgradeName += suffices[Math.random() * suffices.length << 0];
 				};
 				if (Math.random() < 0.3 && upgradeName.substr(-1) !== 's') {
-					upgradeName += 's';
+					upgradeName += "'s";
 				};
 			};
 			
@@ -1022,6 +1022,9 @@ function Site(mapSize) {
 				};
 			};
 			upgradeName += suffices[Math.random() * suffices.length << 0];
+			if (upgradeName.indexOf(' ') == -1) {
+				upgradeName = upgradeName.replace("'","");
+			};
 			
 			var uniqueName = true;
 			for (var i in sites) {
@@ -1796,6 +1799,7 @@ function Unit(owner,startLoc,type) {
 		for (var i in landmarks) {
 			if (( Math.pow(Math.pow(landmarks[i].x - unitX,2) + Math.pow(landmarks[i].y - unitY,2),.5) < this.owner.vision + 60 ) && this.owner.knownLandmarks.indexOf(landmarks[i]) == -1) {
 				this.owner.knownLandmarks.push(landmarks[i]);
+				this.owner.knownLandmarks.sort(function(a,b) {return (a.y > b.y) ? 1 : ((b.y > a.y) ? -1 : 0);});
 			};
 		};
 		for (var i in rivers) {

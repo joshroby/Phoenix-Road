@@ -3,6 +3,7 @@ Down the Phoenix Road To Do List
 
 DONE
 
+Landmark images
 
 
 IMMEDIATE FIXES
@@ -23,14 +24,8 @@ NEXT FEATURE / OPTIMIZATION
 	- movement animation/transition
 	- landmark draw functions
 
+- Gamen Responsive Design
 
-
-
-GAMEN
-	pronoun substitution
-	prettyNumber(2) -> "two"
-	color palette
-	responsive design in the CSS
 
 
 FUTURE EXPANSIONS

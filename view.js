@@ -180,21 +180,15 @@ var view = {
 		stop.setAttribute('stop-opacity',0);
 		greenGradient.appendChild(stop);
 		
-		var landmarkGradient = document.createElementNS('http://www.w3.org/2000/svg','radialGradient');
-		landmarkGradient.id = 'landmarkGradient';
-		defs.appendChild(landmarkGradient);
-		var stop = document.createElementNS('http://www.w3.org/2000/svg','stop');
-		stop.setAttribute('offset','10%');
-		stop.setAttribute('stop-color','darkorange');
-		stop.setAttribute('stop-opacity',1);
-		landmarkGradient.appendChild(stop);
-		var stop = document.createElementNS('http://www.w3.org/2000/svg','stop');
-		stop.setAttribute('offset','100%');
-		stop.setAttribute('stop-color','darkorange');
-		stop.setAttribute('stop-opacity',0.1);
-		landmarkGradient.appendChild(stop);
-				
 		for (var i in data.units) {
+			if (draw[i] !== undefined) {
+				var svgNodes = draw[i]();
+				defs.appendChild(svgNodes);
+			};
+		};
+		
+		var landmarkTypes = ['cactus','cowSkull','hillock','saltFlats','spire'];
+		for (var i of landmarkTypes) {
 			if (draw[i] !== undefined) {
 				var svgNodes = draw[i]();
 				defs.appendChild(svgNodes);
@@ -266,37 +260,6 @@ var view = {
 			};
 		};
 		
-		var landmarksGroup = document.createElementNS('http://www.w3.org/2000/svg','g');
-		landmarksGroup.id = 'landmarksGroup';
-		svg.appendChild(landmarksGroup);
-// 		landmarksGroup.setAttribute('filter','url(#landmarkFilter)');
-
-		for (var i in players.p1.knownLandmarks) {
-			var newLandmark = document.createElementNS('http://www.w3.org/2000/svg','ellipse');
-			newLandmark.setAttribute('fill','darkorange');
-			newLandmark.setAttribute('cx',players.p1.knownLandmarks[i].x);
-			newLandmark.setAttribute('cy',players.p1.knownLandmarks[i].y);
-			newLandmark.setAttribute('rx',(0.5 * players.p1.knownLandmarks[i].size + 0.25) * 100);
-			newLandmark.setAttribute('ry',(1 - (0.5 * players.p1.knownLandmarks[i].size + 0.25)) * 100);
-			newLandmark.setAttribute('transform','rotate('+ players.p1.knownLandmarks[i].type*360+' '+players.p1.knownLandmarks[i].x+' '+players.p1.knownLandmarks[i].y+')');
-			landmarksGroup.appendChild(newLandmark);
-		};
-		
-		var riversGroup = document.createElementNS('http://www.w3.org/2000/svg','g');
-		riversGroup.id = 'riversGroup';
-		svg.appendChild(riversGroup);
-		
-		for (r of players.p1.knownRivers) {
-			var riverSegment = document.createElementNS('http://www.w3.org/2000/svg','path');
-			riverSegment.setAttribute('fill','none');
-			riverSegment.setAttribute('stroke','darkseagreen');
-			riverSegment.setAttribute('stroke-width',r.width);
-			riverSegment.setAttribute('stroke-linecap','round');
-			var d = 'M' + r.x1 + ',' + r.y1 + ' C ' + r.c1x + ' ' + r.c1y + ' ' + r.c2x + ' ' + r.c2y + ' ' + r.x2 + ' ' + r.y2;
-			riverSegment.setAttribute('d',d);
-			riversGroup.appendChild(riverSegment);
-		};
-
 		var routesGroup = document.createElementNS('http://www.w3.org/2000/svg','g');
 		routesGroup.id = 'routesGroup';
 		svg.appendChild(routesGroup);
@@ -317,6 +280,37 @@ var view = {
 				newRoute.setAttribute('d',d);
 				routesGroup.appendChild(newRoute);
 			};
+		};
+		
+		var riversGroup = document.createElementNS('http://www.w3.org/2000/svg','g');
+		riversGroup.id = 'riversGroup';
+		svg.appendChild(riversGroup);
+		
+		for (r of players.p1.knownRivers) {
+			var riverSegment = document.createElementNS('http://www.w3.org/2000/svg','path');
+			riverSegment.setAttribute('fill','none');
+			riverSegment.setAttribute('stroke','#B4B482');
+			riverSegment.setAttribute('stroke-width',r.width);
+			riverSegment.setAttribute('stroke-linecap','round');
+			var d = 'M' + r.x1 + ',' + r.y1 + ' C ' + r.c1x + ' ' + r.c1y + ' ' + r.c2x + ' ' + r.c2y + ' ' + r.x2 + ' ' + r.y2;
+			riverSegment.setAttribute('d',d);
+			riversGroup.appendChild(riverSegment);
+		};
+
+		var landmarksGroup = document.createElementNS('http://www.w3.org/2000/svg','g');
+		landmarksGroup.id = 'landmarksGroup';
+		svg.appendChild(landmarksGroup);
+		
+		var landmarkTypes = ['cactus','cowSkull','hillock','saltFlats','spire','hillock','saltFlats','hillock','saltFlats'];
+
+		for (var i in players.p1.knownLandmarks) {
+			var landmark = landmarkTypes[players.p1.knownLandmarks[i].type * landmarkTypes.length << 0];
+			var newLandmark = document.createElementNS('http://www.w3.org/2000/svg','use');
+			newLandmark.setAttribute('href','#'+landmark);
+			newLandmark.setAttribute('x',players.p1.knownLandmarks[i].x);
+			newLandmark.setAttribute('y',players.p1.knownLandmarks[i].y);
+			landmarksGroup.appendChild(newLandmark);
+
 		};
 		
 		var sitesGroup = document.createElementNS('http://www.w3.org/2000/svg','g');
@@ -420,6 +414,43 @@ var view = {
 			};
 			unitsGroup.appendChild(newUnit);
 		};
+
+		var frameGroup = document.createElementNS('http://www.w3.org/2000/svg','g');
+		frameGroup.id = 'frameGroup';
+		svg.appendChild(frameGroup);
+
+		var rect = document.createElementNS('http://www.w3.org/2000/svg','rect');
+		rect.setAttribute('fill','darkorange');
+		rect.setAttribute('x','-1000');
+		rect.setAttribute('y','-1000');
+		rect.setAttribute('width','3000');
+		rect.setAttribute('height','1000');
+		frameGroup.appendChild(rect);
+
+		var rect = document.createElementNS('http://www.w3.org/2000/svg','rect');
+		rect.setAttribute('fill','darkorange');
+		rect.setAttribute('x','-1000');
+		rect.setAttribute('y','-1000');
+		rect.setAttribute('width','1000');
+		rect.setAttribute('height','3000');
+		frameGroup.appendChild(rect);
+
+		var rect = document.createElementNS('http://www.w3.org/2000/svg','rect');
+		rect.setAttribute('fill','darkorange');
+		rect.setAttribute('x','1000');
+		rect.setAttribute('y','-1000');
+		rect.setAttribute('width','1000');
+		rect.setAttribute('height','3000');
+		frameGroup.appendChild(rect);
+
+		var rect = document.createElementNS('http://www.w3.org/2000/svg','rect');
+		rect.setAttribute('fill','darkorange');
+		rect.setAttribute('x','-1000');
+		rect.setAttribute('y','1000');
+		rect.setAttribute('width','3000');
+		rect.setAttribute('height','1000');
+		frameGroup.appendChild(rect);
+
 		
 		svg.addEventListener('mousedown',view.mapDragStart);
 		svg.addEventListener('mousemove',view.mapDragGo);
