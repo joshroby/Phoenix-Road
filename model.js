@@ -114,7 +114,7 @@ var model = {
 		// Testing Cheats
 // 		startUnit.location.infrastructure.push(data.infrastructure.lensmeister);
 // 		startUnit.location.infrastructure.push(data.infrastructure.arena);
-// 		startUnit.location.infrastructure.push(data.infrastructure.mechanic);
+		startUnit.location.infrastructure.push(data.infrastructure.cartwright);
 // 		var dowser = new Unit(players.p1,startUnit.location,data.units.dowser);
 // 		var tinker = new Unit(players.p1,startUnit.location,data.units.tinkersCart);
 // 		var horseCart = new Unit(players.p1,startUnit.location,data.units.horseCart);
@@ -588,15 +588,22 @@ var model = {
 	},
 	
 	upgrade: function(stat,cost) {
+		var passageString, prettyStat;
 		if (stat == 'vision') {
 			players.p1[stat] *= 2;
 			for (u in units) {
 				units[u].look();
 			};
+			passageString = 'The elder gifts you with a set of precision lenses, along with the goggles, rangefinders, and stands you will need to use with them.  You should be able to see a lot farther across the wasteland with all this!';
+			prettyStat = "Vision";
 		} else if (stat == 'selfDefense') {
 			players.p1[stat] += 0.2;
+			passageString = "You sit down and watch a night's worth of fights ranging from the tactical to the elegant to the brutal.  There's a few moves you're sure you can teach the rest of the drivers.";
+			prettyStat = "Self Defense";
 		};
 		view.focus.unit.location.reputation.p1 -= cost;
+		passageString += '<p />Your '+prettyStat+' has been raised to '+players.p1[stat]+'.';
+		gamen.displayPassage(new Passage(passageString));
 	},
 	
 	victoryProgress: function() {
@@ -653,6 +660,8 @@ var model = {
 			flatGame.eventQueue.push({time:e,events:model.clock.events[e]});
 		};
 		
+		flatGame.globalEventStack = model.globalEventStack;
+		flatGame.globalSequesteredEvents = model.globalSequesteredEvents;
 		flatGame.landmarks = landmarks;
 		flatGame.rivers = rivers;
 		
@@ -719,6 +728,9 @@ var model = {
 			};
 		};
 		gamen.clocks = [model.clock];
+		
+		model.globalEventStack = saveGame.globalEventStack;
+		model.globalSequesteredEvents = saveGame.globalSequesteredEvents;
 
 		landmarks = saveGame.landmarks;
 		rivers = saveGame.rivers;
@@ -727,7 +739,7 @@ var model = {
 		for (var s in saveGame.sites) {
 			var newSite = new Site();
 		};
-		var simples = ['name','adjustment','carpet','commodities','commoditiesSetPoints','goodwill','hasVisited','hasSurveyed','population','reputation','surveys','threat','trash','wages','x','y'];
+		var simples = ['name','adjustment','arrivalEventsList','carpet','commodities','commoditiesSetPoints','goodwill','hasVisited','hasSurveyed','population','reputation','surveys','threat','trash','wages','x','y'];
 		for (var s in saveGame.sites) {
 			for (var d of simples) {
 				sites[s][d] = saveGame.sites[s][d];
@@ -951,7 +963,7 @@ function Site(mapSize) {
 	this.flat = function() {
 		var flat = {};
 		
-		var simples = ['name','adjustment','carpet','commodities','commoditiesSetPoints','goodwill','hasVisited','hasSurveyed','population','reputation','surveys','threat','trash','wages','x','y'];
+		var simples = ['name','adjustment','arrivalEventsList','carpet','commodities','commoditiesSetPoints','goodwill','hasVisited','hasSurveyed','population','reputation','surveys','threat','trash','wages','x','y'];
 		for (var i of simples) {
 			flat[i] = this[i];
 		};
@@ -1539,6 +1551,11 @@ function Unit(owner,startLoc,type) {
 			if (caravan[u].isBuilding) {isBuilding = true};
 			if (caravan[u].isSurveying) {isSurveying = true};
 		};
+		if (this.location.name == "Roadside" || this.location.name == "Nowhere") {
+			waterStore = Infinity;
+			foodStore = Infinity;
+			console.log('ping');
+		};
 				
 		if (route !== undefined && waterStore >= waterDrank && foodStore >= foodEaten && fuelStore >= fuelBurned && cargo <= cargoCapacity && !isBuilding && !isSurveying) {
 			this.inTransit = true;
@@ -1635,22 +1652,7 @@ function Unit(owner,startLoc,type) {
 			this.commodities.push({commodity:'water',qty:Math.floor(Math.random()*10)});
 		} else if (fuelStore == 0 && this.type.fuel.fuel !== undefined) {
 			gamen.displayPassage(new Passage(this.name + " has run out of fuel."));
-			var shelter = new Site();
-			shelter.x = this.route[0].x;
-			shelter.y = this.route[0].y;
-			shelter.name = 'Roadside';
-			shelter.population = 0;
-			shelter.nearestThreat = model.nearestThreat(shelter.x,shelter.y);
-			shelter.infrastructure = [];
-			shelter.resources = [];
-			shelter.neighbors = [this.departedFrom,this.route[this.route.length - 1]];
-			shelter.hasVisited.p1 = true;
-			players.p1.knownSites.push(shelter);
-			this.departedFrom.neighbors.push(shelter);
-			this.route[this.route.length - 1].neighbors.push(shelter);
-			this.location = shelter;
-			this.route = undefined;
-			this.inTransit = false;
+			this.roadside();
 		} else {
 			var currentStep = this.route.shift();
 			this.departed = true;
@@ -1679,6 +1681,31 @@ function Unit(owner,startLoc,type) {
 			};
 			view.displayMap();
 		};
+	};
+	
+	this.roadside = function() {
+		var roadside = new Site();
+		roadside.x = this.route[0].x;
+		roadside.y = this.route[0].y;
+		if (this.offroad) {
+			roadside.name = 'Nowhere';
+			roadside.neighbors = [];
+		} else {
+			roadside.name = 'Roadside';
+			roadside.neighbors = [this.departedFrom,this.route[this.route.length - 1]];
+			this.route[this.route.length - 1].neighbors.push(roadside);
+			this.departedFrom.neighbors.push(roadside);
+		};
+		roadside.population = 0;
+		roadside.nearestThreat = model.nearestThreat(roadside.x,roadside.y);
+		roadside.infrastructure = [];
+		roadside.resources = [];
+		roadside.hasVisited.p1 = true;
+		players.p1.knownSites.push(roadside);
+		this.location = roadside;
+		this.route = undefined;
+		this.inTransit = false;
+		model.clock.running = false;
 	};
 	
 	this.eat = function() {
@@ -1955,6 +1982,19 @@ function Unit(owner,startLoc,type) {
 	};
 	
 	this.dropPassengers = function(repCost) {
+		if (this.location.population == 0 && this.location.neighbors.length == 0) {
+			var nearestDist = Infinity;
+			var nearestSite = undefined;
+			for (var s in sites) {
+				var distance = Math.pow(Math.pow(this.location.x-sites[s].x,2)+Math.pow(this.location.y - sites[s].y,2),0.5);
+				if (distance < nearestDist && distance > 0) {
+					nearestDist = distance;
+					nearestSite = sites[s];
+				};
+			};
+			this.location.neighbors.push(nearestSite);
+			nearestSite.neighbors.push(this.location);
+		};
 		var commodityIndex;
 		for (var c in this.commodities) {
 			if (this.commodities[c].commodity == 'passengers') {

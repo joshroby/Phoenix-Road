@@ -189,6 +189,12 @@ var handlers = {
 		view.focus.unit.cancelRoute();
 	},
 	
+	roadside: function(unitIndex) {
+		units[unitIndex].roadside();
+		view.displayMap();
+		view.displayUnit(units[unitIndex]);
+	},
+	
 	recruit: function(infrastructureIndex) {
 		var infrastructure = view.focus.unit.location.infrastructure[infrastructureIndex];
 		model.recruit(infrastructure);

@@ -164,18 +164,19 @@ var events = {
 	// Core Random Events
 	
 	globalEvents: ["aurochs", "drought", "fire", "flood", "mysteriousSite", "oldWorldCache", "plague", "raid", "refugees", "respawnInfrastructure", "roadRefugees", "threat", "war"],
-	removeEventsAtStart: ['threat','war'],
+	appendEventsAtStart: ['threat','raid','war'],
 	
 	loadEvents: function() {
 		var startEvents = [];
 		for (var e of events.globalEvents) {
-			if (events.removeEventsAtStart.indexOf(e) == -1) {
+			if (events.appendEventsAtStart.indexOf(e) == -1) {
 				startEvents.push(e);
 			};
 		};
 		var half = Math.floor(startEvents.length/2);
 		model.globalEventStack = startEvents.slice(0,half);
 		model.globalSequesteredEvents = startEvents.slice(half);
+		model.globalSequesteredEvents = model.globalSequesteredEvents.concat(events.appendEventsAtStart);
 	},
 		
 	aurochs: function() {
@@ -376,6 +377,7 @@ var events = {
 						mysteriousSite.commodities[c] = data.commodities[c].baseValue * .03;
 					};
 				};
+				view.displayMap();
 			};
 		};
 	},

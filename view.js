@@ -784,7 +784,17 @@ var view = {
 					for (var u in site.infrastructure[i].buildUnits) {
 						if (data.units[site.infrastructure[i].buildUnits[u]].unlockable == undefined || players.p1.unitsUnlocked[site.infrastructure[i].buildUnits[u]]) {
 							var buildOption = document.createElement('option');
-							buildOption.innerHTML = data.units[site.infrastructure[i].buildUnits[u]].name;
+							if (view.focus.unit.location == site) {
+								var canBuild = view.focus.unit.canAfford(data.units[site.infrastructure[i].buildUnits[u]].buildCost,'rep');
+								if (canBuild == Infinity) {
+									buildOption.innerHTML = '&#10060; ';
+								} else if (canBuild > site.reputation.p1)  {
+									buildOption.innerHTML = '&#10060; ';
+								} else {
+									buildOption.innerHTML = '&#10024; ';
+								};
+							};
+							buildOption.innerHTML += data.units[site.infrastructure[i].buildUnits[u]].name;
 							buildOption.value = site.infrastructure[i].buildUnits[u];
 							buildSelect.appendChild(buildOption);
 						};
@@ -1261,9 +1271,14 @@ var view = {
 				unitPane.appendChild(enRouteP);
 				if (!unit.departed) {
 					var cancelRouteBtn = document.createElement('button');
-					cancelRouteBtn.innerHTML = 'cancel';
+					cancelRouteBtn.innerHTML = 'Cancel Route';
 					cancelRouteBtn.setAttribute('onclick','handlers.cancelRoute('+unitIndex+')');
 					unitPane.appendChild(cancelRouteBtn);
+				} else {
+					var cancelRouteBtn = document.createElement('button');
+					cancelRouteBtn.innerHTML = 'Stop Here';
+					cancelRouteBtn.setAttribute('onclick','handlers.roadside('+unitIndex+')');
+					unitPane.appendChild(cancelRouteBtn);					
 				};
 			};
 			if (unit.isSurveying) {
@@ -1336,7 +1351,15 @@ var view = {
 					};
 					if ((requirements == undefined || requirementsFulfilled) && !replaced && unit.location.infrastructure.indexOf(data.infrastructure[unit.type.buildInfrastructures[b]]) == -1) {
 						var unitBuildOption = document.createElement('option');
-						unitBuildOption.innerHTML = data.infrastructure[unit.type.buildInfrastructures[b]].name;
+						var canBuild = unit.canAfford(data.infrastructure[unit.type.buildInfrastructures[b]].buildCost,'rep');
+						if (canBuild == Infinity) {
+							unitBuildOption.innerHTML = '&#10060; ';
+						} else if (canBuild > unit.location.reputation.p1)  {
+							unitBuildOption.innerHTML = '&#10060; ';
+						} else {
+							unitBuildOption.innerHTML = '&#10024; ';
+						};
+						unitBuildOption.innerHTML += data.infrastructure[unit.type.buildInfrastructures[b]].name;
 						unitBuildOption.value = unit.type.buildInfrastructures[b];
 						unitBuildSelect.appendChild(unitBuildOption);
 					};

@@ -3,26 +3,6 @@ Down the Phoenix Road To Do List
 
 DONE
 
-- make the randomevents list sequester what just happened so you don't get repeats
-	- slowly feed sequestered events back in
-
-- Gamen Crowdfunding Support Link
-
-- when a ZEPPELIN arrives at a site, does NOT switch off Offroad automatically
-	- also disabled the 'return to road' button for airborne units
-
-- Survey action button only on Survey units
-	- also display how many no-result surveys have happened at a site
-
-- housing defends against plague
-- no droughts in ghost towns
-- mitigated droughts in riverside towns
-- 'fire in <ghost town>' burns down everything
-- 'refugees in <ghost town>' rewritten 
-
-- Wooden Palisade less common
-
-- drag takes zoom into account
 
 
 IMMEDIATE FIXES
@@ -30,21 +10,14 @@ IMMEDIATE FIXES
 - cache has trading items?
 	- cannot confirm
 
+- can we figure out the mouseover / mouseclick thing with the map?
 
+- "Stop Here" in the midst of a multi-step route produces crazy shortcut roads
 
 NEXT FEATURE / OPTIMIZATION
 
-- some trigger adds 'threat' and 'war' events to stack
 
 
-- event pop up when you use an upgrade site
-
-- when you drop passengers into a ghost town with no neighbors, check to see if nearest neighbor is within max dist and create a road (both ways)
-
-- Cancel route while in the midst of route.  Use "Roadside" code.
-	- adjust Unit.move() to allow moves from Roadside when you need food/water
-
-- tinker pulldown displays something to indicate what can and can't be built
 
 - SVG tinkering
 	- movement animation/transition
