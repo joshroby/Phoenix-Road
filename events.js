@@ -529,7 +529,6 @@ var events = {
 	
 	roadRefugees: function() {
 		var unit = units[Math.random() * units.length << 0];
-		view.focus.unit = unit;
 		view.displayUnit(unit,true);
 		if (unit.caravan !== undefined) {
 			for (var i in unit.caravan) {

@@ -875,6 +875,12 @@ var model = {
 				};
 			};
 			if (u.route !== undefined) {
+				for (var r in u.route) {
+					u.route[r].to = sites[u.route[r].toIndex];
+					u.route[r].from = sites[u.route[r].fromIndex];
+					delete u.route[r].toIndex;
+					delete u.route[r].fromIndex;
+				};
 				u.route.splice(u.route.length-1,1,sites[u.route[u.route.length-1]]);
 			} else {
 				u.location = undefined;
@@ -1510,6 +1516,12 @@ function Unit(owner,startLoc,type) {
 			flat[i] = this[i];
 		};
 		if (flat.route !== undefined) {
+			for (var i=0;i<flat.route.length-1;i++) {
+				flat.route[i].toIndex = sites.indexOf(flat.route[i].to);
+				flat.route[i].fromIndex = sites.indexOf(flat.route[i].from);
+				delete flat.route[i].to;
+				delete flat.route[i].from;
+			};
 			flat.route[flat.route.length-1] = sites.indexOf(flat.route[flat.route.length-1]);
 		};
 		

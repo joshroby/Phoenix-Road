@@ -369,7 +369,11 @@ var view = {
 			};
 			newSite.setAttribute('cx',players.p1.knownSites[i].x);
 			newSite.setAttribute('cy',players.p1.knownSites[i].y);
-			if (players.p1.knownSites[i].population < 100) {
+			if (players.p1.knownSites[i].population < 50) {
+				newSite.setAttribute('r',2);
+			} else if (players.p1.knownSites[i].population < 100) {
+				newSite.setAttribute('r',3);
+			} else if (players.p1.knownSites[i].population < 200) {
 				newSite.setAttribute('r',4);
 			} else if (players.p1.knownSites[i].population < 400) {
 				newSite.setAttribute('r',5);

@@ -2,9 +2,11 @@ Down the Phoenix Road To Do List
 
 
 DONE
-
+- new route format with sites in to and from are properly flattened for save and unflatted on load
 
 IMMEDIATE FIXES
+
+
 
 
 NEXT FEATURE / OPTIMIZATION
