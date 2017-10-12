@@ -117,8 +117,6 @@ var view = {
 	},
 
 	displayMap: function() {
-	
-		console.log('redrawing',Math.random());
 		
 		var mapDiv = document.getElementById('mapDiv');
 		mapDiv.innerHTML = '';

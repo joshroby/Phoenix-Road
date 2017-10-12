@@ -10,11 +10,6 @@ var gamen = {
 		if (titleHead !== undefined && gameTitle !== undefined) {
 			titleHead.innerHTML = gameTitle;
 		};
-				
-		var loadGameDiv = document.getElementById('loadGameDiv');
-		if (loadGameDiv !== undefined) {
-			gamen.displayLoadGameDiv();
-		};
 		
 		if (model.gameDivContents !== undefined) {
 			var gameDivContents = model.gameDivContents();
@@ -22,6 +17,11 @@ var gamen = {
 			for (var i of gameDivContents) {
 				document.getElementById('gameDiv').appendChild(i);
 			};
+		};
+				
+		var loadGameDiv = document.getElementById('loadGameDiv');
+		if (loadGameDiv) {
+			gamen.displayLoadGameDiv();
 		};
 		
 		if (model.supportLink !== undefined) {
@@ -160,7 +160,9 @@ var gamen = {
 		if (saveGame !== undefined) {
 			var saveName = prompt('Overwrite current save or rename:',name);
 			saveName = model.gameSavePrefix + ' ' + saveName;
+			console.log(saveGame);
 			localStorage[saveName] = JSON.stringify(saveGame);
+			gamen.displayPassage(new Passage('Save Complete'));
 		};
 
 	},

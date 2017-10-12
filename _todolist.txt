@@ -3,12 +3,6 @@ Down the Phoenix Road To Do List
 
 DONE
 
-- game over no longer displays 'you have rebuilt NaN% of civilization'
-
-- drag at max zoom allow you to drag back to frame
-
-- can mouseover and click on both site circles and labels
-
 
 IMMEDIATE FIXES
 

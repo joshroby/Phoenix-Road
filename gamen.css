@@ -36,9 +36,8 @@ div:after {
 
 /* Save & Load Game */
 #loadGameDiv {
-	width:50vw;
-	margin-left: 25vw;
-	margin-top: 5vh;
+	width:100%;
+	margin-top: 5%;
 }
 
 #loadGameHeader {
@@ -50,13 +49,13 @@ div:after {
 }
 
 .loadGameItem {
-	margin: 1vw;
+	margin: 1%;
 	width: 40%;
 	float: left;
 }
 
 .loadGameTimeDiv {
-	margin: 1vw;
+	margin: 1%;
 	width: 25%;
 	float: left;
 	font-size: 0.8em;

@@ -38,6 +38,10 @@ var model = {
 		introDiv.innerHTML = data.introText;
 		result.push(introDiv);
 		
+		var loadGameDiv = document.createElement('div');
+		loadGameDiv.id = 'loadGameDiv';
+		introDiv.appendChild(loadGameDiv);
+		
 		var detailsUnitDiv = document.createElement('div');
 		detailsUnitDiv.id = 'detailsUnitDiv';
 		result.push(detailsUnitDiv);
@@ -556,6 +560,7 @@ var model = {
 				sites[s].reputation[g] += sites[s].goodwill[g]/20;
 			};
 			if (Object.keys(sites[s].adjustment).length > 0) {
+				var tradingHere = sites[s].trading();
 				for (var a in sites[s].adjustment) {
 					var magnitude = 0.995;
 					for (var i in sites[s].infrastructure) {
@@ -578,8 +583,10 @@ var model = {
 							sites[s].commodities[a] = sites[s].commoditiesSetPoints[a];
 							delete sites[s].adjustment[a];
 						};
-					} else {
+					} else if (tradingHere[a] !== undefined) { // common and produced goods return to set point
 						sites[s].adjustment[a] = 'return to set point';
+					} else { // exotic goods (pulled from or added to stockpiles) remain changed
+						delete sites[s].adjustment[a];
 					};
 				};
 			};
@@ -673,7 +680,7 @@ var model = {
 			prettyStat = "Self Defense";
 		};
 		view.focus.unit.location.reputation.p1 -= cost;
-		passageString += '<p />Your '+prettyStat+' has been raised to '+players.p1[stat]+'.';
+		passageString += '<p />Your '+prettyStat+' has been raised to '+Math.floor(players.p1[stat]*100)/100+'.';
 		gamen.displayPassage(new Passage(passageString));
 	},
 	
@@ -1228,7 +1235,6 @@ function Site(mapSize) {
 				industrial = industrial.concat(this.infrastructure[b].outputs);
 			};
 			for (var d in this.commodities) {
-				model.error1040 = this;
 				if (data.commodities[d].common) {
 					commodities[d] = this.commodities[d];
 				};
