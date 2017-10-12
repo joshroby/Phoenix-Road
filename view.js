@@ -409,16 +409,12 @@ var view = {
 			newUnit.setAttribute('stroke-width','40');
 			if (units[i].inTransit) {
 				newUnit.setAttribute('stroke','#006400');
-// 				newUnit.setAttribute('fill','#006400');
 			} else if (units[i].isBuilding) {
 				newUnit.setAttribute('stroke','#F0E68C');
-// 				newUnit.setAttribute('fill','#F0E68C');
 			} else if (units[i].isSurveying) {
 				newUnit.setAttribute('stroke','#AFEEEE');
-// 				newUnit.setAttribute('fill','#AFEEEE');
 			} else {
 				newUnit.setAttribute('stroke','red');
-// 				newUnit.setAttribute('fill','red');
 			};
 			unitsGroup.appendChild(newUnit);
 		};
@@ -523,7 +519,7 @@ var view = {
 				view.zoom.viewbox = viewbox;
 			} else {
 				view.zoom.z += e.deltaY * 2;
-				view.zoom.z = Math.min(Math.max(view.zoom.z,1),1000);
+				view.zoom.z = Math.min(Math.max(view.zoom.z,100),1000);
 
 				var viewbox = view.zoom.viewbox;
 				viewbox.minX = viewbox.minX + viewbox.width/2 - view.zoom.z/2;
@@ -1058,6 +1054,7 @@ var view = {
 	},
 	
 	displayUnit: function(unit,zoom) {
+		console.log('view',unit.name,zoom);
 		var selectedUnit = unit;
 		view.focus.unit = unit;
 		
@@ -1073,12 +1070,12 @@ var view = {
 			var inScreen = view.zoom.viewbox.minX+view.zoom.viewbox.width*0.2 < unitX && unitX < view.zoom.viewbox.minX+view.zoom.viewbox.width*0.8 && view.zoom.viewbox.minY+view.zoom.viewbox.height*0.2 < unitY && unitY < view.zoom.viewbox.minY+view.zoom.viewbox.height*0.8;
 			if (!inScreen) {
 				view.zoom = {
-					z: 500,
+					z: view.zoom.z,
 					viewbox: {
-						minX: unitX-250,
-						minY: unitY-250,
-						height: 500,
-						width: 500,
+						minX: unitX-view.zoom.z/2,
+						minY: unitY-view.zoom.z/2,
+						height: view.zoom.z,
+						width: view.zoom.z,
 					},
 				};
 			};

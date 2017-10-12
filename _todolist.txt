@@ -2,12 +2,19 @@ Down the Phoenix Road To Do List
 
 
 DONE
-- new route format with sites in to and from are properly flattened for save and unflatted on load
+
+units at sites that have routes display with green outline
+
 
 IMMEDIATE FIXES
 
+Delivering cargo that is USED but not produced (and not common) should, after initial adjustement, also return to set point
 
+all units in transit are displayed in tabs on load (?!?)
 
+pop up for 'need more food/water/fuel' needs to say 'caravan' when appropriate
+
+build complete does not focus on builder?
 
 NEXT FEATURE / OPTIMIZATION
 
@@ -16,7 +23,11 @@ NEXT FEATURE / OPTIMIZATION
 - SVG tinkering
 	- movement animation/transition
 
+- selectUnit zooming animated
 
+- when multiple units are at a site, stagger them on the map
+
+save tutorial on/off
 
 FUTURE EXPANSIONS
 
@@ -38,12 +49,9 @@ FUTURE EXPANSIONS
 	- Fire Station kills fire events (100%)
 	- Clinic/Hospital for Plague?
 	- construction crew upgrades to industry infrastructure?
-	- Library (Old World Ruins upgrade)
+	- Library (requires Old World Ruins)
 		- research to discover resources in other sites
-	- Scavenge Site (Old World Ruins upgrade)
-		- scavenge for Metals, Fuel, Clothing
-		- costs rep, get pack of random commodities
-		- how you get a Construction Crew when you've lost all Refineries/Foundries
+		- research to discover sites outside your knownSites
 
 - Refugees Upgrade
 	- have a global count of refugees
@@ -79,6 +87,7 @@ FUTURE EXPANSIONS
 	- a 'resource' that can be drained to turn it into River
 	- must add sites with swamp to the rivers setup
 
+- Population Growth
 
 - a 'notes' file that saves with game so you can tell Future Self what your strategy is
 

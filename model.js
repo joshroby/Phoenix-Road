@@ -1327,11 +1327,13 @@ function Site(mapSize) {
 			};
 		};
 		for (var i of this.infrastructure) {
-			for (var c of infrastructure.outputs) {
-				if (i.inputs.indexOf(c) !== -1) {
-					for (o of i.outputs) {
-						this.commoditiesSetPoints[o] *= 0.9
-						this.logTransaction(o,-0.5);
+			if (infrastructure.outputs !== undefined) {
+				for (var c of infrastructure.outputs) {
+					if (i.inputs !== undefined && i.outputs !== undefined && i.inputs.indexOf(c) !== -1) {
+						for (o of i.outputs) {
+							this.commoditiesSetPoints[o] *= 0.9
+							this.logTransaction(o,-0.5);
+						};
 					};
 				};
 			};

@@ -415,6 +415,7 @@ var events = {
 			if (housedDeaths > 0) {
 				if (housedDeaths == 1) {var conjugate = 'es',nounPlural = '';} else {var conjugate = '',nounPlural = 's';};
 				var housedDeathString = gamen.prettyNumber(housedDeaths);
+				console.log(housedDeathString);
 				housedDeathString = housedDeathString.charAt(0).toUpperCase() + housedDeathString.slice(1);
 				passageString += housedDeathString + " pass" + conjugate + " in the comfort of their home"+nounPlural+".  ";
 			};

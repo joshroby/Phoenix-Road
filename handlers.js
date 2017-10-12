@@ -54,6 +54,7 @@ var handlers = {
 		if (view.focus.unit !== undefined && view.focus.unit.location !== undefined) {
 			view.focus.unit.move(site);
 		};
+		view.displayMap();
 	},
 	
 	selectUnit: function(unitIndex) {
@@ -162,6 +163,7 @@ var handlers = {
 	makeTrade: function() {
 		view.focus.unit.makeTrade();
 		handlers.clearTrade();
+		view.displayMap();
 	},
 	
 	clearTrade: function() {
