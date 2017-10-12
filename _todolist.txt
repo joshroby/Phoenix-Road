@@ -3,32 +3,40 @@ Down the Phoenix Road To Do List
 
 DONE
 
-Landmark images
+- Gamen Responsive Design
 
+- towns hosting threats no longer garbage-collected from map
+
+- bandit event triggers on one unit and sticks with them
+
+- "Stop Here" in the midst of a multi-step route no longer produces shortcut roads
+
+- spawn text for respawnInfrastructure (otherwise 'Burnt Out Bus is built in X')
+
+- Scrapyard is a tinker-buildable infrastructure that unreliably provides Metals and Fuels
 
 IMMEDIATE FIXES
 
-- cache has trading items?
-	- cannot confirm
+- ' you have rebuilt NaN% of civilization'
 
-- can we figure out the mouseover / mouseclick thing with the map?
-
-- "Stop Here" in the midst of a multi-step route produces crazy shortcut roads
 
 NEXT FEATURE / OPTIMIZATION
 
-
-
+- buying up non-common commodities that are not produced locally should affect setPoints
+	- you are depleting their stockpile
 
 - SVG tinkering
 	- movement animation/transition
-	- landmark draw functions
 
-- Gamen Responsive Design
+- drag at max zoom needs to allow you to drag off the frame
+
+- can we figure out the mouseover / mouseclick thing with the map?
 
 
 
 FUTURE EXPANSIONS
+
+- pop up display for 'who do I know that makes this commodity?'
 
 - New Random Events
 	- site discovers resource
@@ -46,8 +54,12 @@ FUTURE EXPANSIONS
 	- Fire Station kills fire events (100%)
 	- Clinic/Hospital for Plague?
 	- construction crew upgrades to industry infrastructure?
-	- Library infrastructure (not buildable / Old World Ruins upgrade)
+	- Library (Old World Ruins upgrade)
 		- research to discover resources in other sites
+	- Scavenge Site (Old World Ruins upgrade)
+		- scavenge for Metals, Fuel, Clothing
+		- costs rep, get pack of random commodities
+		- how you get a Construction Crew when you've lost all Refineries/Foundries
 
 - Refugees Upgrade
 	- have a global count of refugees
@@ -65,7 +77,7 @@ FUTURE EXPANSIONS
 	- you can discover their home base
 	- you can nullify a threat / reduce its strength
 	- arrival events
-		- ask for intel, which increases danger of knownSites
+		- they ask for intel, which queues a raid where they have an advantage
 		- tax goods (can take percentage of loads)
 		- confiscate goods (take a whole load)
 

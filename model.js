@@ -29,6 +29,73 @@ var model = {
 			volatility: 5,
 		},
 	},
+	
+	gameDivContents: function() {
+		var result = [];
+		
+		var introDiv = document.createElement('div');
+		introDiv.id = 'introDiv';
+		introDiv.innerHTML = data.introText;
+		result.push(introDiv);
+		
+		var detailsUnitDiv = document.createElement('div');
+		detailsUnitDiv.id = 'detailsUnitDiv';
+		result.push(detailsUnitDiv);
+		
+		var centerColumn = document.createElement('div');
+		centerColumn.id = 'centerColumn';
+		result.push(centerColumn);
+		
+			var mapDiv = document.createElement('div');
+			mapDiv.id = 'mapDiv';
+			centerColumn.appendChild(mapDiv);
+		
+				var mapSVG = document.createElementNS('http://www.w3.org/2000/svg','svg');
+				mapSVG.id = 'mapSVG';
+				mapDiv.appendChild(mapSVG);
+		
+			var tradeDiv = document.createElement('div');
+			tradeDiv.id = 'tradeDiv';
+			centerColumn.appendChild(tradeDiv);
+		
+				var unitStuffDiv = document.createElement('div');
+				unitStuffDiv.id = 'unitStuffDiv';
+				unitStuffDiv.className = 'tradeDiv';
+				tradeDiv.appendChild(unitStuffDiv);
+		
+				var tradeControlsDiv = document.createElement('div');
+				tradeControlsDiv.id = 'tradeControlsDiv';
+				tradeControlsDiv.className = 'tradeDiv';
+				tradeDiv.appendChild(tradeControlsDiv);
+		
+					var balanceDiv = document.createElement('div');
+					balanceDiv.id = 'balanceDiv';
+					tradeControlsDiv.appendChild(balanceDiv);
+				
+					var button = document.createElement('button');
+					button.id = 'tradeBtn';
+					button.innerHTML = 'Trade';
+					button.setAttribute('onclick','handlers.makeTrade()');
+					button.setAttribute('disabled','true');
+					tradeControlsDiv.appendChild(button);
+				
+					var button = document.createElement('button');
+					button.id = 'clearBtn';
+					button.innerHTML = 'Clear';
+					button.setAttribute('onclick','handlers.clearTrade()');
+					tradeControlsDiv.appendChild(button);
+		
+				var siteStuffDiv = document.createElement('div');
+				siteStuffDiv.id = 'siteStuffDiv';
+				siteStuffDiv.className = 'tradeDiv';
+				tradeDiv.appendChild(siteStuffDiv);
+		
+		var detailsSiteDiv = document.createElement('div');
+		detailsSiteDiv.id = 'detailsSiteDiv';
+		result.push(detailsSiteDiv);
+		
+		return result;
+	},
 
 	newGame: function() {
 		
@@ -112,6 +179,7 @@ var model = {
 		startUnit.name = "Grams' Old Donkey Cart";
 		
 		// Testing Cheats
+		startUnit.location.infrastructure.push(data.infrastructure.scrapyard);
 // 		startUnit.location.infrastructure.push(data.infrastructure.lensmeister);
 // 		startUnit.location.infrastructure.push(data.infrastructure.arena);
 // 		startUnit.location.infrastructure.push(data.infrastructure.cartwright);
@@ -145,7 +213,10 @@ var model = {
 		};
 		
 		localArea.shift();
-		localArea[Math.random() * localArea.length << 0].infrastructure.push(data.infrastructure.cartwright);
+		var cartwrightIndex = Math.random() * localArea.length << 0;
+		if (localArea[cartwrightIndex].infrastructure.indexOf(data.infrastructure.cartwright) == -1) {
+			localArea[cartwrightIndex].infrastructure.push(data.infrastructure.cartwright);
+		};
 		localArea[Math.random() * localArea.length << 0].infrastructure.push(data.infrastructure.lensmeister);
 		localArea[Math.random() * localArea.length << 0].infrastructure.push(data.infrastructure.kidOnABike);
 		localArea[Math.random() * localArea.length << 0].infrastructure.push(data.infrastructure.tinkerCamp);
@@ -176,7 +247,7 @@ var model = {
 		};
 		
 		// Blot out sites 
-		var blots = (Math.random()+Math.random()) * 5 << 0;
+		var blots = (Math.random()+Math.random()) * 4 << 0;
 		for (var i=0;i<blots;i++) {
 			var blot = {
 				x: (1000 - mapSize)/2 + Math.random() * mapSize << 0,
@@ -515,7 +586,7 @@ var model = {
 			if (sites[s].trash.length > 0 && Math.random() < 0.05) {
 				sites[s].trash.splice(sites[s].trash.length * Math.random() >> 0,1);
 			};
-			if (sites[s].infrastructure.length == 0 && sites[s].trash.length == 0) {
+			if (sites[s].infrastructure.length == 0 && sites[s].trash.length == 0 && sites[s].threat == undefined) {
 				if (sites[s].population > 0) {
 					if (Math.random() < 0.05) {
 						sites[s].population -= Math.random() * Math.random() * 50 << 0;
@@ -1344,7 +1415,7 @@ function Site(mapSize) {
 	this.pathTo = function(destinationSite) {
 		var startKey = this.x + '_' + this.y;
 		var routes = {};
-		routes[startKey] = {site:this,route:[{x:this.x,y:this.y}],distance:0};
+		routes[startKey] = {site:this,route:[{x:this.x,y:this.y,site:this}],distance:0};
 		for (var i=0;i<15;i++) {
 			for (var s in routes) {
 				if (routes[s].site.hasVisited.p1) {
@@ -1355,7 +1426,7 @@ function Site(mapSize) {
 						for (var r in routes[s].route) {
 							newRoute.push(routes[s].route[r]);
 						};
-						newRoute.push({x:destination.x,y:destination.y});
+						newRoute.push({x:destination.x,y:destination.y,site:destination});
 						var distance = routes[s].distance + Math.pow(Math.pow(destination.x - routes[s].site.x,2) + Math.pow(destination.y - routes[s].site.y,2),0.5);
 						if (routes[destinationKey] == undefined || distance < routes[destinationKey].distance) {
 							routes[destinationKey] = {site:destination,route:newRoute,distance:distance};
@@ -1579,7 +1650,7 @@ function Unit(owner,startLoc,type) {
 					var stepX = (nextWaypoint.x - lastWaypoint.x)/stepsInLeg;
 					var stepY = (nextWaypoint.y - lastWaypoint.y)/stepsInLeg;
 				};
-				this.route.push({x:lastWaypoint.x + stepsThisLeg*stepX,y:lastWaypoint.y + stepsThisLeg*stepY});
+				this.route.push({x:lastWaypoint.x + stepsThisLeg*stepX,y:lastWaypoint.y + stepsThisLeg*stepY,from:lastWaypoint.site,to:nextWaypoint.site});
 				stepsThisLeg++;
 			};
 			this.route[0].y += 10; // So unit doesn't overlap site
@@ -1695,9 +1766,9 @@ function Unit(owner,startLoc,type) {
 			roadside.neighbors = [];
 		} else {
 			roadside.name = 'Roadside';
-			roadside.neighbors = [this.departedFrom,this.route[this.route.length - 1]];
-			this.route[this.route.length - 1].neighbors.push(roadside);
-			this.departedFrom.neighbors.push(roadside);
+			roadside.neighbors = [this.route[0].to,this.route[0].from];
+			this.route[0].to.neighbors.push(roadside);
+			this.route[0].from.neighbors.push(roadside);
 		};
 		roadside.population = 0;
 		roadside.nearestThreat = model.nearestThreat(roadside.x,roadside.y);
@@ -2008,6 +2079,20 @@ function Unit(owner,startLoc,type) {
 		this.location.population += this.commodities[commodityIndex].qty / 10;
 		this.commodities.splice(commodityIndex,1);
 		this.location.reputation.p1 += repCost;
+	};
+	
+	this.salvage = function(commodityList) {
+		var repCost = 0;
+		for (c of commodityList) {
+			repCost += this.location.commodities[c];
+		};
+		repCost = Math.floor(repCost * 100 / commodityList.length);
+		this.location.reputation.p1 -= repCost;
+		var commodity = commodityList[Math.random() * commodityList.length << 0];
+		var passageString = "The locals working here dredge up a load of " + view.commodityIcon(commodity) + " " + data.commodities[commodity].name + ".";
+		gamen.displayPassage(new Passage(passageString));
+		this.commodities.push({commodity:commodity,qty:100});
+		view.displayUnit(this);
 	};
 	
 	this.canAfford = function(buildCost,output) {

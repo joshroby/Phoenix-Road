@@ -1,5 +1,7 @@
 var data = {
 
+	introText: "<p>Grams likes to talk about how the world used to be, with running water and cars and airplanes and all that.  That's not the world you ever knew.</p><p>You live in a little town huddling in the midst of a wasteland.  There's never enough of what's needed, and usually too much of what's not.  There are a few scraggely roads towards the horizon that nobody ever takes.</p><p>You figure: there's other towns out there.  They must need things, and have things, and maybe if somebody travels the road, they could help meet those needs.  Maybe things could get better.</p><p>You've got a donkey cart.  Your friend says they'll join you to see what's out there.</p><p>What will you find Down the Phoenix Road?</p>",
+
 	commodities: {
 	
 		food: {
@@ -189,6 +191,7 @@ var data = {
 			recruitCost: {},
 			text: "There's a kid here with an ancient but functional bike.",
 			passage: "There's a kid here with an ancient but functional bicycle.",
+			spawn: "A kid finds an ancient but functional bicycle.",
 			visible: false,
 		},
 		nakedDowser:  {
@@ -198,6 +201,7 @@ var data = {
 			recruitCost: {clothing:1,lumber:1},
 			text: "This unfortunate dowser is huddled over a pitiful fire... naked.",
 			passage: "Just outside of town, you come across a small cart with 'Dowsing Services' painted on the side.  In the shelter afforded by the cart sputters a pitiful fire, and beside the fire, shivering and cursing, is what you assume to be the dowser... naked as a jaybird.<p>At your hesitant inquiry, the dowser warns, 'Careful, the people in that town over yonder don't take kindly to bad news.  They left me like this when I couldn't find a spring some ancient fool swears he used to drink from as a kid.'<p>Whether or not you trade with the town, you wonder if there's anything you can do for the poor dowser.",
+			spawn: "A travelling dowser runs afoul of the locals.",
 			visible: false,
 		},
 		tinkerCamp: {
@@ -207,6 +211,7 @@ var data = {
 			recruitCost: {food:8},
 			text: "These tinkers are interested in work but skeptical of your ability to feed them.",
 			passage: "This small band of tinkers travels town to town doing odd jobs.  When informed of your plans, they suggest they could help in exchange for regular meals.",
+			spawn: "A band of tinkers arrives, offering to do odd jobs around town.",
 			visible: false,
 		},
 		burntOutBus: {
@@ -216,6 +221,7 @@ var data = {
 			recruitCost: {water:2,fuel:1,metals:1},
 			text: "This burnt-out husk can be refurbished with a few materials.",
 			passage: "You come across a burned-out vehicle, apparently hit by bandits.  It appears it was large enough for its former owners to live in... and die in.  They sure aren't using it anymore...",
+			spawn: "A pyre of flames lights on the outskirts of town. After shouts, gunfire, and screams, the conflagration burns all night.",
 			visible: false,
 		},
 		cartwright: {
@@ -237,6 +243,7 @@ var data = {
 		hangar: {
 			name:'Hangar',
 			passage: "You come across a huge, old-world building, like half a barrel lying on its side... if that barrel was broader than any tree.  A handful of people mill about outside the structure, working diligently on repairing or building bits of machinery.  Inside... inside is a huge skeleton of metal beams draped in shimmering cloth.<p>At your approach, one of the workers waves a hand in welcome.  'Ah, the trader,' she shouts merrily.  'We've heard about you.  How'd you like to make your deliveries from the sky?'",
+			spawn: "A group of road-weary travelers sets up shop in a cavernous old world ruin.",
 			visible: true,
 			buildUnits: ['zeppelin'],
 			inputs: ['metals','fiber','fuel'],
@@ -246,6 +253,7 @@ var data = {
 			name: 'Arena',
 			passage: "This town hosts a no-holds-barred pit fighting event few days.  Road warriors, brutes, and soldiers from all over travel here to test their skills against each other. Admission can be pretty exclusive, especially for the best fighters' bouts, but there's also an amateur's night.  There are no rules inside the arena, which makes it a whole lot like fights you've seen out on the road.  Maybe you can learn a thing or two watching.",
 			text: "Take in a bout at the arena, maybe you'll learn some tricks you can share with the other drivers.",
+			spawn: "For lack of other entertainment, the locals put together a brutal pit-fighting arena.",
 			visible: false,
 			upgrade: 'selfDefense',
 			upgradeDisplay: "Self Defense",
@@ -257,6 +265,7 @@ var data = {
 			name: 'Lensmeister',
 			passage: "One of this town's eldest citizens has amassed a sizeable collection of ancient glass lenses.  Some of the pieces in the collection include spyglasses and powerful telescopes.  The elder is happy enough to gift you with a weak specimen in exchange for an evening of your stories.  They intimate that they'd be willing to part with even more powerful artifacts if you help their town.",
 			text: "The elder is happy to share their collection of lenses with people who help the town.",
+			spawn: "One of the elders here has started showing off their collection of old world lenses.",
 			visible: false,
 			upgrade: 'vision',
 			upgradeDisplay: "Vision",
@@ -266,6 +275,7 @@ var data = {
 		mechanic: {
 			name:'Mechanic',
 			passage: "This town is the home of an expert in ancient machines, a mechanic.  Cars and trucks resurrected from her junkyard are used throughout the town.  These powerful machines can haul more, and faster, than anything pulled by an animal.  For the right materials, she can rebuild one of the hulks in her junkyard for your use.",
+			spawn: "A clattering, popping machine pulls up the road into town and disgorges a oil-stained mechanic.  She asks around town if there is a place she can set up shop.",
 			visible: false,
 			buildUnits: [
 				'bicycle',
@@ -526,6 +536,16 @@ var data = {
 			outputs: ['tack'],
 			jobs: 2,
 		},
+		scrapyard: {
+			name: 'Scrapyard',
+			buildCost: {lumber:2,stone:2},
+			requiredResource: ['ruins'],
+			buildTime: 21,
+			visible: true,
+			jobs: 4,
+			potentialCommodities: ['cloth','clothing','fuel','metals','stone'],
+			text: 'Sponsor local efforts to dig up something interesting. ',
+		},
 		seine: {
 			name: 'Seine',
 			buildCost: {fiber:4},
@@ -741,6 +761,7 @@ var data = {
 // 				'postOffice',
 				'rowhouses',
 				'saddler',
+				'scrapyard',
 				'seamstress',
 				'seine',
 				'shantyTown',
@@ -813,7 +834,7 @@ var data = {
 			cargo: 1,
 			crew: 1,
 			fuel: {},
-			speed: 12,
+			speed: 8,
 			offroadSpeed: 5,
 			buildCost: {metals:1,food:1},
 		},

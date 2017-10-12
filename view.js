@@ -463,6 +463,7 @@ var view = {
 		mapDiv.appendChild(svg);
 		
 		var progressDiv = document.createElement('div');
+		progressDiv.id = 'progressDiv';
 		mapDiv.appendChild(progressDiv);
 		
 		var progressExploreDiv = document.createElement('div');
@@ -565,15 +566,12 @@ var view = {
 
 		var siteCharacterDiv = document.createElement('div');
 		siteCharacterDiv.id = 'siteCharacterDiv';
-		siteCharacterDiv.className = 'sidebarTop';
 		detailsSiteDiv.appendChild(siteCharacterDiv);
 		var siteCommoditiesDiv = document.createElement('div');
 		siteCommoditiesDiv.id = 'siteCommoditiesDiv';
-		siteCommoditiesDiv.className = 'sidebarMiddle';
 		detailsSiteDiv.appendChild(siteCommoditiesDiv);
 		var siteInfrastructureDiv = document.createElement('div');
 		siteInfrastructureDiv.id = 'siteInfrastructureDiv';
-		siteInfrastructureDiv.className = 'sidebarBottom';
 		detailsSiteDiv.appendChild(siteInfrastructureDiv);
 
 		var siteHead = document.createElement('h2');
@@ -668,29 +666,6 @@ var view = {
 			siteFeatureItem.prepend(siteFeatureItemTooltip);
 		};
 	
-		var siteReputationP = document.createElement('a');
-		siteReputationP.id = 'siteReputationP';
-		var siteReputationTooltip = document.createElement('span');
-		siteReputationTooltip.className = 'tooltip';
-		siteReputationTooltip.innerHTML = Math.round(site.reputation.p1,4) + '<br />You earn ' + site.goodwill.p1 + ' reputation here each fortnight.';
-		siteReputationP.appendChild(siteReputationTooltip);
-		if (site.population == 0) {
-		} else if (site.reputation.p1 > 0) {
-			siteReputationP.innerHTML += 'Your reputation here: +' + Math.floor(site.reputation.p1,0);
-			siteReputationP.className = 'positive';
-		} else if (site.reputation.p1 < 0) {
-			siteReputationP.innerHTML += 'You reputation here: ' + Math.floor(site.reputation.p1,0);
-			siteReputationP.className = 'negative';
-		} else if (site.hasVisited.p1) {
-			siteReputationP.innerHTML += 'You have no reputation here.';
-			siteReputationP.className = '';
-		} else {
-			siteReputationP.innerHTML += 'You have no reputation there.';
-			siteReputationP.className = '';
-		};
-		siteReputationP.className += ' tipAnchor';
-		siteCommoditiesDiv.appendChild(siteReputationP);
-	
 		if (site.hasVisited.p1) {
 			var commoditiesTraded = site.trading();
 			var commoditiesBought = site.buying();
@@ -756,6 +731,29 @@ var view = {
 			};
 		};
 		
+		var siteReputationP = document.createElement('a');
+		siteReputationP.id = 'siteReputationP';
+		var siteReputationTooltip = document.createElement('span');
+		siteReputationTooltip.className = 'tooltip';
+		siteReputationTooltip.innerHTML = Math.round(site.reputation.p1,4) + '<br />You earn ' + site.goodwill.p1 + ' reputation here each fortnight.';
+		siteReputationP.appendChild(siteReputationTooltip);
+		if (site.population == 0) {
+		} else if (site.reputation.p1 > 0) {
+			siteReputationP.innerHTML += 'Your reputation here: +' + Math.floor(site.reputation.p1,0);
+			siteReputationP.className = 'positive';
+		} else if (site.reputation.p1 < 0) {
+			siteReputationP.innerHTML += 'You reputation here: ' + Math.floor(site.reputation.p1,0);
+			siteReputationP.className = 'negative';
+		} else if (site.hasVisited.p1) {
+			siteReputationP.innerHTML += 'You have no reputation here.';
+			siteReputationP.className = '';
+		} else {
+			siteReputationP.innerHTML += 'You have no reputation there.';
+			siteReputationP.className = '';
+		};
+		siteReputationP.className += ' tipAnchor';
+		siteCommoditiesDiv.appendChild(siteReputationP);
+		
 		var pathByRoad = false;
 		var travelTime;
 		var roadTravelTime;
@@ -792,7 +790,7 @@ var view = {
 			siteInfrastructureDiv.appendChild(travelTimeP);
 		};
 		
-			
+		// Infrastructure
 		if (site.hasVisited.p1 && site.population > 0) {
 			for (var i in site.infrastructure) {
 				if (site.infrastructure[i].buildUnits !== undefined) {
@@ -863,6 +861,31 @@ var view = {
 					var infrastructureDiv = document.createElement('div');
 					infrastructureDiv.innerHTML = 'Trade for Valuables';
 					siteInfrastructureDiv.appendChild(infrastructureDiv);
+				} else if (site.infrastructure[i].potentialCommodities !== undefined) {
+					var infrastructureDiv = document.createElement('div');
+					siteInfrastructureDiv.appendChild(infrastructureDiv);
+					var infrastructureHead = document.createElement('h3');
+					infrastructureHead.innerHTML = site.infrastructure[i].name;
+					infrastructureDiv.appendChild(infrastructureHead);
+					var infrastructureDescription = document.createElement('p');
+					infrastructureDescription.innerHTML = site.infrastructure[i].text;
+					var potentialCommodities = [];
+					var totalValue = 0;
+					for (var p of site.infrastructure[i].potentialCommodities) {
+						potentialCommodities.push(view.commodityIcon(p) + ' ' + data.commodities[p].name);
+						totalValue += site.commodities[p];
+					};
+					totalValue = Math.floor(totalValue * 100/potentialCommodities.length);
+					infrastructureDescription.innerHTML += 'Chance of ' + gamen.prettyList(potentialCommodities,'or') + '.';
+					infrastructureDiv.appendChild(infrastructureDescription);
+					var potentialBtn = document.createElement('button');
+					potentialBtn.innerHTML = 'Salvage ('+totalValue+' rep)';
+					potentialBtn.addEventListener('click',function() {handlers.salvage(site.infrastructure[i].potentialCommodities)});
+					if (totalValue > site.reputation.p1) {
+						potentialBtn.disabled = true;
+					};
+					infrastructureDiv.appendChild(potentialBtn);
+					
 				} else if (site.infrastructure[i].recruit !== undefined) {
 					var infrastructureDiv = document.createElement('div');
 					var infrastructureHead = document.createElement('h3');
@@ -1074,7 +1097,7 @@ var view = {
 			detailsUnitDiv.appendChild(unitPane);
 			
 			var unitHeaderDiv = document.createElement('div');
-			unitHeaderDiv.className = 'unitHeaderDiv sidebarTop';
+			unitHeaderDiv.className = 'unitHeaderDiv';
 			unitPane.appendChild(unitHeaderDiv);
 			var unitCargoDiv = document.createElement('div');
 			unitCargoDiv.className = 'unitCargoDiv';
@@ -1085,9 +1108,8 @@ var view = {
 			
 			var unitPic = document.createElementNS('http://www.w3.org/2000/svg','svg');
 			unitPic.setAttribute('class','unitPic');
-			unitPic.setAttribute('width','100%');
-			unitPic.setAttribute('fill','black');
-			unitPic.setAttribute('viewbox','0 0 100 100');
+			unitPic.setAttribute('fill','#eeeeee');
+			unitPic.setAttribute('viewBox','0 0 60 40');
 			unitPic.appendChild(draw[unitsAtSite[u].type.symbol]());
 			unitHeaderDiv.appendChild(unitPic);
 			
@@ -1343,17 +1365,21 @@ var view = {
 			
 			// Building Infrastructure
 			if (unit.type.canBuild && unit.location !== undefined) {
+				var unitBuildDiv = document.createElement('div');
+				unitBuildDiv.id = 'unitBuildDiv_'+u;
+				unitBuildDiv.className = 'infrastructureDiv';
+				unitPane.appendChild(unitBuildDiv);
 				var unitBuildHead = document.createElement('h3');
 				unitBuildHead.innerHTML = 'Build';
 				unitBuildHead.className = 'infrastructureHead';
-				unitPane.appendChild(unitBuildHead);
+				unitBuildDiv.appendChild(unitBuildHead);
 				
 				// Busy Building Countdown
 				if (unit.isBuilding) {
 					var unitBuildProjectP = document.createElement('p');
 					var eta = Math.round((unit.buildComplete.getTime() - model.clock.time.getTime() ) / 8.64e+7,0);
 					unitBuildProjectP.innerHTML = 'Currently building ' + unit.buildProject.name + ' (' + eta + ' days)';
-					unitPane.appendChild(unitBuildProjectP);
+					unitBuildDiv.appendChild(unitBuildProjectP);
 				};
 				
 				var unitBuildSelect = document.createElement('select');
@@ -1395,7 +1421,7 @@ var view = {
 						unitBuildSelect.appendChild(unitBuildOption);
 					};
 				};
-				unitPane.appendChild(unitBuildSelect);
+				unitBuildDiv.appendChild(unitBuildSelect);
 				
 				var unitBuildBtn = document.createElement('button');
 				unitBuildBtn.id = 'unitBuildBtn_' + u;
@@ -1403,12 +1429,12 @@ var view = {
 				unitBuildBtn.innerHTML = 'Build';
 				unitBuildBtn.disabled = true;
 				unitBuildBtn.setAttribute('onclick','handlers.buildInfrastructure('+u+')');
-				unitPane.appendChild(unitBuildBtn);
+				unitBuildDiv.appendChild(unitBuildBtn);
 				
 				var unitBuildPreviewDiv = document.createElement('div');
 				unitBuildPreviewDiv.id = 'unitBuildPreviewDiv_' + u;
 				unitBuildPreviewDiv.className = 'unitBuildPreviewDiv';
-				unitPane.appendChild(unitBuildPreviewDiv);
+				unitBuildDiv.appendChild(unitBuildPreviewDiv);
 			};
 			
 			// Passengers
@@ -1596,6 +1622,9 @@ var view = {
 			};
 			if (infrastructure.inputs !== undefined) {
 				string += 'Increases value of ' + gamen.prettyList(infrastructure.inputs) + '. ';
+			};
+			if (infrastructure.potentialCommodities !== undefined) {
+				string += 'An unreliable source of '+gamen.prettyList(infrastructure.potentialCommodities) + '. ';
 			};
 			if (infrastructure.jobs !== undefined) {
 				string += 'Provides ' + infrastructure.jobs + ' jobs. ';

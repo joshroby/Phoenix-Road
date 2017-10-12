@@ -10,7 +10,7 @@ var gamen = {
 		if (titleHead !== undefined && gameTitle !== undefined) {
 			titleHead.innerHTML = gameTitle;
 		};
-		
+				
 		var loadGameDiv = document.getElementById('loadGameDiv');
 		if (loadGameDiv !== undefined) {
 			gamen.displayLoadGameDiv();
@@ -18,6 +18,7 @@ var gamen = {
 		
 		if (model.gameDivContents !== undefined) {
 			var gameDivContents = model.gameDivContents();
+			document.getElementById('gameDiv').innerHTML = '';
 			for (var i of gameDivContents) {
 				document.getElementById('gameDiv').appendChild(i);
 			};
@@ -29,7 +30,33 @@ var gamen = {
 				document.getElementById('gamenSupportBtn').innerHTML = model.supportLinkLabel;
 			};
 		};
+		
+		gamen.windowResize();
 	},
+	
+	windowResize: function() {
+		var gameDiv = document.getElementById('gameDiv');
+		if (gameDiv) {
+			var viewport = gamen.viewport();
+			viewport.height -= viewport.width * 0.03; // Taking #mainMenuDiv into account
+			var gameDivDimensions = {};
+			gameDivDimensions.height = 0.95 * Math.min(viewport.height,viewport.width*0.618);
+			gameDivDimensions.width = 0.95 * Math.min(viewport.width,viewport.height/0.618);
+			gameDiv.style.width = gameDivDimensions.width;
+			gameDiv.style.height = gameDivDimensions.height;
+			gameDiv.style.marginLeft = (viewport.width-gameDivDimensions.width)/2;
+		};
+	},
+
+	viewport: function() {
+		var e = window, a = 'inner';
+		if ( !( 'innerWidth' in window ) ) {
+			a = 'client';
+			e = document.documentElement || document.body;
+		};
+		return { width : e[ a+'Width' ] , height : e[ a+'Height' ] }
+	},
+
 	
 	support: function() {
 		window.open(model.supportLink);
@@ -260,6 +287,7 @@ window.onclick = function(event) {
 	};
 };
 
+window.onresize = function(event) {gamen.windowResize();};
 
 function Clock(start) {
 	if (start == undefined) { start = new Date(); };

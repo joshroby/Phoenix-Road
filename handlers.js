@@ -195,6 +195,10 @@ var handlers = {
 		view.displayUnit(units[unitIndex]);
 	},
 	
+	salvage: function(commodityList) {
+		view.focus.unit.salvage(commodityList);
+	},
+	
 	recruit: function(infrastructureIndex) {
 		var infrastructure = view.focus.unit.location.infrastructure[infrastructureIndex];
 		model.recruit(infrastructure);

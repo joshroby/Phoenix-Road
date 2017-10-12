@@ -28,6 +28,11 @@ div:after {
 	padding-right: 15vw;
 	}
 
+/*  Game Div */
+
+#gameDiv {
+	}
+
 
 /* Save & Load Game */
 #loadGameDiv {

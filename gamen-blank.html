@@ -1,0 +1,48 @@
+<html>
+
+	<head>
+		<title>GameDiv Test</title>
+		<script src="gamen.js"></script>
+		<script src="model.js"></script>
+		<link rel="stylesheet" href="gamen.css">
+		<link rel="stylesheet" href="style.css">
+	</head>
+	
+	<body onload='gamen.init()'>
+	
+		<div id='mainMenuDiv'>
+			<h4 id='titleHead'>Gamen Blank</h4>
+		
+			<button onclick = 'handlers.newGame()'>New Game</button>
+			<button id = 'saveButton' disabled onclick = 'gamen.saveGame()'>Save Game</button>
+			<button onclick='handlers.toggleOptions()' >Options</button>
+			<button id='gamenSupportBtn' hidden onclick='gamen.support()'>Support</button>
+			
+			<div id='optionsDiv'></div>
+
+		</div>
+		
+		<div id='gameDiv'>
+	
+			<h1>The Game Div!</h1>
+	
+		</div>
+
+		<div id='loadGameDiv'>
+		
+		</div>
+		
+		<div id='gamenModalBacksplash'>
+		
+			<div id='gamenModalDiv'>
+			
+				<div id='gamenModalBustDiv'></div>
+				<div id='gamenModalTextDiv'></div>
+			
+			</div>
+		
+		</div>
+	
+	</body>
+
+</html>

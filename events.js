@@ -217,20 +217,20 @@ var events = {
 			var cargoIndex = Math.random() * unit.commodities.length << 0;
 			var passageString = unit.name + " is beset by bandits from "+threat.name+"!<p>They demand you turn over your load of "+view.commodityIcon(unit.commodities[cargoIndex].commodity)+" "+data.commodities[unit.commodities[cargoIndex].commodity].name+" or face the consequences.";
 			passageString += "<p>It is your "+model.selfDefense(unit,'display')+" drivers against "+threat.strength+" dangerous bandits. ("+threat.strength+"<span class='fa fa-hand-rock-o'></span>)";
-			var choiceArray = [new Choice('Surrender the Goods',events.banditsSurrender,[cargoIndex]),new Choice('Defend the Cargo',events.banditsDefend,[threat])];
+			var choiceArray = [new Choice('Surrender the Goods',events.banditsSurrender,[cargoIndex,unit]),new Choice('Defend the Cargo',events.banditsDefend,[threat,unit])];
 			gamen.displayPassage(new Passage(passageString,choiceArray,false));
 		};
 	},
 	
-	banditsSurrender: function(cargoIndex) {
-		var unit = view.focus.unit;
+	banditsSurrender: function(cargoIndex,unit) {
+// 		var unit = view.focus.unit;
 		gamen.displayPassage(new Passage("The cackling bandits quickly and efficiently offload the "+view.commodityIcon(unit.commodities[cargoIndex].commodity)+" "+data.commodities[unit.commodities[cargoIndex].commodity].name+" and you get the hell out of there."));
 		unit.commodities.splice(cargoIndex,1);
 		view.displayUnit(unit,true);
 	},
 	
-	banditsDefend: function(threat) {
-		var unit = view.focus.unit;
+	banditsDefend: function(threat,unit) {
+// 		var unit = view.focus.unit;
 		var defenseScore = model.selfDefense(unit);
 		var attackScore = threat.strength * Math.random();
 		if (defenseScore > attackScore) {
@@ -520,7 +520,7 @@ var events = {
 				if (newSite.population > 0) {
 					newSite.infrastructure.push(data.infrastructure[i]);
 					if (newSite.hasVisited.p1) {
-						gamen.displayPassage(new Passage ('A new '+data.infrastructure[i].name+' is built in '+newSite.name+'.'));
+						gamen.displayPassage(new Passage (data.infrastructure[i].spawn,undefined,true,newSite.name));
 					};
 				};
 			};

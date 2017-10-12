@@ -37,57 +37,51 @@
 	margin-right: 1vw;
 	}
 
-/* 
-#gameDiv {
-	width: 100vw;
-	height: 75vw;
-	}
- */
-
 #introDiv {
-	width:50vw;
-	margin-left: 25vw;
-	margin-top: 10vw;
+	width:50%;
+	margin-left: 25%;
+	margin-top: 10%;
 	}
 
 #detailsUnitDiv {
 	float: left;
-	width: 20vw;
-	padding-left: 2vw;
-	padding-right: 2vw;
-	height: 65vw;
+	width: 20%;
+	padding-left: 2%;
+	padding-right: 2%;
+	height: 100%;
 	overflow-y: auto;
 	}
 
 .unitPane {
-	height: 54vw;
-	min-height: 45vw;
+	height: 80%;
+	min-height: 45%;
 	overflow-y: auto;
 	}
 
 .unitPic {
-	width: 100%;
 	z-index: -1;
 	position: absolute;
 	top: 0;
 	left: 0;
+	bottom: 0;
+	right: 0;
 	}
 
 .unitHeaderDiv {
-	height: 18vw;
+	height: 35%;
 	overflow-y: auto;
 	position: relative;
 	}
 
 .unitHead {
 	margin-bottom: 0;
-	margin-top: 2.5vw;
+	margin-top: 2.5%;
 	width: 100%;
 	border-bottom: 1px solid slategray;
 	}
 
 .unitHeaderDiv p.stat {
-	margin-left: 2vw;
+	margin-left: 2%;
 	margin-bottom: 0;
 	float: left;
 	}
@@ -95,13 +89,13 @@
 .perDiem {
 	clear: both;
 	margin-top: 0;
-	margin-bottom: 1vh;
-	margin-left: 2vw;
+	margin-bottom: 1%;
+	margin-left: 2%;
 	font-size: 0.8em;
 	}
 
 .unitCaravanDiv {
-	margin-left: 2vw;
+	margin-left: 2%;
 	}
 
 .unitCaravanDiv p {
@@ -112,12 +106,12 @@
 	}
 		
 .unitActionsDiv {
-	margin-top: 2vh;
+	margin-top: 2%;
 	text-align: center;
 	}
 	
 .unitActionsDiv button {
-	margin: 0.5vh;
+	margin: 0.5%;
 	}
 
 .buildBtn {
@@ -125,28 +119,29 @@
 	}
 
 .unitBuildPreviewDiv {
-	margin-left: 1vh;
-	font-size: 1.4vh;
+	margin-left: 1%;
+/* 	font-size: 3%; */
 	}
 
 .unitPassengersDiv {
 	}
 	
 .unitPassengersDiv button {
-	margin-left: 2vw;
+	margin-left: 2%;
 	}
 
 #unitTabsDiv {
-	margin-top: 1vh;
-	height: 9vh;
+	margin-top: 1%;
+	height: 9%;
+	overflow-y: auto;
 	}
 
 .unitTab {
 	float: left;
 	font-size: 0.5em;
 	background-color: lightgrey;
-	padding: 0.5vw;
-	margin: 0.25vw;
+	padding: 1%;
+	margin: 0.5%;
 	border: 1px solid darkgrey;
 	}
 
@@ -155,22 +150,22 @@
 	}
 	
 #centerColumn {
-	width: 50vw;
+	width: 50%;
 	float: left;
 	}
 	
 #mapDiv {
-	width: 50vw;
+	width: 100%;
 	}
 
 #clockDiv {
 	text-align: right;
-	height: 2.5vw;
+	height: 2.5%;
 	}
 
 #clockSpan {
-	margin-right: 2vw;
-	margin-left: 2vw;
+	margin-right: 2%;
+	margin-left: 2%;
 	}
 
 #clockSpeedSlider {
@@ -180,12 +175,16 @@
 #clockPauseBtn {
 	margin-left: 1vw;
 	}
+	
+#progressDiv {
+	width: 100%;
+	}
 
 .progressDiv {
 	float: left;
 	width: 48%;
-	padding-top: 0.5vh;
-	padding-bottom: 0.5vh;
+	padding-top: 0.5%;
+	padding-bottom: 0.5%;
 	margin-left: 1%;
 	}
 
@@ -193,7 +192,7 @@
 	float: left;
 	margin-top: 0;
 	margin-bottom: 0;
-	padding-left: 1vw;
+	padding-left: 1%;
 	}
 
 .progressBar {
@@ -201,8 +200,7 @@
 	}
 
 .bigProgressBar {
-	margin-left: 8vw;
-	width: 16vw;
+	width: 90%;
 	}
 
 .progressBarDone {
@@ -211,31 +209,31 @@
 	}
 
 #detailsSiteDiv {
-	width: 20vw;
+	width: 20%;
 	float: left;
-	padding-left: 2vw;
-	height: 65vw;
+	padding-left: 2%;
+	height: 100%;
 	}
 
 #siteCharacterDiv {
-	height: 18vw;
+	height: 35%;
 	overflow-y: auto;
 	}
 
 .siteHead {
 	margin-bottom: 0;
-	margin-top: 2.5vw;
+	margin-top: 2.5%;
 	width: 100%;
 	border-bottom: 1px solid slategray;
 	}
 
 #siteCommoditiesDiv {
-	height: 22vw;
+	height: 35%;
 	overflow-y: auto;
 	}
 
 #siteInfrastructureDiv {
-	height: 24vw;
+/* 	height: 24%; */
 	overflow-y: auto;
 	}
 
@@ -251,7 +249,7 @@
 	clear: left;
 	font-size: 0.8em;
 	list-style: none;
-	padding-left: 1vh;
+	padding-left: 1%;
 	}
 	
 .siteFeatureItem {
@@ -304,8 +302,13 @@
 	}
 
 .infrastructureDiv {
-	width: 20vw;
+	width: 100%;
 	clear: both;
+	font-size: 0.8em;
+	}
+	
+.infrastructureDiv h3 {
+	font-size: 1.2em;
 	}
 
 .infrastructureHead {
@@ -313,14 +316,17 @@
 	}
 
 .buildSelect {
-	width: 12vw;
+	width: 70%;
+	}
+	
+.buildInfoDiv {
+	width: 100%;
 	}
 
 .buildInfoDiv li {
 	float: left;
 	list-style: none;
-	margin: 0.5vh;
-	font-size: 1.4vh;
+	margin: 0.5%;
 	}
 
 .narrowBuildInfoItem {
@@ -328,18 +334,18 @@
 	}
 
 #tradeDiv {
-	margin-top: 2vh;
+	margin-top: 2%;
 	display: none;
-	width: 50vw;
+	width: 100%;
 	}
 
 .tradeDiv {
-	margin: 1vw;
+	margin: 2%;
 	}
 
 .tradeDiv ul {
 	list-style: square inside;
-	padding-left: 1vw;
+	padding-left: 1%;
 	}
 
 .tradeDiv li {
@@ -347,19 +353,19 @@
 
 #unitStuffDiv {
 	float: left;
-	width: 17vw;
+	width: 33%;
 	}
 
 #tradeControlsDiv {
 	float: left;
-	width: 9vw;
+	width: 20%;
 	text-align: center;
 	background-color: darkorange;
 	}
 
 #siteStuffDiv {
 	float: left;
-	width: 17vw;
+	width: 33%;
 	}
 
 #balanceDiv {
