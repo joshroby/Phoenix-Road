@@ -117,6 +117,8 @@ var view = {
 	},
 
 	displayMap: function() {
+	
+		console.log('redrawing',Math.random());
 		
 		var mapDiv = document.getElementById('mapDiv');
 		mapDiv.innerHTML = '';
@@ -329,7 +331,9 @@ var view = {
 			siteLabel.setAttribute('x',players.p1.knownSites[i].x + 10);
 			siteLabel.setAttribute('y',players.p1.knownSites[i].y + 5);
 			siteLabel.setAttribute('font-size',view.zoom.z * .02);
-			siteLabel.setAttribute('onmouseover','handlers.displaySiteDetails('+siteIndex+')');
+			siteLabel.setAttribute('onmouseenter','handlers.displaySiteDetails('+siteIndex+')');
+			siteLabel.setAttribute('onclick','handlers.selectSite('+siteIndex+')');
+			siteLabel.setAttribute('onmouseout','handlers.displaySiteDetails(-1)');
 			siteLabel.innerHTML = players.p1.knownSites[i].name;
 			sitesGroup.appendChild(siteLabel);
 
@@ -374,7 +378,9 @@ var view = {
 			} else {
 				newSite.setAttribute('r',6);
 			};
+			newSite.setAttribute('onmouseenter','handlers.displaySiteDetails('+siteIndex+')');
 			newSite.setAttribute('onclick','handlers.selectSite('+siteIndex+')');
+			newSite.setAttribute('onmouseout','handlers.displaySiteDetails(-1)');
 			sitesGroup.appendChild(newSite);
 		};
 		
@@ -458,7 +464,7 @@ var view = {
 		svg.addEventListener('mouseleave',view.mapDragEnd);
 		svg.addEventListener('wheel',view.mapZoom);
 		
-		svg.setAttribute('onmouseout','handlers.displaySiteDetails(-1)');
+// 		svg.setAttribute('onmouseout','handlers.displaySiteDetails(-1)');
 		
 		mapDiv.appendChild(svg);
 		
@@ -541,13 +547,16 @@ var view = {
 			var viewbox = view.zoom.viewbox;
 			var diffX = e.pageX - view.zoom.dragStartX;
 			var diffY = e.pageY - view.zoom.dragStartY;
-			if (diffX < viewbox.minX && viewbox.minX - diffX + viewbox.width < 1000) {
+			var zoomFactor = view.zoom.z / 800;
+			var newMinX = viewbox.minX - diffX*zoomFactor;
+			var newMinY = viewbox.minY - diffY*zoomFactor;
+			if ((newMinX > 0 && newMinX + viewbox.width < 1000) || (newMinX < 0 && newMinX > viewbox.minX) || (newMinX+viewbox.width > 1000 && newMinX+viewbox.width < viewbox.minX + viewbox.width)) {
 				view.zoom.dragStartX = e.pageX;
-				viewbox.minX -= diffX * view.zoom.z / 800;
+				viewbox.minX = newMinX;
 			};
-			if (diffY < viewbox.minY && viewbox.minY - diffY + viewbox.height < 1000) {
+			if ((newMinY > 0 && newMinY + viewbox.height < 1000) || (newMinY < 0 && newMinY > viewbox.minY) || (newMinY+viewbox.height > 1000 && newMinY+viewbox.height < viewbox.minY + viewbox.height)) {
 				view.zoom.dragStartY = e.pageY;
-				viewbox.minY -= diffY * view.zoom.z / 800;
+				viewbox.minY = newMinY;
 			};
 			var viewboxString = viewbox.minX + ' ' + viewbox.minY + ' ' + viewbox.width + ' ' + viewbox.height;
 			mapSVG.setAttribute('viewBox',viewboxString);
@@ -559,7 +568,6 @@ var view = {
 	},
 	
 	displaySiteDetails: function(site) {
-		view.focus.site = site;
 		
 		var detailsSiteDiv = document.getElementById('detailsSiteDiv');
 		detailsSiteDiv.innerHTML = '';
@@ -969,7 +977,7 @@ var view = {
 			};
 		};
 			
-		view.displayMap();
+// 		view.displayMap();
 	},
 	
 	displayBuildUnit: function(infrastructureIndex,unitName) {

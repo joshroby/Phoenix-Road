@@ -39,11 +39,20 @@ var handlers = {
 	displaySiteDetails: function(siteIndex) {
 		if (siteIndex == -1) {
 			site = view.focus.unit.location;
+			view.focus.site = undefined;
 		} else {
 			site = sites[siteIndex];
+			view.focus.site = site;
 		};
 		if (site !== undefined) {
 			view.displaySiteDetails(site);
+		};
+	},
+	
+	selectSite: function(siteIndex) {
+		site = sites[siteIndex];
+		if (view.focus.unit !== undefined && view.focus.unit.location !== undefined) {
+			view.focus.unit.move(site);
 		};
 	},
 	
@@ -100,13 +109,6 @@ var handlers = {
 		view.focus.unit.dropPassengers(repCost);
 		view.displayUnit(view.focus.unit);
 		view.displaySiteDetails(view.focus.unit.location);
-	},
-	
-	selectSite: function(siteIndex) {
-		site = sites[siteIndex];
-		if (view.focus.unit !== undefined && view.focus.unit.location !== undefined) {
-			view.focus.unit.move(site);
-		};
 	},
 	
 	addFromSite: function(commodity) {

@@ -3,34 +3,22 @@ Down the Phoenix Road To Do List
 
 DONE
 
-- Gamen Responsive Design
+- game over no longer displays 'you have rebuilt NaN% of civilization'
 
-- towns hosting threats no longer garbage-collected from map
+- drag at max zoom allow you to drag back to frame
 
-- bandit event triggers on one unit and sticks with them
+- can mouseover and click on both site circles and labels
 
-- "Stop Here" in the midst of a multi-step route no longer produces shortcut roads
-
-- spawn text for respawnInfrastructure (otherwise 'Burnt Out Bus is built in X')
-
-- Scrapyard is a tinker-buildable infrastructure that unreliably provides Metals and Fuels
 
 IMMEDIATE FIXES
-
-- ' you have rebuilt NaN% of civilization'
 
 
 NEXT FEATURE / OPTIMIZATION
 
-- buying up non-common commodities that are not produced locally should affect setPoints
-	- you are depleting their stockpile
+- non-common commodities & commodities not produced locally do not return to set point
 
 - SVG tinkering
 	- movement animation/transition
-
-- drag at max zoom needs to allow you to drag off the frame
-
-- can we figure out the mouseover / mouseclick thing with the map?
 
 
 

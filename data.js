@@ -507,7 +507,7 @@ var data = {
 		},
 		refinery: {
 			name: 'Refinery',
-			suffices: [' Stacks'],
+			suffices: [' Stacks',' Torch'],
 			buildCost: {metals:3,crudeOil:5},
 			buildTime: 28,
 			goodwill: 5,

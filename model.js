@@ -179,7 +179,7 @@ var model = {
 		startUnit.name = "Grams' Old Donkey Cart";
 		
 		// Testing Cheats
-		startUnit.location.infrastructure.push(data.infrastructure.scrapyard);
+// 		startUnit.location.infrastructure.push(data.infrastructure.scrapyard);
 // 		startUnit.location.infrastructure.push(data.infrastructure.lensmeister);
 // 		startUnit.location.infrastructure.push(data.infrastructure.arena);
 // 		startUnit.location.infrastructure.push(data.infrastructure.cartwright);
@@ -1837,7 +1837,7 @@ function Unit(owner,startLoc,type) {
 				gamen.displayPassage(new Passage('The crew of ' + this.name + ' have found sweethearts in ' + this.location.name + ".  They've been accepted into the families there and have put the road behind them.  </p><p>" + this.name + " has been scuttled."));
 				this.scuttle();
 				if (units.length == 0) {
-					var rebuildScore = Math.round((model.victoryProgress() - model.startScore) * 100,0);
+					var rebuildScore = Math.round((model.victoryProgress() - players.p1.startScore) * 100,0);
 					model.clock.running = false;
 					gamen.displayPassage(new Passage("As your last crew leaves the road behind them, you find yourself a place out among the scattered towns to live out the rest of your life.</p><p><strong>Final Score:</strong> You rebuilt " + rebuildScore + "% of Civilization." ));
 				};
