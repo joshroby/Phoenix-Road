@@ -5,29 +5,46 @@ DONE
 
 units at sites that have routes display with green outline
 
+- commodities return to set point after adjustments if:
+	- they are common
+	- they are produced there
+	- they are consumed there
+
+- when multiple units are at a site, map displays them spaced out
+
+- recruit function needs to hit view.displayMap()
+- build infrastructure button needs to hit view.displayMap()
+- scuttle needs to hit view.displayMap()
+	- and is it not clearing view.focus.unit?
+
+- cursor over map always arrow
+
+- Naked Dowser moved to localArea
+
+fixed error in Scrapyard button not working
+
+- Unit.departed flag saved and loads
+
+- Today's saves display time correctly
 
 IMMEDIATE FIXES
 
-Delivering cargo that is USED but not produced (and not common) should, after initial adjustement, also return to set point
-
-all units in transit are displayed in tabs on load (?!?)
-
-pop up for 'need more food/water/fuel' needs to say 'caravan' when appropriate
-
-build complete does not focus on builder?
+- build infrastructure checks if other units have commodities but does not deduct them.  Charges reputation into the negatives instead.
 
 NEXT FEATURE / OPTIMIZATION
 
-- non-common commodities & commodities not produced locally do not return to set point
+- clear up Unit.route code to use the last route.to rather than the standalone site reference at the last index
+
+- Mysterious Site needs two options: "Hold Up" which hits Unit.roadside() for you, or "Continue onwards" which is just dismiss
 
 - SVG tinkering
 	- movement animation/transition
 
 - selectUnit zooming animated
 
-- when multiple units are at a site, stagger them on the map
+- save tutorial on/off state
 
-save tutorial on/off
+- a big and unmistakable select circle behind the view.focus.unit
 
 FUTURE EXPANSIONS
 
@@ -37,6 +54,8 @@ FUTURE EXPANSIONS
 	- site discovers resource
 	- events that earn you reputation in towns
 	- increase to your self-defense
+	- a very simple 'you get some food'
+		- replenishes a food to 100 rather than gives you a new commodity
 	- plague events
 		- slowly increases values
 		- population loss
@@ -105,7 +124,8 @@ FUTURE EXPANSIONS
 
 - what can you DISCOVER that greatly helps a lot of towns directly?
 
-
+- Outriders and Escorts
+	- no cargo but provides manpower/defense
 
 
 MOTHBALLS

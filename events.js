@@ -213,6 +213,7 @@ var events = {
 		if ( ( unit.location == undefined  && !unit.airborne ) || unit.location.infrastructure.length == 0) {
 			view.focus.unit = unit;
 			view.displayUnit(unit,true);
+			console.log(unit.route[0]);
 			var threat = model.nearestThreat(unit.route[0].x,unit.route[0].y).threat;
 			var cargoIndex = Math.random() * unit.commodities.length << 0;
 			var passageString = unit.name + " is beset by bandits from "+threat.name+"!<p>They demand you turn over your load of "+view.commodityIcon(unit.commodities[cargoIndex].commodity)+" "+data.commodities[unit.commodities[cargoIndex].commodity].name+" or face the consequences.";

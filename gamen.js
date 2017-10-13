@@ -122,7 +122,13 @@ var gamen = {
 						saveDate.getHours() + ":" +
 						saveDate.getMinutes() + " " ;
 				} else {
-					saveDate = since + 's ago';
+					if (since > 360000) {
+						saveDate = Math.floor(since/360000) + 'h ago';
+					} else if (since > 6000) {
+						saveDate = Math.floor(since/6000) + 'm ago';
+					} else {
+						saveDate = Math.floor(since/1000) + 's ago';
+					};
 				}
 				var loadGameItem = document.createElement('div');
 				loadGameItem.className = 'loadGameItem';

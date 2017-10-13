@@ -199,7 +199,8 @@ var handlers = {
 		view.displayUnit(units[unitIndex]);
 	},
 	
-	salvage: function(commodityList) {
+	salvage: function(infrastructureIndex) {
+		var commodityList = view.focus.unit.location.infrastructure[infrastructureIndex].potentialCommodities;
 		view.focus.unit.salvage(commodityList);
 	},
 	

@@ -399,6 +399,17 @@ var view = {
 				unitX = units[i].location.x;
 				unitY = units[i].location.y + 10;
 			};
+			var unitsAtSite = [];
+			for (var c in units) {
+				if (units[c].location == units[i].location) {
+					unitsAtSite.push(units[c]);
+				};
+			};
+			if (units[i].location !== undefined && unitsAtSite.length > 1) {
+				var unitOrder = unitsAtSite.indexOf(units[i]);
+				var offSet = unitOrder * (20/(unitsAtSite.length-1)) - 10;
+				unitX += offSet;
+			};
 			var newUnit = document.createElementNS('http://www.w3.org/2000/svg','use');
 			newUnit.setAttribute('href','#'+units[i].type.symbol);
 			newUnit.setAttribute('x',unitX - 25);
@@ -736,13 +747,20 @@ var view = {
 				};
 			};
 		};
-		
 		var siteReputationP = document.createElement('a');
 		siteReputationP.id = 'siteReputationP';
-		var siteReputationTooltip = document.createElement('span');
-		siteReputationTooltip.className = 'tooltip';
-		siteReputationTooltip.innerHTML = Math.round(site.reputation.p1,4) + '<br />You earn ' + site.goodwill.p1 + ' reputation here each fortnight.';
-		siteReputationP.appendChild(siteReputationTooltip);
+		var mechanicFound = false;
+		for (var s in sites) {
+			if (sites[s].infrastructure.indexOf(data.infrastructure.mechanic) !== -1 && sites[s].hasVisited.p1) {
+				mechanicFound = true;
+			};
+		};
+		if (players.p1.unitsUnlocked.tinkersCart || mechanicFound) {
+			var siteReputationTooltip = document.createElement('span');
+			siteReputationTooltip.className = 'tooltip';
+			siteReputationTooltip.innerHTML = Math.round(site.reputation.p1,4) + '<br />You gain ' + site.goodwill.p1 + ' reputation here each fortnight.';
+			siteReputationP.appendChild(siteReputationTooltip);
+		};
 		if (site.population == 0) {
 		} else if (site.reputation.p1 > 0) {
 			siteReputationP.innerHTML += 'Your reputation here: +' + Math.floor(site.reputation.p1,0);
@@ -848,6 +866,7 @@ var view = {
 				} else if (site.infrastructure[i].upgrade !== undefined) {
 					var cost = Math.round(site.infrastructure[i].cost('p1'),0);
 					var infrastructureDiv = document.createElement('div');
+					infrastructureDiv.className = 'infrastructureDiv';
 					var infrastructureHead = document.createElement('h3');
 					infrastructureHead.className = 'infrastructureHead';
 					infrastructureHead.innerHTML = site.infrastructure[i].name;
@@ -870,6 +889,7 @@ var view = {
 				} else if (site.infrastructure[i].potentialCommodities !== undefined) {
 					var infrastructureDiv = document.createElement('div');
 					siteInfrastructureDiv.appendChild(infrastructureDiv);
+					infrastructureDiv.className = 'infrastructureDiv';
 					var infrastructureHead = document.createElement('h3');
 					infrastructureHead.innerHTML = site.infrastructure[i].name;
 					infrastructureDiv.appendChild(infrastructureHead);
@@ -886,7 +906,7 @@ var view = {
 					infrastructureDiv.appendChild(infrastructureDescription);
 					var potentialBtn = document.createElement('button');
 					potentialBtn.innerHTML = 'Salvage ('+totalValue+' rep)';
-					potentialBtn.addEventListener('click',function() {handlers.salvage(site.infrastructure[i].potentialCommodities)});
+					potentialBtn.setAttribute('onclick','handlers.salvage('+i+')');
 					if (totalValue > site.reputation.p1) {
 						potentialBtn.disabled = true;
 					};
@@ -894,6 +914,7 @@ var view = {
 					
 				} else if (site.infrastructure[i].recruit !== undefined) {
 					var infrastructureDiv = document.createElement('div');
+					infrastructureDiv.className = 'infrastructureDiv';
 					var infrastructureHead = document.createElement('h3');
 					infrastructureHead.innerHTML = site.infrastructure[i].name;
 					infrastructureDiv.appendChild(infrastructureHead);
@@ -1054,7 +1075,6 @@ var view = {
 	},
 	
 	displayUnit: function(unit,zoom) {
-		console.log('view',unit.name,zoom);
 		var selectedUnit = unit;
 		view.focus.unit = unit;
 		

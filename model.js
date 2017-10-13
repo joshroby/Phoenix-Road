@@ -111,7 +111,7 @@ var model = {
 		
 		var safeIndex = model.newMap();
 		
-		var nameSeedsList = ['Green','Hope','Faith','Ruin','Desolation','Old','New','Rossum','Nyarly','Signal','Temple','Dust','King','Queen','Sovereign','Prince',"People's",'Public'];
+		var nameSeedsList = ['Dune','Green','Cold','Hope','Faith','Ruin','Desolation','Old','New','Family','Prudence','Rossum','Nyarly','Signal','Temple','Dust','King','Queen','Sovereign','Prince',"People's",'Public'];
 		var nameSeeds = [];
 		for (var i = 0;i<nameSeedsList.length;i++) {
 			var num = Math.random() * nameSeedsList.length << 0;
@@ -225,7 +225,7 @@ var model = {
 		localArea[Math.random() * localArea.length << 0].infrastructure.push(data.infrastructure.kidOnABike);
 		localArea[Math.random() * localArea.length << 0].infrastructure.push(data.infrastructure.tinkerCamp);
 		localArea[Math.random() * localArea.length << 0].infrastructure.push(data.infrastructure.arena);
-		distantArea[Math.random() * distantArea.length << 0].infrastructure.push(data.infrastructure.nakedDowser);
+		localArea[Math.random() * localArea.length << 0].infrastructure.push(data.infrastructure.nakedDowser);
 		distantArea[Math.random() * distantArea.length << 0].infrastructure.push(data.infrastructure.mechanic);
 		distantArea[Math.random() * distantArea.length << 0].infrastructure.push(data.infrastructure.hangar);
 		distantArea[Math.random() * distantArea.length << 0].infrastructure.push(data.infrastructure.burntOutBus);
@@ -267,9 +267,9 @@ var model = {
 		
 		// Remove too-close sites, reduce to totalSites
 		for (var i in sites) {
-			for (var t in sites) {
-				var distance = Math.pow(Math.pow(sites[i].x - sites[t].x,2) + Math.pow(sites[i].y - sites[t].y,2),.5);
-				if (distance < minDist) {
+			for (var t=sites.length-1;t>0;t--) {
+				var distance = Math.pow(Math.pow(sites[i].x - sites[t].x,2) + Math.pow(sites[i].y - sites[t].y,2),0.5);
+				if (distance < minDist && distance > 0) {
 					sites.splice(t,1);
 				};
 			};
@@ -281,7 +281,7 @@ var model = {
 		var total = 0;
 		for (var i in sites) {
 			var shortestDistance = Infinity;
-			var nearestSite = 0;
+			var nearestSite = undefined;
 			for (var t in sites) {
 				var distance = Math.pow(Math.pow(sites[i].x - sites[t].x,2) + Math.pow(sites[i].y - sites[t].y,2),.5);
 				if (distance < shortestDistance && t !== i) {
@@ -561,6 +561,10 @@ var model = {
 			};
 			if (Object.keys(sites[s].adjustment).length > 0) {
 				var tradingHere = sites[s].trading();
+				var buyingHere = sites[s].buying();
+				for (var b in buyingHere) {
+					tradingHere[b] = buyingHere[b];
+				};
 				for (var a in sites[s].adjustment) {
 					var magnitude = 0.995;
 					for (var i in sites[s].infrastructure) {
@@ -583,7 +587,7 @@ var model = {
 							sites[s].commodities[a] = sites[s].commoditiesSetPoints[a];
 							delete sites[s].adjustment[a];
 						};
-					} else if (tradingHere[a] !== undefined) { // common and produced goods return to set point
+					} else if (tradingHere[a] !== undefined) { // common, produced, and consumed goods return to set point
 						sites[s].adjustment[a] = 'return to set point';
 					} else { // exotic goods (pulled from or added to stockpiles) remain changed
 						delete sites[s].adjustment[a];
@@ -727,6 +731,7 @@ var model = {
 		location.infrastructure.splice(location.infrastructure.indexOf(infrastructure),1);
 		view.focus.unit = newUnit;
 		view.displayUnit(newUnit);
+		view.displayMap();
 	},
 	
 	flatGame: function() {
@@ -862,7 +867,7 @@ var model = {
 		};
 		
 		units = [];
-		var simples = ['name','commodities','inTransit','route','isSurveying','surveyComplete','surveyPotentials','isBuilding','buildComplete','buildProject'];
+		var simples = ['name','commodities','departed','inTransit','route','isSurveying','surveyComplete','surveyPotentials','isBuilding','buildComplete','buildProject'];
 		for (var u of saveGame.units) {
 			var newUnit = new Unit(players[u.ownerKey],sites[u.locationIndex],data.units[u.typeKey]);
 			for (var s of simples) {
@@ -1338,7 +1343,9 @@ function Site(mapSize) {
 				};
 			};
 		};
-		this.goodwill.p1 += infrastructure.goodwill;
+		if (infrastructure.goodwill !== undefined) {
+			this.goodwill.p1 += infrastructure.goodwill;
+		};
 		this.infrastructure.push(infrastructure);
 	};
 	
@@ -1513,7 +1520,7 @@ function Unit(owner,startLoc,type) {
 	this.flat = function() {
 		var flat = {};
 		
-		var simples = ['name','commodities','inTransit','route','isSurveying','surveyComplete','surveyPotentials','isBuilding','buildComplete','buildProject'];
+		var simples = ['name','commodities','departed','inTransit','route','isSurveying','surveyComplete','surveyPotentials','isBuilding','buildComplete','buildProject'];
 		for (var i of simples) {
 			flat[i] = this[i];
 		};
@@ -1953,6 +1960,7 @@ function Unit(owner,startLoc,type) {
 			this.buildComplete = new Date(model.clock.time.getTime() + (infrastructure.buildTime * 8.64e+7));
 			this.location.useCommodities(infrastructure.buildCost);
 			view.displayUnit(this);
+			view.displayMap();
 			model.checkClock();
 		} else {
 			gamen.displayPassage(new Passage(otherUnit.name + ' is already building that here.'));
@@ -1961,6 +1969,7 @@ function Unit(owner,startLoc,type) {
 	
 	this.buildResult = function() {
 		this.location.buildInfrastructure(this.buildProject);
+		view.displayUnit(this);
 		gamen.displayPassage(new Passage(this.name + ' built a ' + this.buildProject.name + " in " + this.location.name));
 		this.isBuilding = false;
 		this.buildProject = undefined;
@@ -2057,8 +2066,9 @@ function Unit(owner,startLoc,type) {
 			this.location.population += this.type.crew;
 		};
 		units.splice(units.indexOf(this),1);
-		view.focus.unit = units[0];
 		view.clearDetailsDivs();
+		if (units.length > 0) {view.displayUnit(units[0]);};
+		view.displayMap();
 	};
 	
 	this.takePassengers = function(repCost) {
@@ -2112,6 +2122,7 @@ function Unit(owner,startLoc,type) {
 		var passageString = "The locals working here dredge up a load of " + view.commodityIcon(commodity) + " " + data.commodities[commodity].name + ".";
 		gamen.displayPassage(new Passage(passageString));
 		this.commodities.push({commodity:commodity,qty:100});
+		view.displaySiteDetails(this.location);
 		view.displayUnit(this);
 	};
 	
@@ -2181,9 +2192,6 @@ var gamenEventPointers = {
 		};
 		model.globalEventStack.splice(model.globalEventStack.indexOf(event),1);
 		model.globalEventStack.push(model.globalSequesteredEvents.shift());
-				
-		console.log(randomEventList);
-		console.log(event);
 		events[event]();
 		model.clock.logEventIn( 8.64e+7 * ( 10 * Math.random() + 10 ),'randomEvent');		
 	},

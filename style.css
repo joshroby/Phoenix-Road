@@ -158,9 +158,13 @@
 	width: 100%;
 	}
 
+#mapSVG {
+	cursor: default;
+	}
+
 #clockDiv {
 	text-align: right;
-	height: 2.5%;
+	height: 4%;
 	}
 
 #clockSpan {
