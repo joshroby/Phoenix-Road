@@ -12,12 +12,15 @@ var model = {
 
 	gameTitle: 'Down the Phoenix Road',
 	gameSavePrefix: 'PhoenixRoad',
+	gameSaveDefault: function() {return players.p1.hometown.name},
 	supportLink: 'http://patreon.com/joshroby',
 	supportLinkLabel: 'Patreon',
 
 	options: {
-		tutorials: true,
 		autoplay: true,
+		autosave: true,
+		autosaveCountdown: 20,
+		tutorials: true,
 		zoom: true,
 		newGame: {
 			mapSize: 750,
@@ -543,6 +546,13 @@ var model = {
 	eachDay: function() {
 		
 		model.clock.logEventIn(8.64e+7,'eachDay');
+		
+		model.options.autosaveCountdown--;
+		if (model.options.autosaveCountdown == 0 && model.options.autosave) {
+			model.options.autosaveCountdown = 20;
+			gamen.autosave();
+			console.log('autosaved');
+		};
 		
 		for (var unit of units) {
 			if (unit.inTransit) {
@@ -1366,7 +1376,7 @@ function Site(mapSize) {
 	this.useCommodities = function(useList) {
 		var unitsAtSite = [view.focus.unit];
 		for (var u in units) {
-			if (units[u].location == view.focus.unit && units[u] !== view.focus.unit) {
+			if (units[u].location == view.focus.unit.location && units[u] !== view.focus.unit) {
 				unitsAtSite.push(units[u]);
 			};
 		};
@@ -1520,9 +1530,15 @@ function Unit(owner,startLoc,type) {
 	this.flat = function() {
 		var flat = {};
 		
-		var simples = ['name','commodities','departed','inTransit','route','isSurveying','surveyComplete','surveyPotentials','isBuilding','buildComplete','buildProject'];
+		var simples = ['name','commodities','departed','inTransit','isSurveying','surveyComplete','surveyPotentials','isBuilding','buildComplete','buildProject'];
 		for (var i of simples) {
 			flat[i] = this[i];
+		};
+		if (this.route !== undefined) {
+			flat.route = [];
+			for (var i in this.route) {
+				flat.route[i] = this.route[i];
+			};
 		};
 		if (flat.route !== undefined) {
 			for (var i=0;i<flat.route.length-1;i++) {
@@ -1785,6 +1801,7 @@ function Unit(owner,startLoc,type) {
 	};
 	
 	this.roadside = function() {
+		console.log(this);
 		var roadside = new Site();
 		roadside.x = this.route[0].x;
 		roadside.y = this.route[0].y;
@@ -1807,6 +1824,7 @@ function Unit(owner,startLoc,type) {
 		this.route = undefined;
 		this.inTransit = false;
 		model.clock.running = false;
+		view.displayMap();
 	};
 	
 	this.eat = function() {

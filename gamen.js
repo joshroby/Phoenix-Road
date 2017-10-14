@@ -154,6 +154,31 @@ var gamen = {
 	},
 	
 	saveGame: function() {
+		var name, saveGame;
+		if (model.gameSaveDefault !== undefined) {
+			name = model.gameSaveDefault();
+		} else {
+			name = 'Quick Save';
+		};
+		if (model.gamenSave !== undefined) {
+			saveGame = gamenSave;
+		} else if (model.flatGame !== undefined) {
+			saveGame = model.flatGame();
+		} else {
+			console.log('No Game to Save!');
+		};
+		if (saveGame !== undefined) {
+			var saveName = prompt('Overwrite current save or rename:',name);
+			if (saveName) {
+				saveName = model.gameSavePrefix + ' ' + saveName;
+				console.log(saveGame);
+				localStorage[saveName] = JSON.stringify(saveGame);
+				gamen.displayPassage(new Passage('Save Complete'));
+			};
+		};
+	},
+	
+	autosave: function() {
 		var name = 'Autosave';
 		var saveGame;
 		if (model.gamenSave !== undefined) {
@@ -164,13 +189,10 @@ var gamen = {
 			console.log('No Game to Save!');
 		};
 		if (saveGame !== undefined) {
-			var saveName = prompt('Overwrite current save or rename:',name);
-			saveName = model.gameSavePrefix + ' ' + saveName;
+			saveName = model.gameSavePrefix + ' Autosave';
 			console.log(saveGame);
 			localStorage[saveName] = JSON.stringify(saveGame);
-			gamen.displayPassage(new Passage('Save Complete'));
 		};
-
 	},
 	
 	loadGame: function(storageKey) {

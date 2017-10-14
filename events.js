@@ -335,7 +335,10 @@ var events = {
 				};
 			};
 			if (!tooClose) {
-				gamen.displayPassage(new Passage(unit.name + " sights a mysterious shape on the horizon."));
+				var unitIndex = units.indexOf(unit);
+				var choiceArray = [new Choice('Hold Up!',handlers.roadside,[unitIndex]),new Choice('Carry On')];
+				console.log(choiceArray);
+				gamen.displayPassage(new Passage(unit.name + " sights a mysterious shape on the horizon.",choiceArray));
 				var mysteriousSite = new Site();
 				mysteriousSite.name = "??";
 				mysteriousSite.x = mysteryX;

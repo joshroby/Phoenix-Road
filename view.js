@@ -54,6 +54,16 @@ var view = {
 			zoomP.innerHTML += "Map Zoom"
 			optionsDiv.appendChild(zoomP);
 			
+			var autosaveP = document.createElement('p');
+			var autosaveCheck = document.createElement('input');
+			autosaveCheck.id = 'autosaveCheck';
+			autosaveCheck.setAttribute('type','checkbox');
+			autosaveCheck.setAttribute('onclick','handlers.toggleOption("autosave")');
+			if (model.options.autosave) {autosaveCheck.setAttribute('checked','checked')};
+			autosaveP.appendChild(autosaveCheck);
+			autosaveP.innerHTML += "Autosave every fortnight"
+			optionsDiv.appendChild(autosaveP);
+			
 			var newGameOptionsDiv = document.createElement('div');
 			newGameOptionsDiv.id = 'newGameOptionsDiv';
 			optionsDiv.appendChild(newGameOptionsDiv);
@@ -977,7 +987,7 @@ var view = {
 			trashTable.className = 'commoditiesTable';
 			siteInfrastructureDiv.appendChild(trashTable);
 			var trashHead = document.createElement('caption');
-			trashHead.innerHTML = "Trash Pile";
+			trashHead.innerHTML = "Side of the Road";
 			trashTable.appendChild(trashHead);
 			for (var i in site.trash) {
 				var trashRow = document.createElement('tr');
@@ -1332,7 +1342,7 @@ var view = {
 					unitCommoditiesItem.appendChild(cell);
 				};
 				var unitCommoditiesTrashCell = document.createElement('td');
-				unitCommoditiesTrashCell.innerHTML = '<span class="fa fa-trash"></span>';
+				unitCommoditiesTrashCell.innerHTML = '<span class="fa fa-road"></span>';
 				unitCommoditiesTrashCell.setAttribute('onclick','handlers.trashFromUnit('+u+',"'+c+'")');
 				unitCommoditiesItem.appendChild(unitCommoditiesTrashCell);
 					

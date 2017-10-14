@@ -3,39 +3,19 @@ Down the Phoenix Road To Do List
 
 DONE
 
-units at sites that have routes display with green outline
+- build infrastructure deducts commodities from all units at site
 
-- commodities return to set point after adjustments if:
-	- they are common
-	- they are produced there
-	- they are consumed there
+- Mysterious Site event now has two options: "Hold Up" which hits Unit.roadside() for you, or "Continue onwards" which is just dismiss
 
-- when multiple units are at a site, map displays them spaced out
-
-- recruit function needs to hit view.displayMap()
-- build infrastructure button needs to hit view.displayMap()
-- scuttle needs to hit view.displayMap()
-	- and is it not clearing view.focus.unit?
-
-- cursor over map always arrow
-
-- Naked Dowser moved to localArea
-
-fixed error in Scrapyard button not working
-
-- Unit.departed flag saved and loads
-
-- Today's saves display time correctly
+- actual autosave
 
 IMMEDIATE FIXES
 
-- build infrastructure checks if other units have commodities but does not deduct them.  Charges reputation into the negatives instead.
+
 
 NEXT FEATURE / OPTIMIZATION
 
 - clear up Unit.route code to use the last route.to rather than the standalone site reference at the last index
-
-- Mysterious Site needs two options: "Hold Up" which hits Unit.roadside() for you, or "Continue onwards" which is just dismiss
 
 - SVG tinkering
 	- movement animation/transition
@@ -49,6 +29,12 @@ NEXT FEATURE / OPTIMIZATION
 FUTURE EXPANSIONS
 
 - pop up display for 'who do I know that makes this commodity?'
+
+- event log (ie, 'crap what did I just click past?')
+
+- 'pin' a town so all other mouseovers compare values with the pinned town
+
+- a 'notes' file that saves with game so you can tell Future Self what your strategy is
 
 - New Random Events
 	- site discovers resource
@@ -71,27 +57,27 @@ FUTURE EXPANSIONS
 	- Library (requires Old World Ruins)
 		- research to discover resources in other sites
 		- research to discover sites outside your knownSites
+	- Post Office as a infrastructure box
+		- only one or two mails available at a time
+		- addressed to specific destination site?
 
-- Refugees Upgrade
+- Refugees Expansion
 	- have a global count of refugees
 	- when a site's hunger gets too crazy (or the other bars?), people leave town
 	- when refugees arrive in a site or you find a camp, reduce the global refugee count
 	- refugees arrive at ghost town needs different text
-
-- event log (ie, 'crap what did I just click past?')
-
-- Post Office as a infrastructure box
-	- only one or two mails available at a time
-	- addressed to specific destination site?
+	- too many refugees and they'll start joining threats
 	
-- Threats Upgrade
+- Threats Expansion
 	- you can discover their home base
 	- you can nullify a threat / reduce its strength
 	- arrival events
 		- they ask for intel, which queues a raid where they have an advantage
 		- tax goods (can take percentage of loads)
 		- confiscate goods (take a whole load)
-
+- Outriders and Escorts
+	- no cargo but provides manpower/defense
+	
 - Affecting Wages
 	- union house
 	- school
@@ -108,8 +94,6 @@ FUTURE EXPANSIONS
 
 - Population Growth
 
-- a 'notes' file that saves with game so you can tell Future Self what your strategy is
-
 - Graph Expansion
 	- trailblazing
 	- building outposts / new sites
@@ -124,18 +108,12 @@ FUTURE EXPANSIONS
 
 - what can you DISCOVER that greatly helps a lot of towns directly?
 
-- Outriders and Escorts
-	- no cargo but provides manpower/defense
+
 
 
 MOTHBALLS
-- odd jobs button
-	- in ten days you get half-loads of food and water
-	- your rep there dips down the price of a full load of food and water.
-	- appears only when you have less than a week's provisions and no local rep
-- Construction and Surveying require food
-	(replaced by 'join the community' consequences)
-- boats? terrain?
+- boats
+- terrain?
 - zoom in / out pays no attention to the location of the mouse
 	- need to set a center point (defaults to 500,500 or focus unit?)
 	- or takes its value initially but then ignores it until zoom is done?
