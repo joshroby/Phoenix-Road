@@ -3,19 +3,21 @@ Down the Phoenix Road To Do List
 
 DONE
 
-- build infrastructure deducts commodities from all units at site
+- xlink:href added so Safari displays landmarks and units
+- zoom scale added so Safari can effectively zoom
+- added 'rep' to upgrade buttons
+- autoswitch back to on-road only when your new location has neighbors
+- site halos yellow if rep there is <10
+- add tooltips to carts and road icons
 
-- Mysterious Site event now has two options: "Hold Up" which hits Unit.roadside() for you, or "Continue onwards" which is just dismiss
-
-- actual autosave
 
 IMMEDIATE FIXES
 
 
-
 NEXT FEATURE / OPTIMIZATION
 
-- clear up Unit.route code to use the last route.to rather than the standalone site reference at the last index
+- normalize the stats (vision and selfDefense) to a 1-10 scale
+	- add scrounging
 
 - SVG tinkering
 	- movement animation/transition
@@ -25,6 +27,10 @@ NEXT FEATURE / OPTIMIZATION
 - save tutorial on/off state
 
 - a big and unmistakable select circle behind the view.focus.unit
+
+- Gamen Social Media Optimization
+	- twitter cards (https://developer.twitter.com/en/docs/tweets/optimize-with-cards/guides/getting-started)
+	- facebook og:image
 
 FUTURE EXPANSIONS
 

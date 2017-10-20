@@ -44,16 +44,6 @@ var view = {
 			autoplayP.innerHTML += "Autoplay when all units are busy"
 			optionsDiv.appendChild(autoplayP);
 			
-			var zoomP = document.createElement('p');
-			var zoomCheck = document.createElement('input');
-			zoomCheck.id = 'zoomCheck';
-			zoomCheck.setAttribute('type','checkbox');
-			zoomCheck.setAttribute('onclick','handlers.toggleOption("zoom")');
-			if (model.options.zoom) {zoomCheck.setAttribute('checked','checked')};
-			zoomP.appendChild(zoomCheck);
-			zoomP.innerHTML += "Map Zoom"
-			optionsDiv.appendChild(zoomP);
-			
 			var autosaveP = document.createElement('p');
 			var autosaveCheck = document.createElement('input');
 			autosaveCheck.id = 'autosaveCheck';
@@ -64,8 +54,53 @@ var view = {
 			autosaveP.innerHTML += "Autosave every fortnight"
 			optionsDiv.appendChild(autosaveP);
 			
+			var zoomOptionsDiv = document.createElement('div');
+			zoomOptionsDiv.id = 'zoomOptionsDiv';
+			zoomOptionsDiv.className = 'optionsSubDiv';
+			optionsDiv.appendChild(zoomOptionsDiv);
+			
+			var zoomHead = document.createElement('h4');
+			zoomHead.innerHTML = 'Zoom Options';
+			zoomOptionsDiv.appendChild(zoomHead);
+			
+			var zoomP = document.createElement('p');
+			var zoomCheck = document.createElement('input');
+			zoomCheck.id = 'zoomCheck';
+			zoomCheck.setAttribute('type','checkbox');
+			zoomCheck.setAttribute('onclick','handlers.toggleOption("zoom")');
+			if (model.options.zoom) {zoomCheck.setAttribute('checked','checked')};
+			zoomP.appendChild(zoomCheck);
+			zoomP.innerHTML += "Map Zoom via Mouse Wheel"
+			zoomOptionsDiv.appendChild(zoomP);
+			
+			var zoomFactorP = document.createElement('p');
+			zoomOptionsDiv.appendChild(zoomFactorP);
+			
+			var zoomSlider = document.createElement('input');
+			zoomSlider.id = 'zoomSlider';
+			zoomSlider.className = 'optionsSlider';
+			zoomSlider.setAttribute('type','range');
+			zoomSlider.setAttribute('name','zoom');
+			zoomSlider.setAttribute('min',-100);
+			zoomSlider.setAttribute('max',100);
+			var zoomFactor = 0
+			if (model.options.zoomFactor > 1) {
+				zoomFactor = model.options.zoomFactor * 10;
+			} else if (model.options.zoomFactor < 1) {
+				zoomFactor = 100 * model.options.zoomFactor - 100;
+			};
+			zoomSlider.setAttribute('value',zoomFactor);
+			zoomSlider.setAttribute('onchange','handlers.updateZoomFactor()');
+			zoomFactorP.appendChild(zoomSlider);
+			
+			var zoomLabel = document.createElement('span');
+			zoomLabel.id = 'zoomLabel';
+			zoomLabel.innerHTML = Math.floor( model.options.zoomFactor * 100) + "%";
+			zoomFactorP.appendChild(zoomLabel);
+			
 			var newGameOptionsDiv = document.createElement('div');
 			newGameOptionsDiv.id = 'newGameOptionsDiv';
+			newGameOptionsDiv.className = 'optionsSubDiv';
 			optionsDiv.appendChild(newGameOptionsDiv);
 			
 			var newGameOptionsHead = document.createElement('h4');
@@ -165,6 +200,9 @@ var view = {
 		var viewboxString = view.zoom.viewbox.minX + ' ' + view.zoom.viewbox.minY + ' ' + view.zoom.viewbox.height + ' ' + view.zoom.viewbox.width;
 		svg.setAttribute('viewBox',viewboxString);
 		svg.id = 'mapSVG';
+		
+		svg.setAttribute('xmlns',"http://www.w3.org/2000/svg");
+		svg.setAttribute('xmlns:xlink','http://www.w3.org/1999/xlink');
 		
 		var defs = document.createElementNS('http://www.w3.org/2000/svg','defs');
 		svg.appendChild(defs);
@@ -317,6 +355,7 @@ var view = {
 			var landmark = landmarkTypes[players.p1.knownLandmarks[i].type * landmarkTypes.length << 0];
 			var newLandmark = document.createElementNS('http://www.w3.org/2000/svg','use');
 			newLandmark.setAttribute('href','#'+landmark);
+			newLandmark.setAttributeNS('http://www.w3.org/1999/xlink','xlink:href','#'+landmark);
 			newLandmark.setAttribute('x',players.p1.knownLandmarks[i].x);
 			newLandmark.setAttribute('y',players.p1.knownLandmarks[i].y);
 			landmarksGroup.appendChild(newLandmark);
@@ -370,7 +409,7 @@ var view = {
 			};
 			if (players.p1.knownSites[i].population == 0) {
 				newSite.setAttribute('stroke','yellow');
-			} else if (siteRep > 0) {
+			} else if (siteRep > 10) {
 				newSite.setAttribute('stroke','lime');
 			} else if (siteRep < 0) {
 				newSite.setAttribute('stroke','red');
@@ -422,6 +461,7 @@ var view = {
 			};
 			var newUnit = document.createElementNS('http://www.w3.org/2000/svg','use');
 			newUnit.setAttribute('href','#'+units[i].type.symbol);
+			newUnit.setAttributeNS('http://www.w3.org/1999/xlink','xlink:href','#'+units[i].type.symbol);
 			newUnit.setAttribute('x',unitX - 25);
 			newUnit.setAttribute('y',unitY - 5);
 			newUnit.setAttribute('transform','translate('+(1*unitX)+' '+(1*unitY)+') scale('+unitSize+') translate('+(-1*unitX)+' '+(-1*unitY)+')');
@@ -530,16 +570,19 @@ var view = {
 	},
 	
 	mapZoom: function(e) {
+		console.log(e.deltaY);
 		if (model.options.zoom) {
-			if (view.zoom.z == 1000 && e.deltaY > 0) {
+			var zoomFactor = e.deltaY;
+			zoomFactor *= model.options.zoomFactor;
+			if (view.zoom.z == 1000 && zoomFactor > 0) {
 				var viewbox = view.zoom.viewbox;
-				viewbox.minX = (100-e.deltaY)*viewbox.minX/100;
-				viewbox.minY = (100-e.deltaY)*viewbox.minY/100;
+				viewbox.minX = (100-zoomFactor)*viewbox.minX/100;
+				viewbox.minY = (100-zoomFactor)*viewbox.minY/100;
 
 				var viewboxString = viewbox.minX + ' ' + viewbox.minY + ' ' + viewbox.width + ' ' + viewbox.height;
 				view.zoom.viewbox = viewbox;
 			} else {
-				view.zoom.z += e.deltaY * 2;
+				view.zoom.z += zoomFactor * 2;
 				view.zoom.z = Math.min(Math.max(view.zoom.z,100),1000);
 
 				var viewbox = view.zoom.viewbox;
@@ -747,7 +790,7 @@ var view = {
 				};
 				if (unitPresent && commoditiesTraded[c] !== undefined) {
 					var siteCommoditiesTradeCell = document.createElement('td');
-					siteCommoditiesTradeCell.innerHTML = '<span class="fa fa-cart-plus"></span>';
+					siteCommoditiesTradeCell.innerHTML = '<a class="tipAnchor"><span class="fa fa-cart-plus"></span><span class="tooltip">Request '+data.commodities[c].name+'</span></a>';
 					siteCommoditiesTradeCell.setAttribute('onclick','handlers.addFromSite("'+c+'")');
 					siteCommoditiesItem.appendChild(siteCommoditiesTradeCell);
 				} else {
@@ -885,7 +928,7 @@ var view = {
 					infrastructureUpgradeText.innerHTML = site.infrastructure[i].text;
 					infrastructureDiv.appendChild(infrastructureUpgradeText);
 					var infrastructureUpgradeButton = document.createElement('button');
-					infrastructureUpgradeButton.innerHTML = 'Upgrade ' + site.infrastructure[i].upgradeDisplay + " (" +cost+ ")";
+					infrastructureUpgradeButton.innerHTML = 'Upgrade ' + site.infrastructure[i].upgradeDisplay + " (" +cost+ " rep)";
 					infrastructureUpgradeButton.setAttribute('onclick','handlers.upgrade("'+site.infrastructure[i].upgrade+'",'+cost+')');
 					if(cost > site.reputation.p1) {
 						infrastructureUpgradeButton.disabled = true;
@@ -1314,7 +1357,7 @@ var view = {
 					
 					var unitCommoditiesTradeCell = document.createElement('td');
 					unitCommoditiesTradeCell.id = 'unitAddBtn_' + u + '_' + c;
-					unitCommoditiesTradeCell.innerHTML = '<span class="fa fa-cart-arrow-down"></span>';
+					unitCommoditiesTradeCell.innerHTML = '<a class="tipAnchor"><span class="fa fa-cart-arrow-down"></span><span class="tooltip">Add '+data.commodities[unit.commodities[c].commodity].name+' to Offer</span></a>';
 					if (unit.currentTrade.unitStuff.indexOf(unit.commodities[c]) == -1) {
 						unitCommoditiesTradeCell.setAttribute('onclick','handlers.addFromUnit('+u+',"'+c+'")');
 					} else {
@@ -1325,7 +1368,7 @@ var view = {
 					var resupplyCell = document.createElement('td');
 					var resupplyCost = (100 - unit.commodities[c].qty) * unit.location.commodities[unit.commodities[c].commodity];
 					if (unit.commodities[c].qty < 100 && resupplyCost < unit.location.reputation.p1 && buyable[unit.commodities[c].commodity] !== undefined) {
-						resupplyCell.innerHTML = '<a class="tipAnchor"><span class="fa fa-refresh"></span><span class="tooltip">Resupply: '+Math.ceil(resupplyCost)+' reputation</span></a>';
+						resupplyCell.innerHTML = '<a class="tipAnchor"><span class="fa fa-refresh"></span><span class="tooltip">Resupply '+data.commodities[unit.commodities[c].commodity].name+': '+Math.ceil(resupplyCost)+' reputation</span></a>';
 						resupplyCell.setAttribute('onclick','handlers.resupply('+c+')');
 					} else if (unit.commodities[c].qty < 100) {
 						resupplyCell.innerHTML = '<a class="tipAnchor"><span class="fa fa-refresh"></span><span class="tooltip">Resupply: '+Math.ceil(resupplyCost)+' reputation</span></a>';
@@ -1342,7 +1385,7 @@ var view = {
 					unitCommoditiesItem.appendChild(cell);
 				};
 				var unitCommoditiesTrashCell = document.createElement('td');
-				unitCommoditiesTrashCell.innerHTML = '<span class="fa fa-road"></span>';
+				unitCommoditiesTrashCell.innerHTML = '<a class="tipAnchor"><span class="fa fa-road"></span><span class="tooltip">Unload '+data.commodities[unit.commodities[c].commodity].name+' to Road</span></a>';
 				unitCommoditiesTrashCell.setAttribute('onclick','handlers.trashFromUnit('+u+',"'+c+'")');
 				unitCommoditiesItem.appendChild(unitCommoditiesTrashCell);
 					

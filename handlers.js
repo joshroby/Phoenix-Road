@@ -13,6 +13,18 @@ var handlers = {
 		model.options[option] = !model.options[option];
 	},
 	
+	updateZoomFactor: function() {
+		var zoomSlider = document.getElementById('zoomSlider');
+		var zoomFactor = 1;
+		if (zoomSlider.value > 0) {
+			zoomFactor = zoomSlider.value * 10 / 100;
+		} else {
+			zoomFactor = (100 + parseInt(zoomSlider.value)) / 100 ;
+		};
+		model.options.zoomFactor = zoomFactor;
+		document.getElementById('zoomLabel').innerHTML = Math.floor( model.options.zoomFactor * 100) + "%";
+	},
+	
 	updateNewGameOption: function(option) {
 		var optionInput = document.getElementById(option + 'OptionsSlider');
 		model.options.newGame[option] = parseInt(optionInput.value);

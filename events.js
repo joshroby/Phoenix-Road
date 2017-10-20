@@ -14,7 +14,7 @@ var events = {
 		if (roadsOut > 1) {
 			roadsOut = 'are ' + ['no','one','two','three','four','five','six'][roadsOut] + ' roads';
 		} else {
-			roadsOut += 'is just one road';
+			roadsOut = 'is just one road';
 		};
 		var passageText = "You start your journey from your hometown of "+units[0].location.name+".  You can see your donkey cart marked in red on the map above, just below the town.<p>There "+roadsOut+" out of town.  There are little more than rumors about what you'll find down each one.  The townsfolk are pretty sure on the names of the towns out there, but no one's quite sure what you'll find down each road.";
 		var choiceArray = [new Choice('Continue',events.tutorial_002),new Choice('Turn off Tutorial',events.disableTutorial)];

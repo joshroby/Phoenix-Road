@@ -98,7 +98,8 @@ var gamen = {
 		var loadGameDiv = document.getElementById('loadGameDiv');
 		loadGameDiv.innerHTML = '';
 		var gameSavePrefix = model.gameSavePrefix;
-		var localStorageKeys= Object.keys(localStorage);
+		var test = localStorage;
+		var localStorageKeys = Object.keys(localStorage);
 		var saveGames = [];
 		for (s in localStorageKeys) {
 			if (localStorageKeys[s].startsWith(gameSavePrefix)) {

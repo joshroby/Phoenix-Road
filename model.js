@@ -22,6 +22,7 @@ var model = {
 		autosaveCountdown: 20,
 		tutorials: true,
 		zoom: true,
+		zoomFactor: 1,
 		newGame: {
 			mapSize: 750,
 			totalSites: 30,
@@ -1789,7 +1790,7 @@ function Unit(owner,startLoc,type) {
 				this.route = [];
 				this.inTransit = false;
 				this.departed = false;
-				if (!this.type.airborne) {this.offroad = false;};
+				if (!this.type.airborne && this.location.neighbors.length > 0) {this.offroad = false;};
 				this.look();
 				model.clock.running = false;
 				document.getElementById('clockPauseBtn').innerHTML = '<span class="fa fa-play"></span>';
