@@ -172,6 +172,19 @@ var data = {
 		
 	},
 	
+	foraging: [
+		"Townie",
+		"Novice Camper",
+		"Forager",
+		"Hunter",
+		"Outdoor Veteran",
+		"Scavenger",
+		"Hinterlander",
+		"Wildling",
+		"Survivalist",
+		"Ranger",
+	],
+	
 	selfDefense: [
 		'green',
 		'inexperienced',
@@ -180,6 +193,20 @@ var data = {
 		'elite',
 		'badass',
 		'not-to-be-fucked-with'
+	],
+	
+	vision: [
+		"naked eye",
+		"Simple Spyglass",
+		"Sextant",
+		"Binoculars",
+		"Porro Prism Binoculars",
+		"Refracting Telescope",
+		"Theodolite",
+		"Reflecting Telescope",
+		"Transit Theodolite",
+		"Catadioptric Telescope",
+		"Electro-optical Theodolite"
 	],
 	
 	infrastructure: {
@@ -259,7 +286,6 @@ var data = {
 			upgradeDisplay: "Self Defense",
 			jobs: 3,
 			defense: 2,
-			cost: function(player) {return Math.pow(players[player].selfDefense * 5 - 2.5,2) * 100 },
 		},
 		lensmeister: {
 			name: 'Lensmeister',
@@ -270,7 +296,6 @@ var data = {
 			upgrade: 'vision',
 			upgradeDisplay: "Vision",
 			jobs: 1,
-			cost: function(player) {return ( players[player].vision / 60 - 1 ) * 500 },
 		},
 		mechanic: {
 			name:'Mechanic',
@@ -288,6 +313,16 @@ var data = {
 				],
 			inputs: ['fuel','metals'],
 			jobs: 4,
+		},
+		naturalist: {
+			name: 'Naturalist',
+			passage: "One of this town's residents is a scientist, of sorts, studying the 'natural environment' of the wasteland.  They've collected copious notes on how the wasteland has changed from its former lush glory.  Some of those notes could help your drivers survive off the land when the going got tough.",
+			text: "The naturalist will take a break from compiling their notes to share information about the wasteland... for a price.",
+			spawn: "A dusty figure claws their way into the town, dragging a pack crammed full of notes about the wasteland's dangers… and its hidden resources.",
+			visible: false,
+			upgrade: 'foraging',
+			upgradeDisplay: "Foraging",
+			jobs: 1,
 		},
 		
 

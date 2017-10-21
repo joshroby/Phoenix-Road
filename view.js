@@ -235,7 +235,7 @@ var view = {
 			};
 		};
 		
-		var landmarkTypes = ['cactus','cowSkull','hillock','saltFlats','spire'];
+		var landmarkTypes = ['arch','cactus','cowSkull','dunes','hillock','saltFlats','spire'];
 		for (var i of landmarkTypes) {
 			if (draw[i] !== undefined) {
 				var svgNodes = draw[i]();
@@ -349,7 +349,7 @@ var view = {
 		landmarksGroup.id = 'landmarksGroup';
 		svg.appendChild(landmarksGroup);
 		
-		var landmarkTypes = ['cactus','cowSkull','hillock','saltFlats','spire','hillock','saltFlats','hillock','saltFlats'];
+		var landmarkTypes = ['arch','cactus','cowSkull','dunes','hillock','saltFlats','spire','dunes','hillock','saltFlats','hillock','saltFlats','dunes','dunes'];
 
 		for (var i in players.p1.knownLandmarks) {
 			var landmark = landmarkTypes[players.p1.knownLandmarks[i].type * landmarkTypes.length << 0];
@@ -358,6 +358,10 @@ var view = {
 			newLandmark.setAttributeNS('http://www.w3.org/1999/xlink','xlink:href','#'+landmark);
 			newLandmark.setAttribute('x',players.p1.knownLandmarks[i].x);
 			newLandmark.setAttribute('y',players.p1.knownLandmarks[i].y);
+			var scale = (0.5 + players.p1.knownLandmarks[i].size);
+			var tx = -players.p1.knownLandmarks[i].x * (scale - 1);
+			var ty = -players.p1.knownLandmarks[i].y * (scale - 1);
+			newLandmark.setAttribute('transform','translate('+tx+','+ty+') scale('+scale+')');
 			landmarksGroup.appendChild(newLandmark);
 
 		};
@@ -570,7 +574,6 @@ var view = {
 	},
 	
 	mapZoom: function(e) {
-		console.log(e.deltaY);
 		if (model.options.zoom) {
 			var zoomFactor = e.deltaY;
 			zoomFactor *= model.options.zoomFactor;
@@ -917,7 +920,7 @@ var view = {
 					buildInfoDiv.className = 'buildInfoDiv';
 					infrastructureDiv.appendChild(buildInfoDiv);
 				} else if (site.infrastructure[i].upgrade !== undefined) {
-					var cost = Math.round(site.infrastructure[i].cost('p1'),0);
+					var cost = (players.p1[site.infrastructure[i].upgrade] - 1 ) * 100;
 					var infrastructureDiv = document.createElement('div');
 					infrastructureDiv.className = 'infrastructureDiv';
 					var infrastructureHead = document.createElement('h3');

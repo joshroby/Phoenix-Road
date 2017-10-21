@@ -3,12 +3,9 @@ Down the Phoenix Road To Do List
 
 DONE
 
-- xlink:href added so Safari displays landmarks and units
-- zoom scale added so Safari can effectively zoom
-- added 'rep' to upgrade buttons
-- autoswitch back to on-road only when your new location has neighbors
-- site halos yellow if rep there is <10
-- add tooltips to carts and road icons
+- landmarks scale
+- normalize the stats (vision and selfDefense) to a 1-10 scale
+	- add foraging
 
 
 IMMEDIATE FIXES
@@ -16,8 +13,6 @@ IMMEDIATE FIXES
 
 NEXT FEATURE / OPTIMIZATION
 
-- normalize the stats (vision and selfDefense) to a 1-10 scale
-	- add scrounging
 
 - SVG tinkering
 	- movement animation/transition

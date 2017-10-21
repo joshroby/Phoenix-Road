@@ -143,8 +143,9 @@ var model = {
 		units = [];
 		players.p1 = {unitsUnlocked:{},eventLog:{}};
 		
-		players.p1.vision = 60;
-		players.p1.selfDefense = 0.5;
+		players.p1.vision = 1;
+		players.p1.selfDefense = 1;
+		players.p1.foraging = 1;
 		players.p1.knownSites = [];
 		players.p1.knownLandmarks = [];
 		players.p1.knownRivers = [];
@@ -189,6 +190,7 @@ var model = {
 		// Testing Cheats
 // 		startUnit.location.infrastructure.push(data.infrastructure.scrapyard);
 // 		startUnit.location.infrastructure.push(data.infrastructure.lensmeister);
+// 		startUnit.location.infrastructure.push(data.infrastructure.naturalist);
 // 		startUnit.location.infrastructure.push(data.infrastructure.arena);
 // 		startUnit.location.infrastructure.push(data.infrastructure.cartwright);
 // 		var dowser = new Unit(players.p1,startUnit.location,data.units.dowser);
@@ -233,6 +235,7 @@ var model = {
 		distantArea[Math.random() * distantArea.length << 0].infrastructure.push(data.infrastructure.mechanic);
 		distantArea[Math.random() * distantArea.length << 0].infrastructure.push(data.infrastructure.hangar);
 		distantArea[Math.random() * distantArea.length << 0].infrastructure.push(data.infrastructure.burntOutBus);
+		distantArea[Math.random() * distantArea.length << 0].infrastructure.push(data.infrastructure.naturalist);
 		view.focus.unit = startUnit;
 		view.displayMap();
 		
@@ -351,8 +354,8 @@ var model = {
 		
 		// Landmarks
 		landmarks = [];
-		for (var x=-50;x<1050;x += 50) {
-			for (var y=-50;y<1050;y += 50) {
+		for (var x=-50;x<1050;x += 65) {
+			for (var y=-50;y<1050;y += 65) {
 				var farFromSites = true;
 				for (s in sites) {
 					if (Math.pow(Math.pow(sites[s].x - x,2) + Math.pow(sites[s].y - y,2),0.5) < avgDist * maxDist * 0.5) {
@@ -496,12 +499,12 @@ var model = {
 				defenders += i.type.crew;
 			};
 		};
-		var selfDefenseIndex = Math.round(players.p1.selfDefense * 5 - 2.5);
+		var selfDefenseIndex = players.p1.selfDefense;
 		var selfDefenseDescriptor = data.selfDefense[Math.min(selfDefenseIndex,6)];
 		if (odds = 'display') {
 			return defenders + ' ' + selfDefenseDescriptor + ' drivers (' + Math.round(defenders * players.p1.selfDefense * 10)/10 + ' <span class="fa fa-hand-rock-o"></span>)';
 		} else {
-			return defenders * players.p1.selfDefense * Math.random();
+			return defenders * ( 0.5 + players.p1.selfDefense * 0.2 ) * Math.random();
 		};
 	},
 	
@@ -682,20 +685,25 @@ var model = {
 	
 	upgrade: function(stat,cost) {
 		var passageString, prettyStat;
+		players.p1[stat]++;
 		if (stat == 'vision') {
-			players.p1[stat] *= 2;
 			for (u in units) {
 				units[u].look();
 			};
 			passageString = 'The elder gifts you with a set of precision lenses, along with the goggles, rangefinders, and stands you will need to use with them.  You should be able to see a lot farther across the wasteland with all this!';
 			prettyStat = "Vision";
 		} else if (stat == 'selfDefense') {
-			players.p1[stat] += 0.2;
 			passageString = "You sit down and watch a night's worth of fights ranging from the tactical to the elegant to the brutal.  There's a few moves you're sure you can teach the rest of the drivers.";
 			prettyStat = "Self Defense";
+		} else if (stat == 'foraging') {
+			passageString = "The naturalist spends the better part of a day scattering their own notes as they share with you bits and pieces of their understanding of the wasteland's ecosystem.";
+			prettyStat = "Foraging";
+			if (players.p1.foraging > 9) {
+				passageString += "<p>Confident in their abilities, your drivers will no longer insist on stocking up on Food and Water before leaving town.";
+			};
 		};
 		view.focus.unit.location.reputation.p1 -= cost;
-		passageString += '<p />Your '+prettyStat+' has been raised to '+Math.floor(players.p1[stat]*100)/100+'.';
+		passageString += '<p />Your '+prettyStat+' has been raised to '+players.p1[stat]+' ('+data[stat][Math.min(players.p1[stat],data[stat].length)-1]+').';
 		gamen.displayPassage(new Passage(passageString));
 	},
 	
@@ -1669,10 +1677,9 @@ function Unit(owner,startLoc,type) {
 			if (caravan[u].isBuilding) {isBuilding = true};
 			if (caravan[u].isSurveying) {isSurveying = true};
 		};
-		if (this.location.name == "Roadside" || this.location.name == "Nowhere") {
+		if (this.location.name == "Roadside" || this.location.name == "Nowhere" || this.owner.foraging > 9) {
 			waterStore = Infinity;
 			foodStore = Infinity;
-			console.log('ping');
 		};
 				
 		if (route !== undefined && waterStore >= waterDrank && foodStore >= foodEaten && fuelStore >= fuelBurned && cargo <= cargoCapacity && !isBuilding && !isSurveying) {
@@ -1760,14 +1767,15 @@ function Unit(owner,startLoc,type) {
 		};
 		if (load > this.type.cargo) {
 			gamen.displayPassage(new Passage(this.name + ' is overburdened and cannot travel.'));
+			model.clock.stop();
 			view.focus.unit = this;
 			view.displayUnit(this);
 		} else if (foodStore == 0) {
-			gamen.displayPassage(new Passage(this.name + " loses a day scrounging for food in the wilderness."));
-			this.commodities.push({commodity:'food',qty:Math.floor(Math.random()*10)});
+			gamen.displayPassage(new Passage(this.name + " loses a day foraging for food in the wasteland."));
+			this.commodities.push({commodity:'food',qty:Math.min(100,Math.floor(Math.random()*10*this.owner.foraging))});
 		} else if (waterStore == 0 && this.type.fuel.water !== undefined) {
-			gamen.displayPassage(new Passage(this.name + " loses a day scavenging for water in the wilderness."));
-			this.commodities.push({commodity:'water',qty:Math.floor(Math.random()*10)});
+			gamen.displayPassage(new Passage(this.name + " loses a day foraging for water in the wasteland."));
+			this.commodities.push({commodity:'water',qty:Math.min(100,Math.floor(Math.random()*10*this.owner.foraging))});
 		} else if (fuelStore == 0 && this.type.fuel.fuel !== undefined) {
 			gamen.displayPassage(new Passage(this.name + " has run out of fuel."));
 			this.roadside();
@@ -1902,7 +1910,7 @@ function Unit(owner,startLoc,type) {
 			unitY = this.location.y;
 		};
 		for (var i in sites) {
-			if (( (this.location !== undefined && this.location.neighbors.indexOf(sites[i]) !== -1) || Math.pow(Math.pow(sites[i].x - unitX,2) + Math.pow(sites[i].y - unitY,2),.5) < this.owner.vision ) && this.owner.knownSites.indexOf(sites[i]) == -1) {
+			if (( (this.location !== undefined && this.location.neighbors.indexOf(sites[i]) !== -1) || Math.pow(Math.pow(sites[i].x - unitX,2) + Math.pow(sites[i].y - unitY,2),.5) < this.owner.vision * 60 ) && this.owner.knownSites.indexOf(sites[i]) == -1) {
 				this.owner.knownSites.push(sites[i]);
 			};
 		};
@@ -1914,13 +1922,13 @@ function Unit(owner,startLoc,type) {
 			this.location.hometown();
 		}
 		for (var i in landmarks) {
-			if (( Math.pow(Math.pow(landmarks[i].x - unitX,2) + Math.pow(landmarks[i].y - unitY,2),.5) < this.owner.vision + 60 ) && this.owner.knownLandmarks.indexOf(landmarks[i]) == -1) {
+			if (( Math.pow(Math.pow(landmarks[i].x - unitX,2) + Math.pow(landmarks[i].y - unitY,2),.5) < this.owner.vision * 60 + 60 ) && this.owner.knownLandmarks.indexOf(landmarks[i]) == -1) {
 				this.owner.knownLandmarks.push(landmarks[i]);
-				this.owner.knownLandmarks.sort(function(a,b) {return (a.y > b.y) ? 1 : ((b.y > a.y) ? -1 : 0);});
+				this.owner.knownLandmarks = this.owner.knownLandmarks.sort(function(a,b) {return (a.y > b.y) ? 1 : ((b.y > a.y) ? -1 : 0);});
 			};
 		};
 		for (var i in rivers) {
-			if ( ( Math.pow(Math.pow(rivers[i].x1 - unitX,2) + Math.pow(rivers[i].y1 - unitY,2),0.5) < this.owner.vision + 60 || Math.pow(Math.pow(rivers[i].x2 - unitX,2) + Math.pow(rivers[i].y2 - unitY,2),0.5) < this.owner.vision + 60 ) && this.owner.knownRivers.indexOf(rivers[i]) == -1) {
+			if ( ( Math.pow(Math.pow(rivers[i].x1 - unitX,2) + Math.pow(rivers[i].y1 - unitY,2),0.5) < this.owner.vision * 60 + 60 || Math.pow(Math.pow(rivers[i].x2 - unitX,2) + Math.pow(rivers[i].y2 - unitY,2),0.5) < this.owner.vision * 60 + 60 ) && this.owner.knownRivers.indexOf(rivers[i]) == -1) {
 				this.owner.knownRivers.push(rivers[i]);
 			};
 		};
