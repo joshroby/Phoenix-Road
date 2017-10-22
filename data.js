@@ -862,6 +862,18 @@ var data = {
 			buildCost: {lumber:2,fiber:2,stone:1,tack:1,food:1,fuel:2,water:1},
 		},
 		
+		outriders: {
+			name: 'Outriders',
+			symbol: 'outriders',
+			unlockable: true,
+			cargo: 0,
+			crew: 2,
+			fuel: {water:1},
+			speed: 14,
+			offroadSpeed: 14,
+			buildCost: {tack:1,water:1,food:1},
+		},
+		
 		bicycle: {
 			name: 'Bicycle',
 			symbol: 'bicycle',
@@ -930,6 +942,18 @@ var data = {
 			speed: 20,
 			offroadSpeed: 5,
 			buildCost: {metals:8,fuel:2,food:1},
+		},
+		
+		escort: {
+			name: 'Escort Motorbikes',
+			symbol: 'escort',
+			unlockable: true,
+			cargo: 0,
+			crew: 2,
+			fuel: {fuel:1},
+			speed: 30,
+			offroadSpeed: 20,
+			buildCost: {metals:2,fuel:1,food:1},
 		},
 		
 		zeppelin: {

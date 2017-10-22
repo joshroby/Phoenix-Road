@@ -106,6 +106,7 @@ var handlers = {
 	
 	survey: function() {
 		view.focus.unit.survey();
+		view.displayMap();
 	},
 	
 	scuttle: function() {
@@ -116,12 +117,14 @@ var handlers = {
 		view.focus.unit.takePassengers(repCost);
 		view.displayUnit(view.focus.unit);
 		view.displaySiteDetails(view.focus.unit.location);
+		view.displayMap();
 	},
 	
 	dropPassengers: function(repCost) {
 		view.focus.unit.dropPassengers(repCost);
 		view.displayUnit(view.focus.unit);
 		view.displaySiteDetails(view.focus.unit.location);
+		view.displayMap();
 	},
 	
 	addFromSite: function(commodity) {

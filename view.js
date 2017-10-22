@@ -546,7 +546,12 @@ var view = {
 		progressExploreBar.className = 'progressBar bigProgressBar';
 		var progressExploreDoneBar = document.createElement('div');
 		progressExploreDoneBar.className = 'progressBarDone';
-		var percentage = Math.round(players.p1.knownSites.length/sites.length * 100,0);
+		var visitedSites = 0, populatedSites = 0;
+		for (s of sites) {
+			if (s.population > 0) {populatedSites++};
+			if (s.hasVisited.p1) {visitedSites++};
+		};
+		var percentage = Math.round(visitedSites/populatedSites * 100,0);
 		var caption = percentage + "%";
 		progressExploreDoneBar.innerHTML = caption;
 		progressExploreDoneBar.style.width = percentage + '%';
@@ -1355,7 +1360,7 @@ var view = {
 				unitCommoditiesItem.appendChild(unitCommoditiesNameCell);
 				if (unit.location !== undefined && trading[unit.commodities[c].commodity] !== undefined) {
 					var unitCommoditiesValueCell = document.createElement('td');
-					unitCommoditiesValueCell.innerHTML = Math.round(100 * unit.location.commodities[unit.commodities[c].commodity],0);
+					unitCommoditiesValueCell.innerHTML = Math.round(unit.commodities[c].qty * unit.location.commodities[unit.commodities[c].commodity],0);
 					unitCommoditiesItem.appendChild(unitCommoditiesValueCell);
 					
 					var unitCommoditiesTradeCell = document.createElement('td');
@@ -1538,7 +1543,7 @@ var view = {
 				unitTakePassengersBtn = document.createElement('button');
 				unitTakePassengersBtn.innerHTML = 'Take On ( -' + Math.round(takePassengersCost,0) + ' rep )';
 				unitTakePassengersBtn.setAttribute('onclick','handlers.takePassengers(' + takePassengersCost + ')');
-				if (takePassengersCost > unit.location.reputation.p1 || unit.location.population == 0) {
+				if (takePassengersCost > unit.location.reputation.p1 || unit.location.population == 0 || unit.commodities.length >= unit.type.cargo) {
 					unitTakePassengersBtn.disabled = true;
 				};
 				unitPassengersDiv.appendChild(unitTakePassengersBtn);

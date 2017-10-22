@@ -624,12 +624,16 @@ var model = {
 						};
 					};
 					if (unitsAtSite.length == 0) {
+						console.log(sites[s]);
 						for (var i in sites) {
 							var neighborIndex = sites[i].neighbors.indexOf(sites[s]);
 							if (neighborIndex !== -1) {
 								sites[i].neighbors.splice(neighborIndex,1);
 							};
 						}
+						if (players.p1.knownSites.indexOf(sites[s]) !== -1 && sites[s].resources.length > 0) {
+							gamen.displayPassage(new Passage('The town of '+sites[s].name+', abandoned and empty, is claimed by the wasteland.'));
+						};
 						players.p1.knownSites.splice(players.p1.knownSites.indexOf(sites[s]),1);
 						sites.splice(sites.indexOf(sites[s]),1);
 					};
@@ -773,8 +777,9 @@ var model = {
 			nextPlayer = {};
 			nextPlayer.startScore = players[player].startScore;
 			nextPlayer.unitsUnlocked = players[player].unitsUnlocked;
-			nextPlayer.vision = players[player].vision;
+			nextPlayer.foraging = players[player].foraging;
 			nextPlayer.selfDefense = players[player].selfDefense;
+			nextPlayer.vision = players[player].vision;
 			nextPlayer.hometown = sites.indexOf(players[player].hometown);
 			nextPlayer.eventStack = players[player].eventStack;
 			nextPlayer.knownSiteIndices = [];
@@ -1202,16 +1207,18 @@ function Site(mapSize) {
 			'crowded',
 			'comfy'
 		];
-		var housingDesc = '<strong>Housing</strong><br />'+housing+' beds / '+this.population+' souls ';
+		var housingDesc = '<strong>Housing</strong><br />'+housing+' beds for '+this.population+' souls ';
 		array.push({label:housingLabels[housingLabels.length * housingRatio * 0.99 << 0],completion:housingRatio,desc:housingDesc});
+		if (this.nearestThreat == undefined) {this.nearestThreat = model.nearestThreat(this.x,this.y);};
 		var safety = Math.min(1,defense / this.nearestThreat.threat.strength);
+		if (isNaN(safety)) {safety = 0;};
 		var safetyLabels = [
 			'scared',
 			'cowering',
 			'vigilant',
 			'bold'
 		];
-		var safetyDesc = '<strong>Safety</strong><br />'+defense+' defense / '+this.nearestThreat.threat.strength+' danger';
+		var safetyDesc = '<strong>Safety</strong><br />'+defense+' defense against '+this.nearestThreat.threat.strength+' danger';
 		safetyDesc += '<br />('+this.nearestThreat.threat.name+' territory)';
 		array.push({label:safetyLabels[safetyLabels.length * safety * 0.99 << 0],completion:safety,desc:safetyDesc});
 		
@@ -1776,9 +1783,17 @@ function Unit(owner,startLoc,type) {
 		} else if (waterStore == 0 && this.type.fuel.water !== undefined) {
 			gamen.displayPassage(new Passage(this.name + " loses a day foraging for water in the wasteland."));
 			this.commodities.push({commodity:'water',qty:Math.min(100,Math.floor(Math.random()*10*this.owner.foraging))});
-		} else if (fuelStore == 0 && this.type.fuel.fuel !== undefined) {
+		} else if (fuelStore == 0 && this.type.fuel.fuel !== undefined && this.route.length > 1) {
 			gamen.displayPassage(new Passage(this.name + " has run out of fuel."));
-			this.roadside();
+			var roadside = this.roadside();
+			if (this.caravan !== undefined) {
+				for (var c in this.caravan) {
+					this.caravan[c].inTransit = false;
+					this.caravan[c].departed = false;
+					this.caravan[c].route = undefined;
+					this.caravan[c].location = roadside;
+				};
+			};
 		} else {
 			var currentStep = this.route.shift();
 			this.departed = true;
@@ -1812,6 +1827,11 @@ function Unit(owner,startLoc,type) {
 	this.roadside = function() {
 		console.log(this);
 		var roadside = new Site();
+		players.p1.knownSites.push(roadside);
+		roadside.hasVisited.p1 = true;
+		roadside.population = 0;
+		roadside.infrastructure = [];
+		roadside.resources = [];
 		roadside.x = this.route[0].x;
 		roadside.y = this.route[0].y;
 		if (this.offroad) {
@@ -1823,17 +1843,23 @@ function Unit(owner,startLoc,type) {
 			this.route[0].to.neighbors.push(roadside);
 			this.route[0].from.neighbors.push(roadside);
 		};
-		roadside.population = 0;
 		roadside.nearestThreat = model.nearestThreat(roadside.x,roadside.y);
-		roadside.infrastructure = [];
-		roadside.resources = [];
-		roadside.hasVisited.p1 = true;
-		players.p1.knownSites.push(roadside);
 		this.location = roadside;
 		this.route = undefined;
 		this.inTransit = false;
+		if (this.caravan !== undefined) {
+			for (var c in this.caravan) {
+				this.caravan[c].inTransit = false;
+				this.caravan[c].departed = false;
+				this.caravan[c].route = undefined;
+				this.caravan[c].location = roadside;
+			};
+		};
+
 		model.clock.running = false;
 		view.displayMap();
+		
+		return roadside;
 	};
 	
 	this.eat = function() {

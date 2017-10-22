@@ -419,7 +419,6 @@ var events = {
 			if (housedDeaths > 0) {
 				if (housedDeaths == 1) {var conjugate = 'es',nounPlural = '';} else {var conjugate = '',nounPlural = 's';};
 				var housedDeathString = gamen.prettyNumber(housedDeaths);
-				console.log(housedDeathString);
 				housedDeathString = housedDeathString.charAt(0).toUpperCase() + housedDeathString.slice(1);
 				passageString += housedDeathString + " pass" + conjugate + " in the comfort of their home"+nounPlural+".  ";
 			};
@@ -535,45 +534,56 @@ var events = {
 	roadRefugees: function() {
 		var unit = units[Math.random() * units.length << 0];
 		view.displayUnit(unit,true);
+		var foodStore = 0;
+		var caravan = [unit];
 		if (unit.caravan !== undefined) {
-			for (var i in unit.caravan) {
-				if (unit.caravan[i].type.canPassenger) {
-					view.focus.unit = unit.caravan[i];
-					view.displayUnit(unit.caravan[i],true);
+			caravan = unit.caravan;
+		};
+		for (var i in caravan) {
+			if (caravan[i].type.canPassenger) {
+				unit = caravan[i];
+				view.displayUnit(caravan[i],true);
+			};
+			for (var c in caravan[i].commodities) {
+				if (caravan[i].commodities[c].commodity == 'food') {
+					foodStore += caravan[i].commodities[c].qty;
 				};
 			};
 		};
 		if (unit.inTransit && !unit.offroad && !unit.airborne) {
 			var numberRefugees = Math.max(Math.floor(Math.random() * 12 << 0),10);
-			var passageString = unit.name + " comes across "+numberRefugees+" people shuffling down the road.  They look tired and half-starved; who knows if they'll make it to where they're going.";
+			var split = Math.ceil(Math.min(foodStore/2,numberRefugees * 10));
+			var passageString = unit.name + " comes across "+gamen.prettyNumber(numberRefugees)+" people shuffling down the road.  They look tired and half-starved; who knows if they'll make it to where they're going.";
+			passageString += "<p>You could split your provisions with them ("+split+"% of a load) to help them along their way.";
 			if (unit.type.canPassenger) {
-				var choiceArray = [new Choice("Give Them a Ride",events.roadRefugeesTake,[numberRefugees]),new Choice("Split Provisions with Them",events.roadRefugeesFeed,[numberRefugees]),new Choice("Leave Them")];
+				var choiceArray = [new Choice("Give Them a Ride",events.roadRefugeesTake,[unit,numberRefugees]),new Choice("Split Provisions with Them",events.roadRefugeesFeed,[unit,numberRefugees]),new Choice("Leave Them")];
 			} else {
-				var choiceArray = [new Choice("Split Provisions with Them",events.roadRefugeesFeed,[numberRefugees]),new Choice("Wish Them Luck")];
+				var choiceArray = [new Choice("Split Provisions with Them",events.roadRefugeesFeed,[unit,numberRefugees]),new Choice("Wish Them Luck")];
 			};
 			gamen.displayPassage(new Passage(passageString,choiceArray,false));
 		};
 	},
 	
-	roadRefugeesTake: function(numberRefugees) {
-		view.focus.unit.commodities.push({commodity:'Passengers',qty:numberRefugees*10});
+	roadRefugeesTake: function(unit,numberRefugees) {
+		unit.commodities.push({commodity:'passengers',qty:numberRefugees*10});
+		view.displayUnit(unit,true);
 	},
 	
-	roadRefugeesFeed: function(numberRefugees) {
+	roadRefugeesFeed: function(unit,numberRefugees) {
 		var fed = 0;
-		var caravan = [view.focus.unit];
-		if (view.focus.unit.caravan !== undefined) {
-			caravan = view.focus.unit.caravan;
+		var caravan = [unit];
+		if (unit.caravan !== undefined) {
+			caravan = unit.caravan;
 		};
 		for (var u in caravan) {
 			for (var i in caravan[u].commodities) {
 				if (fed < numberRefugees * 10 && caravan[u].commodities[i].commodity == 'food') {
 					fed += caravan[u].commodities[i].qty / 2;
-					caravan[u].commodities[i].qty /= 2;
+					caravan[u].commodities[i].qty = Math.ceil(caravan[u].commodities[i].qty/2);
 				};
 			};
 		};
-		view.displayUnit(view.focus.unit,true);
+		view.displayUnit(unit,true);
 		gamen.displayPassage(new Passage("The refugees gratefully accept your generosity, showering you with well wishes and blessings."));
 	},
 	

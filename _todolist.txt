@@ -3,16 +3,28 @@ Down the Phoenix Road To Do List
 
 DONE
 
-- landmarks scale
-- normalize the stats (vision and selfDefense) to a 1-10 scale
-	- add foraging
+- foraging saves correctly
+- drop off passengers & take on passengers updates map
+- starting a survey updates the map (for icon change)
+- cargo displays value of each load, taking its qty into account
+- explore progress bar goes on sites visited, not sites known of
+- roadRefugees puts passengers in correct unit
+- disables Take Passengers button when unit cargo is full
+- notification when a visited town is removed from map
+- a caravan that runs out of fuel creates a single Roadside for everybody
+- if unit runs out of fuel/food/water on last day of a route, roadside is properly skipped
 
 
 IMMEDIATE FIXES
 
 
+
 NEXT FEATURE / OPTIMIZATION
 
+- get rid of or streamline inTransit, departed, and route
+
+make passengers eat food
+	- and make the provisions predictions accomodate
 
 - SVG tinkering
 	- movement animation/transition
@@ -23,13 +35,22 @@ NEXT FEATURE / OPTIMIZATION
 
 - a big and unmistakable select circle behind the view.focus.unit
 
+- model.victoryProgress() should weight by people, not sites
+	- ie, how many people are fed, warm, and safe?
+	- takes into account Passengers and refugees
+
 - Gamen Social Media Optimization
 	- twitter cards (https://developer.twitter.com/en/docs/tweets/optimize-with-cards/guides/getting-started)
 	- facebook og:image
 
+- consolidate cargo button
+	- appears when you have two loads of a thing less than 100 qty
+
 FUTURE EXPANSIONS
 
 - pop up display for 'who do I know that makes this commodity?'
+
+- easy way to remember where special sites (cartwright, bus, foundry) are
 
 - event log (ie, 'crap what did I just click past?')
 
@@ -40,6 +61,7 @@ FUTURE EXPANSIONS
 - New Random Events
 	- site discovers resource
 	- events that earn you reputation in towns
+		- find lost/wandering kid
 	- increase to your self-defense
 	- a very simple 'you get some food'
 		- replenishes a food to 100 rather than gives you a new commodity
@@ -55,6 +77,8 @@ FUTURE EXPANSIONS
 	- Fire Station kills fire events (100%)
 	- Clinic/Hospital for Plague?
 	- construction crew upgrades to industry infrastructure?
+		- more jobs
+	- Reservoir (construction crew project, provides water)
 	- Library (requires Old World Ruins)
 		- research to discover resources in other sites
 		- research to discover sites outside your knownSites
@@ -66,23 +90,36 @@ FUTURE EXPANSIONS
 	- have a global count of refugees
 	- when a site's hunger gets too crazy (or the other bars?), people leave town
 	- when refugees arrive in a site or you find a camp, reduce the global refugee count
-	- refugees arrive at ghost town needs different text
-	- too many refugees and they'll start joining threats
+	- too many refugees and they'll start joining/pumping up threats
 	
 - Threats Expansion
 	- you can discover their home base
 	- you can nullify a threat / reduce its strength
-	- arrival events
+		- as code requires there to at least be one threat, how to manage?
+	- arrival events in home base (or elsewhere?)
 		- they ask for intel, which queues a raid where they have an advantage
 		- tax goods (can take percentage of loads)
 		- confiscate goods (take a whole load)
+		- discover home base
+	- incite rebellion?
+	- click on/off an overlay on map to denote threat territories
+	- threat types
+		- outlaws/bandits
+		- warlords
+		- ethnofascists who seek to purge undesirables
+		- cults
+		- straight-up cannibals
+		- how do these relate to strength?
 - Outriders and Escorts
-	- no cargo but provides manpower/defense
+	- no cargo but provides crew for manpower/defense
+	- literally no cargo; can be overburdened and eat in town,
+	- otherwise travels with a caravan
 	
 - Affecting Wages
 	- union house
 	- school
 	- house of worship
+	- ham radio station ?
 
 - Warehousing
 	- works like trash pile except it doesn't disappear
