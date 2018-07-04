@@ -12,7 +12,13 @@ var model = {
 
 	gameTitle: 'Down the Phoenix Road',
 	gameSavePrefix: 'PhoenixRoad',
-	gameSaveDefault: function() {return players.p1.hometown.name},
+	gameSaveDefault: function() {
+		var saveName = players.p1.hometown.name;
+		if (model.oldSaveName !== undefined) {
+			saveName = model.oldSaveName;
+		};
+		return saveName;
+	},
 	supportLink: 'http://patreon.com/joshroby',
 	supportLinkLabel: 'Patreon',
 
@@ -36,6 +42,10 @@ var model = {
 	
 	gameDivContents: function() {
 		var result = [];
+		
+		var optionsDiv = document.createElement('div');
+		optionsDiv.id = 'optionsDiv';
+		result.push(optionsDiv);
 		
 		var introDiv = document.createElement('div');
 		introDiv.id = 'introDiv';
@@ -106,6 +116,8 @@ var model = {
 	},
 
 	newGame: function() {
+	
+		model.oldSaveName = undefined;
 		
 		model.clock = new Clock(new Date(new Date().getTime() + 3.154e+12 + 3.154e+12 * Math.random() ));
 		gamen.clocks = [model.clock];
@@ -501,7 +513,7 @@ var model = {
 		};
 		var selfDefenseIndex = players.p1.selfDefense;
 		var selfDefenseDescriptor = data.selfDefense[Math.min(selfDefenseIndex,6)];
-		if (odds = 'display') {
+		if (odds == 'display') {
 			return defenders + ' ' + selfDefenseDescriptor + ' drivers (' + Math.round(defenders * players.p1.selfDefense * 10)/10 + ' <span class="fa fa-hand-rock-o"></span>)';
 		} else {
 			return defenders * ( 0.5 + players.p1.selfDefense * 0.2 ) * Math.random();
@@ -594,9 +606,9 @@ var model = {
 						sites[s].commodities[a] *= magnitude;
 					} else if (sites[s].adjustment[a] == 'return to set point') {
 						if (sites[s].commodities[a] > sites[s].commoditiesSetPoints[a] + 0.01) {
-							sites[s].commodities[a] *= 0.9985;
+							sites[s].commodities[a] *= 0.9987;
 						} else if (sites[s].commodities[a] < sites[s].commoditiesSetPoints[a] - 0.01) {
-							sites[s].commodities[a] /= 0.9985;
+							sites[s].commodities[a] /= 0.9987;
 						} else {
 							sites[s].commodities[a] = sites[s].commoditiesSetPoints[a];
 							delete sites[s].adjustment[a];
@@ -648,7 +660,7 @@ var model = {
 		
 		view.displayUnit(view.focus.unit,false);
 		view.displayMap();
-		
+		view.markSelectedUnit();
 	},
 	
 	buildUnit: function(index,unitType) {
@@ -674,6 +686,12 @@ var model = {
 						unitsHere[u].commodities.splice(c,1);
 						unpaid = false;
 					};
+				};
+			};
+			for (var w in view.focus.unit.location.warehouse.p1) {
+				if (unpaid && view.focus.unit.location.warehouse.p1[w].commodity == buildCost[i] && view.focus.unit.location.warehouse.p1[w].qty == 100) {
+					view.focus.unit.location.warehouse.p1.splice(w,1);
+					unpaid = false;
 				};
 			};
 			if (unpaid) {
@@ -825,6 +843,8 @@ var model = {
 	},
 	
 	unflattenGame: function(saveGame) {
+	
+		model.oldSaveName = saveGame.saveName;
 
 		model.clock = new Clock();
 		model.clock.time = new Date(saveGame.clock.time);
@@ -846,11 +866,12 @@ var model = {
 		for (var s in saveGame.sites) {
 			var newSite = new Site();
 		};
-		var simples = ['name','adjustment','arrivalEventsList','carpet','commodities','commoditiesSetPoints','goodwill','hasVisited','hasSurveyed','population','reputation','surveys','threat','trash','wages','x','y'];
+		var simples = ['name','adjustment','arrivalEventsList','carpet','commodities','commoditiesSetPoints','goodwill','hasVisited','hasSurveyed','population','reputation','surveys','threat','trash','wages','warehouse','x','y'];
 		for (var s in saveGame.sites) {
 			for (var d of simples) {
 				sites[s][d] = saveGame.sites[s][d];
 			};
+			if (sites[s].warehouse == undefined) {sites[s].warehouse = {p1:[]}};
 			sites[s].neighbors = [];
 			for (var n of saveGame.sites[s].neighborIndices) {
 				sites[s].neighbors.push(sites[n]);
@@ -975,6 +996,7 @@ function Site(mapSize) {
 	this.reputation = {p1:0};
 	this.goodwill = {p1:0};
 	
+	this.warehouse = {p1:[]}
 	this.trash = [];
 	
 	this.resources = [];
@@ -1003,7 +1025,7 @@ function Site(mapSize) {
 	if (this.commodities.food < 0.07 && this.resources.indexOf(data.resources.river) !== -1 && this.infrastructure.indexOf(data.infrastructure.fields) == -1) {
 		this.infrastructure.push(data.infrastructure.seine);
 	};
-	if (this.commodities.food < 0.1 && this.resources.indexOf(data.resources.pasture) !== -1) {
+	if (this.commodities.food < 0.2 && this.resources.indexOf(data.resources.pasture) !== -1) {
 		this.infrastructure.push(data.infrastructure.corral);
 	};
 	if (this.commodities.food < 0.1 && this.resources.indexOf(data.resources.forest) !== -1) {
@@ -1024,14 +1046,17 @@ function Site(mapSize) {
 	if (this.commodities.crudeOil < 0.6 && this.resources.indexOf(data.resources.oilReservoir) == -1 && Math.random() < 0.05 && industry == undefined) {
 		industry = data.infrastructure.oilWell;
 	};
+	if (this.commodities.furniture < 0.5 && industry == undefined) {
+		industry = data.infrastructure.carpenter;
+	};
 	if (this.commodities.cloth < 0.5 && industry == undefined) {
 		industry = data.infrastructure.loom;
 	};
-	if (this.commodities.clothing < 0.4 && industry == undefined) {
-		industry = data.infrastructure.seamstress;
-	};
 	if (this.commodities.leather < 0.4 && industry == undefined) {
 		industry = data.infrastructure.tannery;
+	};
+	if (this.commodities.clothing < 0.4 && industry == undefined) {
+		industry = data.infrastructure.seamstress;
 	};
 	if (this.commodities.tack < 0.6 && industry == undefined) {
 		industry = data.infrastructure.saddler;
@@ -1076,7 +1101,7 @@ function Site(mapSize) {
 	this.flat = function() {
 		var flat = {};
 		
-		var simples = ['name','adjustment','arrivalEventsList','carpet','commodities','commoditiesSetPoints','goodwill','hasVisited','hasSurveyed','population','reputation','surveys','threat','trash','wages','x','y'];
+		var simples = ['name','adjustment','arrivalEventsList','carpet','commodities','commoditiesSetPoints','goodwill','hasVisited','hasSurveyed','population','reputation','surveys','threat','trash','wages','warehouse','x','y'];
 		for (var i of simples) {
 			flat[i] = this[i];
 		};
@@ -1387,6 +1412,9 @@ function Site(mapSize) {
 			};
 			this.infrastructure.splice(this.infrastructure.indexOf(infrastructure),1);
 		};
+		if (infrastructure.warehousing) {
+			this.warehouse = {p1:[]};
+		};
 	};
 	
 	this.useCommodities = function(useList) {
@@ -1410,6 +1438,12 @@ function Site(mapSize) {
 						unitsAtSite[u].commodities.splice(i,1);
 						outstanding = false;
 					};
+				};
+			};
+			for (var i in this.warehouse.p1) {
+				if (this.warehouse.p1[i].commodity == flatList[c] && this.warehouse.p1[i].qty == 100 && outstanding) {
+					this.warehouse.p1.splice(i,1);
+					outstanding = false;
 				};
 			};
 			if (outstanding) {
@@ -1552,18 +1586,16 @@ function Unit(owner,startLoc,type) {
 		};
 		if (this.route !== undefined) {
 			flat.route = [];
-			for (var i in this.route) {
-				flat.route[i] = this.route[i];
+			for (var i=0;i<this.route.length-1;i++) {
+				var entry = {
+					x: this.route[i].x,
+					y: this.route[i].y,
+					toIndex: sites.indexOf(this.route[i].to),
+					fromIndex: sites.indexOf(this.route[i].from),
+				};
+				flat.route.push(entry);
 			};
-		};
-		if (flat.route !== undefined) {
-			for (var i=0;i<flat.route.length-1;i++) {
-				flat.route[i].toIndex = sites.indexOf(flat.route[i].to);
-				flat.route[i].fromIndex = sites.indexOf(flat.route[i].from);
-				delete flat.route[i].to;
-				delete flat.route[i].from;
-			};
-			flat.route[flat.route.length-1] = sites.indexOf(flat.route[flat.route.length-1]);
+			flat.route.push(sites.indexOf(this.route[this.route.length-1]));
 		};
 		
 		// owner, type, caravan, location
@@ -1778,12 +1810,15 @@ function Unit(owner,startLoc,type) {
 			view.focus.unit = this;
 			view.displayUnit(this);
 		} else if (foodStore == 0) {
+			if (this.caravan !== undefined) {this.leaveCaravan()};
 			gamen.displayPassage(new Passage(this.name + " loses a day foraging for food in the wasteland."));
 			this.commodities.push({commodity:'food',qty:Math.min(100,Math.floor(Math.random()*10*this.owner.foraging))});
 		} else if (waterStore == 0 && this.type.fuel.water !== undefined) {
+			if (this.caravan !== undefined) {this.leaveCaravan()};
 			gamen.displayPassage(new Passage(this.name + " loses a day foraging for water in the wasteland."));
 			this.commodities.push({commodity:'water',qty:Math.min(100,Math.floor(Math.random()*10*this.owner.foraging))});
 		} else if (fuelStore == 0 && this.type.fuel.fuel !== undefined && this.route.length > 1) {
+			if (this.caravan !== undefined) {this.leaveCaravan()};
 			gamen.displayPassage(new Passage(this.name + " has run out of fuel."));
 			var roadside = this.roadside();
 			if (this.caravan !== undefined) {
@@ -1913,7 +1948,7 @@ function Unit(owner,startLoc,type) {
 				model.clock.running = false;
 				view.displayUnit(this,true);
 			};
-			if (Math.random() < 0.01) {
+			if (Math.random() < 0.01 && this.isOddJobbing) {
 				gamen.displayPassage(new Passage('The crew of ' + this.name + ' have found sweethearts in ' + this.location.name + ".  They've been accepted into the families there and have put the road behind them.  </p><p>" + this.name + " has been scuttled."));
 				this.scuttle();
 				if (units.length == 0) {
@@ -1981,17 +2016,26 @@ function Unit(owner,startLoc,type) {
 	
 	this.surveyResult = function() {
 		this.isSurveying = false;
+		var string;
 		var foundResource = this.surveyPotentials[Math.random() * this.surveyPotentials.length << 0];
 		var choiceArray = [new Choice(),new Choice('Survey Again!',this.survey.bind(this))];
 		if (foundResource !== -1) {
 			this.location.hasSurveyed.p1[foundResource] = true;
-			gamen.displayPassage(new Passage(this.name + ' found a ' + this.location.resources[foundResource].name + " in " + this.location.name,choiceArray));
+			string = this.name + ' found a ' + this.location.resources[foundResource].name + " in " + this.location.name;
 			view.displaySiteDetails(this.location);
 			this.location.surveys.p1.push(this.location.resources[foundResource]);
 		} else {
-			gamen.displayPassage(new Passage(this.name + ' found nothing in ' + this.location.name + '.',choiceArray));
+			string = this.name + ' found nothing in ' + this.location.name + '.';
 			this.location.surveys.p1.push('nothing');
 		};
+		var foundNothing = 0;
+		for (var s in this.location.surveys.p1) {
+			if (this.location.surveys.p1[s] == 'nothing') {
+				foundNothing++;
+			};
+		};
+		string += "<p />You have surveyed here "+this.location.surveys.p1.length+" times and found nothing "+foundNothing+" times.";
+		gamen.displayPassage(new Passage(string,choiceArray));
 		this.surveyPotentials = [];
 		this.surveyComplete = undefined;
 		model.clock.running = false;
@@ -2053,6 +2097,19 @@ function Unit(owner,startLoc,type) {
 		this.currentTrade.unitStuff.push(this.commodities[commodityIndex]);
 	};
 	
+	this.warehouseFromUnit = function(commodityIndex) {
+		if (this.location !== undefined) {
+			this.location.warehouse.p1.push(this.commodities[commodityIndex]);
+		};
+		this.commodities.splice(commodityIndex,1);
+	};
+	
+	this.pickupWarehouse = function(warehouseIndex) {
+		this.commodities.push(this.location.warehouse.p1[warehouseIndex]);
+		this.location.warehouse.p1.splice(warehouseIndex,1);
+		this.consolidate();
+	};
+	
 	this.trashFromUnit = function(commodityIndex) {
 		if (this.location !== undefined) {
 			this.location.trash.push(this.commodities[commodityIndex]);
@@ -2063,6 +2120,7 @@ function Unit(owner,startLoc,type) {
 	this.pickup = function(trashIndex) {
 		this.commodities.push(this.location.trash[trashIndex]);
 		this.location.trash.splice(trashIndex,1);
+		this.consolidate();
 	};
 	
 	this.clearTrade = function(commodity) {
@@ -2092,7 +2150,9 @@ function Unit(owner,startLoc,type) {
 		};
 		
 		this.location.reputation.p1 += this.currentTrade.balance;
-				
+		
+		this.consolidate();
+		
 		view.displayUnit(view.focus.unit);
 		view.displaySiteDetails(view.focus.unit.location);
 	};
@@ -2113,8 +2173,18 @@ function Unit(owner,startLoc,type) {
 	
 	this.scuttle = function() {
 		if (this.location !== undefined) {
+			var warehousing = false;
+			for (var infrastructure of this.location.infrastructure) {
+				if (infrastructure.warehousing) {
+					warehousing = true;
+				};
+			};
 			for (c in this.commodities) {
-				this.location.reputation.p1 += this.location.commodities[this.commodities[c].commodity] * this.commodities[c].qty;
+				if (warehousing) {
+					this.location.warehouse.p1.push(this.commodities[c]);
+				} else {
+					this.location.reputation.p1 += this.location.commodities[this.commodities[c].commodity] * this.commodities[c].qty;
+				};
 			};
 			this.location.population += this.type.crew;
 		};
@@ -2203,6 +2273,12 @@ function Unit(owner,startLoc,type) {
 				};
 			};
 		};
+		for (var w in this.location.warehouse.p1) {
+			var commodity = this.location.warehouse.p1[w].commodity;
+			if (outstanding[commodity] > 0) {
+				outstanding[commodity] -= this.location.warehouse.p1[w].qty / 100;
+			};
+		};
 		// Convert remaining requirements to reputation
 		var repCost = 0;
 		for (var c in outstanding) {
@@ -2220,6 +2296,29 @@ function Unit(owner,startLoc,type) {
 			return result;
 		} else if (output == 'rep') {
 			return Math.ceil(repCost);
+		};
+	};
+	
+	this.consolidate = function() {
+		var partialLoads = [], totalQty;
+		for (var commodity of this.commodities) {
+			if (commodity.qty < 100) {
+				partialLoads.push(commodity);
+			};
+		};
+		for (var load of partialLoads) {
+			for (var potential of partialLoads) {
+				if (load.commodity == potential.commodity && load !== potential) {
+					totalQty = load.qty + potential.qty;
+					if (totalQty <= 100) {
+						load.qty = totalQty;
+						potential.qty = 0;
+					} else {
+						load.qty = 100;
+						potential.qty = totalQty - 100;
+					};
+				};
+			};
 		};
 	};
 	
@@ -2248,5 +2347,7 @@ var gamenEventPointers = {
 		events[event]();
 		model.clock.logEventIn( 8.64e+7 * ( 10 * Math.random() + 10 ),'randomEvent');		
 	},
+	
+	refugeeMoveFamily: function() {events.refugeeMoveFamily()},
 	
 };

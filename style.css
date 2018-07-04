@@ -301,6 +301,14 @@
 	font-style: italic;
 	}
 
+.localHighValue {
+	background: linear-gradient(to right,LIGHTSALMON,white);
+	}
+
+.localLowValue {
+	background: linear-gradient(to right,palegreen,white);
+	}
+
 .addBtn {
 	}
 

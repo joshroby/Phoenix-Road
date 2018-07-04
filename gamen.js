@@ -5,17 +5,73 @@ var gamen = {
 	},
 
 	init: function() {
-		var titleHead = document.getElementById('titleHead');
+// 		var titleHead = document.getElementById('titleHead');
+// 		var gameTitle = model.gameTitle;
+// 		if (titleHead !== undefined && gameTitle !== undefined) {
+// 			titleHead.innerHTML = gameTitle;
+// 		};
+// 		var mainMenuDiv = document.getElementById('mainMenuDiv');
+// 		if (model.gameColors !== undefined) {
+// 			var gameColor = model.gameColors[0];
+// 		};
+// 		if (mainMenuDiv !== undefined && gameColor !== undefined) {
+// 			mainMenuDiv.style.backgroundColor = gameColor;
+// 		};
+
+		var body = document.body;
+		body.innerHTML = '';
+		
+		var mainMenuDiv = document.createElement('div');
+		mainMenuDiv.id = 'mainMenuDiv';
+		body.appendChild(mainMenuDiv);
+		var titleHead = document.createElement('h4');
+		titleHead.id = 'titleHead';
+		mainMenuDiv.appendChild(titleHead);
 		var gameTitle = model.gameTitle;
-		if (titleHead !== undefined && gameTitle !== undefined) {
+		if (gameTitle == undefined) {
+			titleHead.innerHTML = 'An Untitled Game';
+		} else {
 			titleHead.innerHTML = gameTitle;
 		};
+		if (handlers.newGame !== undefined) {
+			var newGameButton = document.createElement('button');
+			newGameButton.id = 'newGameButton';
+			mainMenuDiv.appendChild(newGameButton);
+			newGameButton.innerHTML = 'New Game';
+			newGameButton.addEventListener('click',handlers.newGame);
+		};
+		if (model.gameSave !== undefined || model.flatGame !== undefined) {
+			var saveGameButton = document.createElement('button');
+			saveGameButton.id = 'saveGameButton';
+			mainMenuDiv.appendChild(saveGameButton);
+			saveGameButton.innerHTML = 'Save Game';
+			saveGameButton.addEventListener('click',gamen.saveGame);
+		};
+		if (handlers.toggleOptions !== undefined) {
+			var toggleOptionsButton = document.createElement('button');
+			toggleOptionsButton.id = 'toggleOptionsButton';
+			mainMenuDiv.appendChild(toggleOptionsButton);
+			toggleOptionsButton.innerHTML = 'Options';
+			toggleOptionsButton.addEventListener('click',handlers.toggleOptions);
+		};
+		if (model.supportLink !== undefined) {
+			var supportButton = document.createElement('button');
+			supportButton.id = 'supportButton';
+			mainMenuDiv.appendChild(supportButton);
+			supportButton.innerHTML = 'Support';
+			if (model.supportLinkLabel !== undefined) {
+				supportButton.innerHTML = model.supportLinkLabel;
+			};
+			supportButton.addEventListener('click',gamen.support);
+		};
 		
+		var gameDiv = document.createElement('div');
+		body.appendChild(gameDiv);
 		if (model.gameDivContents !== undefined) {
 			var gameDivContents = model.gameDivContents();
-			document.getElementById('gameDiv').innerHTML = '';
+			gameDiv.innerHTML = '';
 			for (var i of gameDivContents) {
-				document.getElementById('gameDiv').appendChild(i);
+				gameDiv.appendChild(i);
 			};
 		};
 				
@@ -24,12 +80,21 @@ var gamen = {
 			gamen.displayLoadGameDiv();
 		};
 		
-		if (model.supportLink !== undefined) {
-			document.getElementById('gamenSupportBtn').hidden = false;
-			if (model.supportLinkLabel !== undefined) {
-				document.getElementById('gamenSupportBtn').innerHTML = model.supportLinkLabel;
-			};
-		};
+		var gamenModalBacksplash = document.createElement('div');
+		body.appendChild(gamenModalBacksplash);
+		gamenModalBacksplash.id = 'gamenModalBacksplash';
+		
+		var gamenModalDiv = document.createElement('div');
+		gamenModalBacksplash.appendChild(gamenModalDiv);
+		gamenModalDiv.id = 'gamenModalDiv';
+		
+		var gamenModalBustDiv = document.createElement('div');
+		gamenModalDiv.appendChild(gamenModalBustDiv);
+		gamenModalBustDiv.id = 'gamenModalBustDiv';
+		
+		var gamenModalTextDiv = document.createElement('div');
+		gamenModalDiv.appendChild(gamenModalTextDiv);
+		gamenModalTextDiv.id = 'gamenModalTextDiv';
 		
 		gamen.windowResize();
 	},
@@ -87,6 +152,8 @@ var gamen = {
 		};
 		if (integer < 20) {
 			result = ["zero","one","two","three",'four','five','six','seven','eight','nine','ten','eleven','twelve','thirteen','fourteen','fifteen','sixteen','seventeen','eighteen','nineteen'][integer];
+		} else {
+			result = result.toString();
 		};
 		if (sign !== undefined) {
 			result = sign + result;
@@ -171,6 +238,7 @@ var gamen = {
 		if (saveGame !== undefined) {
 			var saveName = prompt('Overwrite current save or rename:',name);
 			if (saveName) {
+				saveGame.saveName = saveName;
 				saveName = model.gameSavePrefix + ' ' + saveName;
 				console.log(saveGame);
 				localStorage[saveName] = JSON.stringify(saveGame);
@@ -191,7 +259,6 @@ var gamen = {
 		};
 		if (saveGame !== undefined) {
 			saveName = model.gameSavePrefix + ' Autosave';
-			console.log(saveGame);
 			localStorage[saveName] = JSON.stringify(saveGame);
 		};
 	},
@@ -210,7 +277,6 @@ var gamen = {
 	passageQueue: [],
 
 	displayPassage: function(passage) {
-
 		if (document.getElementById('gamenModalBacksplash').style.display !== 'block') {
 		
 			gamen.focus.passage = passage;
@@ -229,6 +295,10 @@ var gamen = {
 			};
 		
 			gamenModalTextDiv.innerHTML += passage.text;
+			
+			if (passage.bust !== undefined) {
+				document.getElementById('gamenModalBustDiv').appendChild(passage.bust);
+			};
 		
 			var gamenModalChoicesDiv = document.createElement('div');
 			gamenModalChoicesDiv.id = 'gamenModalChoicesDiv';
@@ -239,6 +309,10 @@ var gamen = {
 				choiceBtn.addEventListener('click',gamen.passageChoice.bind(this,choice));
 				choiceBtn.disabled = choice.disabled;
 				gamenModalChoicesDiv.appendChild(choiceBtn);
+			};
+			
+			if (passage.bust !== undefined) {
+				document.getElementById('gamenModalBustDiv').appendChild(passage.bust);
 			};
 		
 			document.getElementById('gamenModalBacksplash').style.display = 'block';

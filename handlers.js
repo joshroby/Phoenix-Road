@@ -36,6 +36,17 @@ var handlers = {
 			model.clock.running = false;
 			document.getElementById('clockPauseBtn').className = 'fa fa-play';
 		} else {
+			var eachDay = false;
+			for (event in model.clock.events) {
+				console.log(model.clock.events[event]);
+				if (model.clock.events[event].indexOf('eachDay') !== -1) {
+					eachDay = true;
+				};
+			};
+			console.log(eachDay);
+			if (!eachDay) {
+				model.clock.logEventIn(0,'eachDay');
+			};
 			model.clock.running = true;
 			document.getElementById('clockPauseBtn').className = 'fa fa-pause';
 			model.clock.go();
@@ -138,6 +149,18 @@ var handlers = {
 		view.updateTradeDiv();
 	},
 	
+	warehouseFromUnit: function(paneIndex,commodityIndex) {
+		view.focus.unit.warehouseFromUnit(commodityIndex);
+		view.displayUnit(view.focus.unit);
+// 		view.displaySiteDetails(view.focus.unit.location);
+	},
+	
+	pickupWarehouse: function(warehouseIndex) {
+		view.focus.unit.pickupWarehouse(warehouseIndex);
+		view.displayUnit(view.focus.unit);
+// 		view.displaySiteDetails(view.focus.unit.location);
+	},
+	
 	trashFromUnit: function(paneIndex,commodityIndex) {
 		view.focus.unit.trashFromUnit(commodityIndex);
 		view.displayUnit(view.focus.unit);
@@ -167,6 +190,7 @@ var handlers = {
 	buildUnit: function(index) {
 		var buildUnit = document.getElementById('buildSelect_' + index).value;
 		model.buildUnit(index,buildUnit);
+		view.displayMap();
 	},
 	
 	upgrade: function(stat,cost) {

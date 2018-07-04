@@ -2,29 +2,47 @@ Down the Phoenix Road To Do List
 
 
 DONE
-
-- foraging saves correctly
-- drop off passengers & take on passengers updates map
-- starting a survey updates the map (for icon change)
-- cargo displays value of each load, taking its qty into account
-- explore progress bar goes on sites visited, not sites known of
-- roadRefugees puts passengers in correct unit
-- disables Take Passengers button when unit cargo is full
-- notification when a visited town is removed from map
-- a caravan that runs out of fuel creates a single Roadside for everybody
-- if unit runs out of fuel/food/water on last day of a route, roadside is properly skipped
+- Warehousing
+	- works like trash pile except it doesn't disappear
+	- saves and loads warehouse contents
+	- scuttled units in that location stash commodities in warehouse
+	- canAfford takes warehouses into account
+	- charging build costs will need to take warehouses into account
+	- events that destroy warehouses also destroy warehouse contents
+- New Buildings: Canals, Fire Station, Carpentry Shop
+	- fire suppression infrastructure (Cisterns, Canals, Fire Station)
+	- flood control infrastructure (Canals)
+	- carpenters make furniture; furniture now required for big housing projects
+- Miscellaneous Gameplay Adjustments
+	- More pastures, corrals, and tanneries
+	- increased number of people employed at many infrastructures
+	- increased defense scores of most defenses
+	- cannot leave commodities on side of road (and lose them) while in transit
+	- local values return to set point slightly faster
+	- fatal bugs in plague and fire events fixed
+	- a bug that caused every fight with bandits to result in failure is fixed
+	- when bandits hit your units, the pop-up message allows you to immediately pull over
+- Miscellaneous UI Fixes
+	- selected unit marked on map (when there is more than one unit)
+	- unique places and fuel stations marked on map
+	- Explore: and Rebuild: have spaces after colons and before percentages
+	- explore does not go above 100%
+	- map is updated when you build a new unit
+	- removed plusses and minuses on values as their global comparisons were useless
+	- highlighted locally high and locally low values
+	- hitting return in rename field submits new name
+	- the play button will add an eachDay event to the clock events queue if none exists
+	- survey results tell you how many times you've surveyed there and how many times you've found nothing
+	- loaded games remember what their save game name is
+	- fixed a save error that could corrupt unit routes
 
 
 IMMEDIATE FIXES
-
-
+- when caravans run out of food/water, things go hinky
 
 NEXT FEATURE / OPTIMIZATION
 
 - get rid of or streamline inTransit, departed, and route
-
-make passengers eat food
-	- and make the provisions predictions accomodate
 
 - SVG tinkering
 	- movement animation/transition
@@ -33,30 +51,23 @@ make passengers eat food
 
 - save tutorial on/off state
 
-- a big and unmistakable select circle behind the view.focus.unit
-
-- model.victoryProgress() should weight by people, not sites
-	- ie, how many people are fed, warm, and safe?
-	- takes into account Passengers and refugees
-
-- Gamen Social Media Optimization
-	- twitter cards (https://developer.twitter.com/en/docs/tweets/optimize-with-cards/guides/getting-started)
-	- facebook og:image
-
 - consolidate cargo button
 	- appears when you have two loads of a thing less than 100 qty
 
 FUTURE EXPANSIONS
 
+- building infrastructure and building units should use the same function to charge costs
+	- it should handle fractional loads of commodities (currently only uses 100% loads)
+
 - pop up display for 'who do I know that makes this commodity?'
 
-- easy way to remember where special sites (cartwright, bus, foundry) are
-
 - event log (ie, 'crap what did I just click past?')
-
-- 'pin' a town so all other mouseovers compare values with the pinned town
+	- put this in gamen
 
 - a 'notes' file that saves with game so you can tell Future Self what your strategy is
+	- put this in gamen
+
+- 'pin' a town so all other mouseovers compare values with the pinned town
 
 - New Random Events
 	- site discovers resource
@@ -65,32 +76,30 @@ FUTURE EXPANSIONS
 	- increase to your self-defense
 	- a very simple 'you get some food'
 		- replenishes a food to 100 rather than gives you a new commodity
-	- plague events
-		- slowly increases values
-		- population loss
-		- spreads town to town
-		- can deliver medicine commodities to cure them (not an event, but still)
 
 - New Infrastructure
-	- Canals for flood control (and other benefits?)
-	- Cisterns fight fire events (50%)
-	- Fire Station kills fire events (100%)
-	- Clinic/Hospital for Plague?
-	- construction crew upgrades to industry infrastructure?
-		- more jobs
-	- Reservoir (construction crew project, provides water)
 	- Library (requires Old World Ruins)
 		- research to discover resources in other sites
 		- research to discover sites outside your knownSites
 	- Post Office as a infrastructure box
-		- only one or two mails available at a time
+		- only one or two mails available at a time (spawn in eachDay event)
 		- addressed to specific destination site?
+
+- Affecting Wages
+	- union house
+	- school
+	- house of worship
+	- ham radio station ?
+
 
 - Refugees Expansion
 	- have a global count of refugees
 	- when a site's hunger gets too crazy (or the other bars?), people leave town
 	- when refugees arrive in a site or you find a camp, reduce the global refugee count
 	- too many refugees and they'll start joining/pumping up threats
+	- model.victoryProgress() should weight by people, not sites
+		- ie, how many people are fed, warm, and safe?
+		- takes into account Passengers and global refugee total
 	
 - Threats Expansion
 	- you can discover their home base
@@ -115,20 +124,16 @@ FUTURE EXPANSIONS
 	- literally no cargo; can be overburdened and eat in town,
 	- otherwise travels with a caravan
 	
-- Affecting Wages
-	- union house
-	- school
-	- house of worship
-	- ham radio station ?
-
-- Warehousing
-	- works like trash pile except it doesn't disappear
-	- build costs will need to take warehouses into account
-	- scuttled units in that location stash commodities in warehouse
-
-- Swamps
-	- a 'resource' that can be drained to turn it into River
-	- must add sites with swamp to the rivers setup
+- Plague Expansion
+	- Clinic/Hospital for Plague?
+	- plague events
+		- slowly increases values
+		- population loss
+		- spreads town to town
+		- can deliver medicine commodities to cure them (not an event, but still)
+	- Swamps
+		- a 'resource' that can be drained to turn it into River
+		- must add sites with swamp to the rivers setup
 
 - Population Growth
 
@@ -151,6 +156,7 @@ FUTURE EXPANSIONS
 
 MOTHBALLS
 - boats
+	- with a water speed and an portage speed
 - terrain?
 - zoom in / out pays no attention to the location of the mouse
 	- need to set a center point (defaults to 500,500 or focus unit?)

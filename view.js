@@ -149,7 +149,7 @@ var view = {
 		document.getElementById('detailsSiteDiv').style.display = 'block';
 		document.getElementById('detailsSiteDiv').innerHTML = '&nbsp;';
 		document.getElementById('centerColumn').style.display = 'block';
-		document.getElementById('saveButton').disabled = false;
+		document.getElementById('saveGameButton').disabled = false;
 		document.getElementById('loadGameDiv').style.display = 'none';
 		
 	},
@@ -213,13 +213,11 @@ var view = {
 		var stop = document.createElementNS('http://www.w3.org/2000/svg','stop');
 		stop.setAttribute('offset','20%');
 		stop.setAttribute('stop-color','green');
-// 		stop.setAttribute('stop-opacity',0.05);
 		stop.setAttribute('stop-opacity',1);
 		greenGradient.appendChild(stop);
 		var stop = document.createElementNS('http://www.w3.org/2000/svg','stop');
 		stop.setAttribute('offset','80%');
 		stop.setAttribute('stop-color','green');
-// 		stop.setAttribute('stop-opacity',0.02);
 		stop.setAttribute('stop-opacity',0.2);
 		greenGradient.appendChild(stop);
 		var stop = document.createElementNS('http://www.w3.org/2000/svg','stop');
@@ -242,6 +240,16 @@ var view = {
 				defs.appendChild(svgNodes);
 			};
 		};
+		
+		var selectedAura = document.createElementNS('http://www.w3.org/2000/svg','ellipse');
+		selectedAura.id = 'selectedAura';
+		selectedAura.setAttribute('cx',view.zoom.z * 0.005);
+		selectedAura.setAttribute('cy',view.zoom.z * 0.015);
+		selectedAura.setAttribute('rx',view.zoom.z * 0.04);
+		selectedAura.setAttribute('ry',view.zoom.z * 0.015);
+		selectedAura.setAttribute('opacity',0.8);
+		selectedAura.setAttribute('fill','cyan');
+		defs.appendChild(selectedAura);
 				
 		var background = document.createElementNS('http://www.w3.org/2000/svg','rect');
 		background.setAttribute('fill','darkorange');
@@ -277,7 +285,6 @@ var view = {
 		background.setAttribute('y','0');
 		background.setAttribute('width','1000');
 		background.setAttribute('height','1000');
-// 		background.setAttribute('filter','url(#terrainFilter)');
 		svg.appendChild(background);
 		
 		var carpetGroup = document.createElementNS('http://www.w3.org/2000/svg','g');
@@ -372,22 +379,13 @@ var view = {
 
 		for (var i in players.p1.knownSites) {
 			var siteIndex = sites.indexOf(players.p1.knownSites[i]);
-			
-			var siteLabel = document.createElementNS('http://www.w3.org/2000/svg','text');
-			if (players.p1.knownSites[i].hasVisited.p1) {
-				siteLabel.setAttribute('fill','black');
-			} else {
-				siteLabel.setAttribute('fill','dimgray');
-			};
-			siteLabel.setAttribute('x',players.p1.knownSites[i].x + 10);
-			siteLabel.setAttribute('y',players.p1.knownSites[i].y + 5);
-			siteLabel.setAttribute('font-size',view.zoom.z * .02);
-			siteLabel.setAttribute('onmouseenter','handlers.displaySiteDetails('+siteIndex+')');
-			siteLabel.setAttribute('onclick','handlers.selectSite('+siteIndex+')');
-			siteLabel.setAttribute('onmouseout','handlers.displaySiteDetails(-1)');
-			siteLabel.innerHTML = players.p1.knownSites[i].name;
-			sitesGroup.appendChild(siteLabel);
 
+			var newSiteGroup = document.createElementNS('http://www.w3.org/2000/svg','g');
+			newSiteGroup.setAttribute('onmouseenter','handlers.displaySiteDetails('+siteIndex+')');
+			newSiteGroup.setAttribute('onclick','handlers.selectSite('+siteIndex+')');
+			newSiteGroup.setAttribute('onmouseout','handlers.displaySiteDetails(-1)');
+			sitesGroup.appendChild(newSiteGroup);
+			
 			var newSite = document.createElementNS('http://www.w3.org/2000/svg','circle');
 			newSite.id = 'site_' + i;
 			if (players.p1.knownSites[i].hasVisited.p1 && players.p1.knownSites[i].population > 0) {
@@ -401,16 +399,17 @@ var view = {
 			var siteRep = players.p1.knownSites[i].reputation.p1;
 			var repWidth;
 			if (Math.abs(siteRep) < 50) {
-				newSite.setAttribute('stroke-width',1);
+				repWidth = 1;
 			} else if (Math.abs(siteRep) < 100) {
-				newSite.setAttribute('stroke-width',2);
+				repWidth = 2;
 			} else if (Math.abs(siteRep) < 300) {
-				newSite.setAttribute('stroke-width',3);
+				repWidth = 3;
 			} else if (Math.abs(siteRep) < 600) {
-				newSite.setAttribute('stroke-width',4);
+				repWidth = 4;
 			} else {
-				newSite.setAttribute('stroke-width',5);
+				repWidth = 5;
 			};
+			newSite.setAttribute('stroke-width',view.zoom.z * 0.0015 * repWidth);
 			if (players.p1.knownSites[i].population == 0) {
 				newSite.setAttribute('stroke','yellow');
 			} else if (siteRep > 10) {
@@ -422,21 +421,68 @@ var view = {
 			};
 			newSite.setAttribute('cx',players.p1.knownSites[i].x);
 			newSite.setAttribute('cy',players.p1.knownSites[i].y);
+			var radius;
 			if (players.p1.knownSites[i].population < 50) {
-				newSite.setAttribute('r',2);
+				radius = 2;
 			} else if (players.p1.knownSites[i].population < 100) {
-				newSite.setAttribute('r',3);
+				radius = 3;
 			} else if (players.p1.knownSites[i].population < 200) {
-				newSite.setAttribute('r',4);
+				radius = 4;
 			} else if (players.p1.knownSites[i].population < 400) {
-				newSite.setAttribute('r',5);
+				radius = 5;
 			} else {
-				newSite.setAttribute('r',6);
+				radius = 6;
 			};
-			newSite.setAttribute('onmouseenter','handlers.displaySiteDetails('+siteIndex+')');
-			newSite.setAttribute('onclick','handlers.selectSite('+siteIndex+')');
-			newSite.setAttribute('onmouseout','handlers.displaySiteDetails(-1)');
-			sitesGroup.appendChild(newSite);
+			newSite.setAttribute('r',view.zoom.z * 0.0015 * radius);
+			newSiteGroup.appendChild(newSite);
+
+			var siteLabel = document.createElementNS('http://www.w3.org/2000/svg','text');
+			if (players.p1.knownSites[i].hasVisited.p1) {
+				siteLabel.setAttribute('fill','black');
+			} else {
+				siteLabel.setAttribute('fill','dimgray');
+			};
+			siteLabel.setAttribute('x',players.p1.knownSites[i].x);
+			siteLabel.setAttribute('y',players.p1.knownSites[i].y - view.zoom.z * .015);
+			siteLabel.setAttribute('text-anchor','middle');
+			siteLabel.setAttribute('font-size',view.zoom.z * .02);
+			siteLabel.innerHTML = players.p1.knownSites[i].name;
+			newSiteGroup.appendChild(siteLabel);
+			
+			var fuelStation = false;
+			for (var infrastructure of players.p1.knownSites[i].infrastructure) {
+				if (infrastructure.outputs !== undefined && infrastructure.outputs.indexOf('fuel') !== -1 && players.p1.knownSites[i].population > 0) {
+					fuelStation = true;
+				};
+			};
+			if (fuelStation && players.p1.knownSites[i].hasVisited.p1) {
+				var leftSiteIcons = document.createElementNS('http://www.w3.org/2000/svg','text');
+				leftSiteIcons.setAttribute('x',players.p1.knownSites[i].x - view.zoom.z * .01);
+				leftSiteIcons.setAttribute('y',players.p1.knownSites[i].y + view.zoom.z * .005);
+				leftSiteIcons.setAttribute('text-anchor','end');
+				leftSiteIcons.setAttribute('font-weight','bold');
+				leftSiteIcons.setAttribute('font-size',view.zoom.z * .015);
+				leftSiteIcons.innerHTML = 'F';
+				newSiteGroup.appendChild(leftSiteIcons);
+			};
+			
+			var buildUnits = '';
+			for (infrastructure of players.p1.knownSites[i].infrastructure) {
+				if (infrastructure.initial !== undefined) {
+					buildUnits += infrastructure.initial;
+				};
+			};
+			if (buildUnits !== '' && players.p1.knownSites[i].hasVisited.p1) {
+				var rightSiteIcons = document.createElementNS('http://www.w3.org/2000/svg','text');
+				rightSiteIcons.setAttribute('x',players.p1.knownSites[i].x + view.zoom.z * .01);
+				rightSiteIcons.setAttribute('y',players.p1.knownSites[i].y + view.zoom.z * .005);
+				rightSiteIcons.setAttribute('text-anchor','start');
+				rightSiteIcons.setAttribute('font-weight','bold');
+				rightSiteIcons.setAttribute('font-size',view.zoom.z * .015);
+				rightSiteIcons.innerHTML = buildUnits;
+				newSiteGroup.appendChild(rightSiteIcons);
+			};
+
 		};
 		
 		var unitsGroup = document.createElementNS('http://www.w3.org/2000/svg','g');
@@ -473,7 +519,8 @@ var view = {
 			newUnit.setAttribute('paint-order','stroke fill');
 			newUnit.setAttribute('stroke-width','40');
 			if (units[i].inTransit) {
-				newUnit.setAttribute('stroke','#006400');
+// 				newUnit.setAttribute('stroke','#006400');
+				newUnit.setAttribute('stroke','lime');
 			} else if (units[i].isBuilding) {
 				newUnit.setAttribute('stroke','#F0E68C');
 			} else if (units[i].isSurveying) {
@@ -539,7 +586,7 @@ var view = {
 		progressExploreDiv.className = 'progressDiv';
 		progressDiv.appendChild(progressExploreDiv);
 		var progressExploreP = document.createElement('p');
-		progressExploreP.innerHTML = "Explore: ";
+		progressExploreP.innerHTML = "Explore: &nbsp;";
 		progressExploreP.className = 'progressLabel';
 		progressExploreDiv.appendChild(progressExploreP);
 		var progressExploreBar = document.createElement('div');
@@ -551,7 +598,7 @@ var view = {
 			if (s.population > 0) {populatedSites++};
 			if (s.hasVisited.p1) {visitedSites++};
 		};
-		var percentage = Math.round(visitedSites/populatedSites * 100,0);
+		var percentage = Math.min(Math.round(visitedSites/populatedSites * 100,0),100);
 		var caption = percentage + "%";
 		progressExploreDoneBar.innerHTML = caption;
 		progressExploreDoneBar.style.width = percentage + '%';
@@ -562,7 +609,7 @@ var view = {
 		progressRebuildDiv.className = 'progressDiv';
 		progressDiv.appendChild(progressRebuildDiv);
 		var progressRebuildP = document.createElement('p');
-		progressRebuildP.innerHTML = "Rebuild: ";
+		progressRebuildP.innerHTML = "Rebuild: &nbsp;";
 		progressRebuildP.className = 'progressLabel';
 		progressRebuildDiv.appendChild(progressRebuildP);
 		var progressRebuildBar = document.createElement('div');
@@ -576,6 +623,41 @@ var view = {
 		progressRebuildBar.appendChild(progressRebuildDoneBar);
 		progressRebuildDiv.appendChild(progressRebuildBar);
 
+	},
+	
+	markSelectedUnit: function() {
+		if (units.length > 1) {
+			var oldSelected = document.getElementById('selectionMarker');
+			if (oldSelected !== null) {
+				oldSelected.remove();
+			};
+			var selected = document.createElementNS('http://www.w3.org/2000/svg','use');
+			selected.id = 'selectionMarker';
+			var selectedLocation = {x:0,y:0};
+			if (view.focus.unit.location == undefined) {
+				selectedLocation.x = view.focus.unit.route[0].x;
+				selectedLocation.y = view.focus.unit.route[0].y;
+			} else {
+				selectedLocation.x=view.focus.unit.location.x;
+				selectedLocation.y=view.focus.unit.location.y + 12;
+				var unitsAtSite = [];
+				for (var c in units) {
+					if (units[c].location == view.focus.unit.location) {
+						unitsAtSite.push(units[c]);
+					};
+				};
+				if (unitsAtSite.length > 1) {
+					var unitOrder = unitsAtSite.indexOf(view.focus.unit);
+					var offSet = unitOrder * (20/(unitsAtSite.length-1)) - 10;
+					selectedLocation.x += offSet;
+				};
+			};
+			selected.setAttribute('x',selectedLocation.x);
+			selected.setAttribute('y',selectedLocation.y);
+			selected.setAttribute('href','#selectedAura');
+			selected.setAttributeNS('http://www.w3.org/1999/xlink','xlink:href','#selectedAura');
+			document.getElementById('sitesGroup').appendChild(selected);
+		};
 	},
 	
 	mapZoom: function(e) {
@@ -603,6 +685,7 @@ var view = {
 				view.zoom.viewbox = viewbox;
 			};
 			view.displayMap();
+			view.markSelectedUnit();
 		};
 	},
 	
@@ -760,6 +843,16 @@ var view = {
 			siteCommoditiesTableTitle.innerHTML = 'Commodity Values';
 			siteCommoditiesTable.appendChild(siteCommoditiesTableTitle);
 			var knownValues = model.knownValues();
+			var localValuesRanked = [];
+			for (var commodity in site.trading()) {
+				localValuesRanked.push(commodity);
+			};
+			for (var commodity in site.buying()) {
+				if (localValuesRanked.indexOf(commodity) == -1) {
+					localValuesRanked.push(commodity);
+				};
+			};
+			localValuesRanked.sort(function(a,b) {return ( (site.commodities[a]>site.commodities[b]) ? -1 : 1 )});
 			for (var c in commoditiesListed) {
 				var siteCommoditiesItem = document.createElement('tr');
 				siteCommoditiesTable.appendChild(siteCommoditiesItem);
@@ -769,18 +862,27 @@ var view = {
 				siteCommoditiesItem.appendChild(siteCommoditiesNameCell);
 				var siteCommoditiesValueCell = document.createElement('td');
 				siteCommoditiesValueCell.innerHTML = Math.round(100 * commoditiesListed[c],0);
-				if (commoditiesListed[c] > knownValues[c]*2) {
-					siteCommoditiesValueCell.innerHTML += ' (+++)';
-				} else if (commoditiesListed[c] > knownValues[c]*1.5) {
-					siteCommoditiesValueCell.innerHTML += ' (++)';
-				} else if (commoditiesListed[c] > knownValues[c]*1.25) {
-					siteCommoditiesValueCell.innerHTML += ' (+)';
-				} else if (commoditiesListed[c] < knownValues[c]*.8){
-					siteCommoditiesValueCell.innerHTML += ' (-)';
-				} else if (commoditiesListed[c] < knownValues[c]*.66){
-					siteCommoditiesValueCell.innerHTML += ' (--)';
-				} else if (commoditiesListed[c] < knownValues[c]*.5){
-					siteCommoditiesValueCell.innerHTML += ' (---)';
+// 				if (commoditiesListed[c] > knownValues[c]*2) {
+// 					siteCommoditiesValueCell.innerHTML += ' (+++)';
+// 				} else if (commoditiesListed[c] > knownValues[c]*1.5) {
+// 					siteCommoditiesValueCell.innerHTML += ' (++)';
+// 				} else if (commoditiesListed[c] > knownValues[c]*1.25) {
+// 					siteCommoditiesValueCell.innerHTML += ' (+)';
+// 				} else if (commoditiesListed[c] < knownValues[c]*.8) {
+// 					siteCommoditiesValueCell.innerHTML += ' (-)';
+// 				} else if (commoditiesListed[c] < knownValues[c]*.66) {
+// 					siteCommoditiesValueCell.innerHTML += ' (--)';
+// 				} else if (commoditiesListed[c] < knownValues[c]*.5) {
+// 					siteCommoditiesValueCell.innerHTML += ' (---)';
+// 				};
+				if (localValuesRanked.indexOf(c) < 3) {
+// 					siteCommoditiesValueCell.innerHTML += ' +';
+					siteCommoditiesValueCell.className = 'localHighValue';
+				} else if (localValuesRanked.indexOf(c) > localValuesRanked.length - 1 - 3) {
+// 					siteCommoditiesValueCell.innerHTML += ' -';
+					siteCommoditiesValueCell.className = 'localLowValue';
+				} else {
+					siteCommoditiesValueCell.className = 'localMidValue';
 				};
 				for (var i in site.infrastructure) {
 					if (site.infrastructure[i].outputs !== undefined && site.infrastructure[i].outputs.indexOf(c) !== -1) {
@@ -798,7 +900,7 @@ var view = {
 				};
 				if (unitPresent && commoditiesTraded[c] !== undefined) {
 					var siteCommoditiesTradeCell = document.createElement('td');
-					siteCommoditiesTradeCell.innerHTML = '<a class="tipAnchor"><span class="fa fa-cart-plus"></span><span class="tooltip">Request '+data.commodities[c].name+'</span></a>';
+					siteCommoditiesTradeCell.innerHTML = '<a class="tipAnchor"><span class="fa fa-cart-plus"></span><span class="tooltip">Request <br />'+data.commodities[c].name+'</span></a>';
 					siteCommoditiesTradeCell.setAttribute('onclick','handlers.addFromSite("'+c+'")');
 					siteCommoditiesItem.appendChild(siteCommoditiesTradeCell);
 				} else {
@@ -1022,10 +1124,63 @@ var view = {
 					};
 					infrastructureDiv.appendChild(recruitBtn);
 					siteInfrastructureDiv.appendChild(infrastructureDiv);
+				} else if (site.infrastructure[i].turnIn !== undefined) {
+					var infrastructureDiv = document.createElement('div');
+					infrastructureDiv.className = 'infrastructureDiv';
+					var infrastructureHead = document.createElement('h3');
+					infrastructureHead.className = 'infrastructureHead';
+					infrastructureHead.innerHTML = site.infrastructure[i].name;
+					infrastructureDiv.appendChild(infrastructureHead);
+					var infrastructureUpgradeText = document.createElement('p');
+					infrastructureUpgradeText.innerHTML = site.infrastructure[i].text;
+					infrastructureDiv.appendChild(infrastructureUpgradeText);
+					var infrastructureUpgradeButton = document.createElement('button');
+					infrastructureUpgradeButton.innerHTML = site.infrastructure[i].buttonLabel;
+					infrastructureUpgradeButton.setAttribute('onclick','events.'+site.infrastructure[i].onTurnIn+"()");
+					var hasTurnIn = false;
+					for (var unit of units) {
+						if (unit.location == site) {
+							for (var commodity of unit.commodities) {
+								if (site.infrastructure[i].turnIn.indexOf(commodity.commodity) !== -1) {
+									hasTurnIn = true;
+								};
+							};
+						};
+					};
+					if (!hasTurnIn) {
+						infrastructureUpgradeButton.disabled = true;
+					};
+					infrastructureDiv.appendChild(infrastructureUpgradeButton);
+					siteInfrastructureDiv.appendChild(infrastructureDiv);
 				};
 			};
 		};
 		
+		// Warehouse
+		if (site.warehouse.p1.length > 0) {
+			var warehouseTable = document.createElement('table');
+			warehouseTable.className = 'commoditiesTable';
+			siteInfrastructureDiv.appendChild(warehouseTable);
+			var warehouseHead = document.createElement('caption');
+			warehouseHead.innerHTML = "Warehouse";
+			warehouseTable.appendChild(warehouseHead);
+			for (var i in site.warehouse.p1) {
+				var warehouseRow = document.createElement('tr');
+				warehouseTable.appendChild(warehouseRow);
+				var warehouseNameCell = document.createElement('td');
+				var icon = view.commodityIcon(site.warehouse.p1[i].commodity);
+				warehouseNameCell.innerHTML = icon + ' ' + data.commodities[site.warehouse.p1[i].commodity].name;
+				if (site.warehouse.p1[i].qty < 100) {
+					warehouseNameCell.innerHTML += ' (' + site.warehouse.p1[i].qty + '%)';
+				};
+				warehouseRow.appendChild(warehouseNameCell);
+				var warehousePickupCell = document.createElement('td');
+				warehousePickupCell.innerHTML = '<span class="fa fa-hand-paper-o fa-rotate-90"></span>';
+				warehousePickupCell.setAttribute('onclick','handlers.pickupWarehouse('+i+')');
+				warehouseRow.appendChild(warehousePickupCell);
+			};
+		};
+			
 		// Trash Pile
 		var unitPresent = false;
 		for (var u in units) {
@@ -1221,6 +1376,12 @@ var view = {
 			unitRenameBtn.innerHTML = 'Rename';
 			unitRenameBtn.setAttribute('onclick','handlers.renameUnit()');
 			unitRenameDiv.appendChild(unitRenameBtn);
+			
+			unitRenameInput.addEventListener('keyup',function(event) {
+				if (event.key == "Enter") {
+					handlers.renameUnit();
+				};
+			})
 		
 			var unitModelP = document.createElement('p');
 			unitModelP.className = 'stat';
@@ -1392,11 +1553,25 @@ var view = {
 					var cell = document.createElement('td');
 					unitCommoditiesItem.appendChild(cell);
 				};
-				var unitCommoditiesTrashCell = document.createElement('td');
-				unitCommoditiesTrashCell.innerHTML = '<a class="tipAnchor"><span class="fa fa-road"></span><span class="tooltip">Unload '+data.commodities[unit.commodities[c].commodity].name+' to Road</span></a>';
-				unitCommoditiesTrashCell.setAttribute('onclick','handlers.trashFromUnit('+u+',"'+c+'")');
-				unitCommoditiesItem.appendChild(unitCommoditiesTrashCell);
-					
+				var warehousing = false;
+				if (unit.inTransit == false) {
+					for (var infrastructure of unit.location.infrastructure) {
+						if (infrastructure.warehousing) {
+							warehousing = true;
+						};
+					};
+				};
+				if (warehousing) {
+					var unitCommoditiesWarehouseCell = document.createElement('td');
+					unitCommoditiesWarehouseCell.innerHTML = '<a class="tipAnchor"><span class="fa fa-building"></span><span class="tooltip">Warehouse '+data.commodities[unit.commodities[c].commodity].name+'</span></a>';
+					unitCommoditiesWarehouseCell.setAttribute('onclick','handlers.warehouseFromUnit('+u+',"'+c+'")');
+					unitCommoditiesItem.appendChild(unitCommoditiesWarehouseCell);
+				} else if (unit.inTransit !== true) {
+					var unitCommoditiesTrashCell = document.createElement('td');
+					unitCommoditiesTrashCell.innerHTML = '<a class="tipAnchor"><span class="fa fa-road"></span><span class="tooltip">Unload '+data.commodities[unit.commodities[c].commodity].name+' to Road</span></a>';
+					unitCommoditiesTrashCell.setAttribute('onclick','handlers.trashFromUnit('+u+',"'+c+'")');
+					unitCommoditiesItem.appendChild(unitCommoditiesTrashCell);
+				};
 				if (data.commodities[unit.commodities[c].commodity].cargo) {
 					cargo++;
 				};
@@ -1630,6 +1805,7 @@ var view = {
 		};
 		view.focus.unitPane = unitsAtSite.indexOf(selectedUnit);
 		document.getElementById('unitPane_' + view.focus.unitPane ).style.display = 'block';
+		view.markSelectedUnit();
 	},
 	
 	displayInfrastructurePreview: function(pane,key) {
@@ -1715,12 +1891,21 @@ var view = {
 				string += 'An unreliable source of '+gamen.prettyList(infrastructure.potentialCommodities) + '. ';
 			};
 			if (infrastructure.jobs !== undefined) {
-				string += 'Provides ' + infrastructure.jobs + ' jobs. ';
+				string += 'Employs ' + infrastructure.jobs + ' people. ';
+			};
+			if (infrastructure.provides !== undefined) {
+				string += 'Provides ' + gamen.prettyList(infrastructure.provides) + '. ';
+			};
+			if (infrastructure.wageIncrease !== undefined) {
+				string += 'Slowly increases local wages. ';
+			};
+			if (infrastructure.warehousing) {
+				string += 'Allows you to warehouse commodities here. ';
 			};
 			if (infrastructure.goodwill > 0) {
 				string += 'Gains the builder ' + infrastructure.goodwill + ' reputation each fortnight.';
 			} else if (infrastructure.goodwill < 0) {
-				string += 'Costs the builder ' + infrastructure.goodwill + ' reputation each fortnight.';
+				string += 'Costs the builder ' + Math.abs(infrastructure.goodwill) + ' reputation each fortnight.';
 
 			};
 		} else {

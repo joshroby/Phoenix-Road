@@ -4,6 +4,8 @@
 		<title>Down the Phoenix Road</title>
 		<link rel="stylesheet" href="style.css">
 		<link rel="stylesheet" href="font-awesome/css/font-awesome.min.css">
+<!-- 		<link rel='stylesheet' href='fontawesome-free-5.1.0-web/css/all.css'> -->
+<!-- 		<link rel='stylesheet' href='fontawesome-free-5.1.0-web/css/brands.css'> -->
 		<script src="gamen.js"></script>
 		<link rel="stylesheet" href="gamen.css">
 		<script src="draw.js"></script>
@@ -12,7 +14,9 @@
 		<script src="model.js"></script>
 		<script src="view.js"></script>
 		<script src="events.js"></script>
-<!-- 		<meta property="og:image" content="http://url-to-your-image.png"> -->
+		<meta name="twitter:card" content="summary" />
+		<meta name="twitter:creator" content="@joshroby" />
+		<meta property="og:image" content="http://joshroby.com/phoenixroad/openGraphImage.png">
 	</head>
 
 	<body onload='gamen.init()'>
@@ -22,7 +26,7 @@
 			<h4 id='titleHead'></h4>
 		
 			<button onclick = 'handlers.newGame()'>New Game</button>
-			<button id = 'saveButton' disabled onclick = 'gamen.saveGame()'>Save Game</button>
+			<button id = 'saveGameButton' disabled onclick = 'gamen.saveGame()'>Save Game</button>
 			<button onclick='handlers.toggleOptions()' >Options</button>
 			<button id='gamenSupportBtn' hidden onclick='gamen.support()'>Support</button>
 			

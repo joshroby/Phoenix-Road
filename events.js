@@ -213,7 +213,6 @@ var events = {
 		if ( ( unit.location == undefined  && !unit.airborne ) || unit.location.infrastructure.length == 0) {
 			view.focus.unit = unit;
 			view.displayUnit(unit,true);
-			console.log(unit.route[0]);
 			var threat = model.nearestThreat(unit.route[0].x,unit.route[0].y).threat;
 			var cargoIndex = Math.random() * unit.commodities.length << 0;
 			var passageString = unit.name + " is beset by bandits from "+threat.name+"!<p>They demand you turn over your load of "+view.commodityIcon(unit.commodities[cargoIndex].commodity)+" "+data.commodities[unit.commodities[cargoIndex].commodity].name+" or face the consequences.";
@@ -224,14 +223,13 @@ var events = {
 	},
 	
 	banditsSurrender: function(cargoIndex,unit) {
-// 		var unit = view.focus.unit;
-		gamen.displayPassage(new Passage("The cackling bandits quickly and efficiently offload the "+view.commodityIcon(unit.commodities[cargoIndex].commodity)+" "+data.commodities[unit.commodities[cargoIndex].commodity].name+" and you get the hell out of there."));
+		var choiceArray = [new Choice('Hold Up!',handlers.roadside,[units.indexOf(unit)]),new Choice('Carry On')];
+		gamen.displayPassage(new Passage("The cackling bandits quickly and efficiently offload the "+view.commodityIcon(unit.commodities[cargoIndex].commodity)+" "+data.commodities[unit.commodities[cargoIndex].commodity].name+" and you get the hell out of there.",choiceArray));
 		unit.commodities.splice(cargoIndex,1);
 		view.displayUnit(unit,true);
 	},
 	
 	banditsDefend: function(threat,unit) {
-// 		var unit = view.focus.unit;
 		var defenseScore = model.selfDefense(unit);
 		var attackScore = threat.strength * Math.random();
 		if (defenseScore > attackScore) {
@@ -276,19 +274,33 @@ var events = {
 	fire: function()  {
 		var site = sites[Math.random() * sites.length << 0];
 		if (site.population > 0) {
-			var index = Math.random() * site.infrastructure.length << 0;
-			var outputs = [];
-			var passageString = "A terrible fire rips through " + site.name + ".  Their " + site.infrastructure[index].name + " is completely destroyed.";
-			if (site.infrastructure[index].outputs !== undefined) {
-				for (var o of site.infrastructure[index].outputs) {
-					site.logTransaction(o,5);
-					outputs.push(view.commodityIcon(o)+" "+data.commodities[o].name);
+			var fireSuppression = 0;
+			for (var infrastructure of site.infrastructure) {
+				if (infrastructure.provides !== undefined && infrastructure.provides.indexOf('fire suppression') !== -1) {
+					fireSuppression += Math.random();
 				};
-				passageString += " The value of " + gamen.prettyList(outputs) + " rises.";
 			};
-			site.destroyInfrastructure(site.infrastructure[index]);
-			if (site.hasVisited.p1) {
-				gamen.displayPassage(new Passage(passageString));
+			if (fireSuppression > 0.4) {
+				gamen.displayPassage(new Passage("An accident sparks a fire in "+site.name+", but is quickly and efficiently suppressed.  No casualties or significant damage occur."));
+			} else {
+				var index = Math.random() * site.infrastructure.length << 0;
+				var outputs = [];
+				console.log('fire',site,index);
+				var passageString = "A terrible fire rips through " + site.name + "."
+				if (site.infrastructure.length > 0) {
+					passageString += "  Their " + site.infrastructure[index].name + " is completely destroyed.";
+					if (site.infrastructure[index].outputs !== undefined) {
+						for (var o of site.infrastructure[index].outputs) {
+							site.logTransaction(o,5);
+							outputs.push(view.commodityIcon(o)+" "+data.commodities[o].name);
+						};
+						passageString += " The value of " + gamen.prettyList(outputs) + " rises.";
+					};
+					site.destroyInfrastructure(site.infrastructure[index]);
+				};
+				if (site.hasVisited.p1) {
+					gamen.displayPassage(new Passage(passageString));
+				};
 			};
 		} else {
 			site.infrastructure = [];
@@ -302,19 +314,31 @@ var events = {
 	flood: function()  {
 		var site = sites[Math.random() * sites.length << 0];
 		if (site.resources.indexOf(data.resources.river) !== -1) {
-			var index = Math.random() * site.infrastructure.length << 0;
-			var outputs = [];
-			var passageString = "The river floods in " + site.name + ".  The " + site.infrastructure[index].name + " is completely destroyed.";
-			if (site.infrastructure[index].outputs !== undefined) {
-				for (var o of site.infrastructure[index].outputs) {
-					site.logTransaction(o,5);
-					outputs.push(view.commodityIcon(o)+" "+data.commodities[o].name);
+			var floodControl = 0;
+			for (var infrastructure of site.infrastructure) {
+				if (infrastructure.provides !== undefined && infrastructure.provides.indexOf('flood control') !== -1) {
+					floodControl += Math.random();
 				};
-				passageString += " The value of " + gamen.prettyList(outputs) + " rises.";
 			};
-			site.destroyInfrastructure(site.infrastructure[index]);
-			if (site.hasVisited.p1) {
-				gamen.displayPassage(new Passage(passageString));
+			if (floodControl > 0.2) {
+				var boon = Math.ceil(500 * Math.random());
+				site.goodwill.p1 += boon;
+				gamen.displayPassage(new Passage("The river floods in "+site.name+", but the water is diverted by flood control infrastructure.  You gain "+boon+" goodwill."));
+			} else {
+				var index = Math.random() * site.infrastructure.length << 0;
+				var outputs = [];
+				var passageString = "The river floods in " + site.name + ".  The " + site.infrastructure[index].name + " is completely destroyed.";
+				if (site.infrastructure[index].outputs !== undefined) {
+					for (var o of site.infrastructure[index].outputs) {
+						site.logTransaction(o,5);
+						outputs.push(view.commodityIcon(o)+" "+data.commodities[o].name);
+					};
+					passageString += " The value of " + gamen.prettyList(outputs) + " rises.";
+				};
+				site.destroyInfrastructure(site.infrastructure[index]);
+				if (site.hasVisited.p1) {
+					gamen.displayPassage(new Passage(passageString));
+				};
 			};
 		};
 	},
@@ -419,6 +443,7 @@ var events = {
 			if (housedDeaths > 0) {
 				if (housedDeaths == 1) {var conjugate = 'es',nounPlural = '';} else {var conjugate = '',nounPlural = 's';};
 				var housedDeathString = gamen.prettyNumber(housedDeaths);
+				console.log('plague',site,housedDeaths,housedDeathString);
 				housedDeathString = housedDeathString.charAt(0).toUpperCase() + housedDeathString.slice(1);
 				passageString += housedDeathString + " pass" + conjugate + " in the comfort of their home"+nounPlural+".  ";
 			};
@@ -437,7 +462,8 @@ var events = {
 	},
 	
 	raid: function()  {
-		var threat = sites[Math.random() * sites.length << 0].nearestThreat.threat;
+		var site = sites[Math.random() * sites.length << 0];
+		var threat = site.nearestThreat.threat;
 		var targetList = [];
 		var furthestTarget = 0;
 		for (var i of threat.targets) {
@@ -452,7 +478,8 @@ var events = {
 				};
 			};
 		};
-		var site = targetList[Math.random() * targetList.length << 0];
+		var raidSite = targetList[Math.random() * targetList.length << 0];
+		if (raidSite == undefined) {raidSite = site};
 		var passageString = threat.name + " launches a raid against " + site.name + ".";
 		if (Math.random() > site.defenses() / threat.strength) {
 			passageString += "<p>The raiders crash against the town defenses, but do not breach them.";
@@ -653,7 +680,116 @@ var events = {
 	
 	refugeeCamp: function(site) {
 		site.name = "Camp";
+		if (Math.random() > 0.5) {site.infrastructure.push(data.infrastructure.refugeeFamily)};
 		gamen.displayPassage(new Passage("Refugees, fleeing from danger elsewhere."));
+	},
+	
+	// Refugee Events
+	
+	refugeeLostChild: function() {
+		var hasChild = false;
+		for (var unit of units) {
+			for (var commodity of unit.commodities) {
+				if (commodity.commodity == 'child') {
+					hasChild = true;
+				};
+			};
+		};
+		if (!hasChild) {
+			var unit = units[Math.random() * units.length << 0];
+			var string;
+			if (unit.airborne) {
+				string = "One of your crew spies something through the glass and orders the ship down.  When you demand to know why, the crewmember in question rushes down the gangplank.  You follow to get your answer.  When you catch up with them outside, they are squatting in the dust next to a child.<p />";
+			} else if (unit.inTransit) {
+				string = "What you initially assume is a rock on the side of the road turns out to be something much worse: a child.  ";
+			} else {
+				string = "On the outskirts of town, you find a small child sitting on the side of the road.  ";
+			};
+			string += "They are parched, hungry, and dirty, with no adults in evidence.  The child has tears in their eyes but does not cry.  Neither do they speak.  They can't be more than four years old.";
+			var choiceArray = [new Choice("Take the Child Along",events.refugeeTakeChild,[unit]),new Choice("Leave the Child",events.refugeeLeaveChild)];
+			gamen.displayPassage(new Passage(string,choiceArray,false));
+		};
+	},
+	
+	refugeeTakeChild: function(unit) {
+		unit.commodities.push({commodity:'child',qty:100});
+		view.displayUnit(unit);
+		gamen.displayPassage(new Passage("You coax the child into your ride and find a corner for them to curl up in.  They don't say much, but the addition of a blanket earns you half a weary smile."));
+		events.refugeeMoveFamily(true);
+	},
+	
+	refugeeLeaveChild: function() {
+		gamen.displayPassage(new Passage("You don't have time to find a home for the child; you've got to rebuild civilization."));
+	},
+	
+	refugeeMoveFamily: function(quiet) {
+		var oldLocation, newLocation, hasChild = false;
+		for (var site of sites) {
+			if (site.infrastructure.indexOf(data.infrastructure.refugeeFamily) !== -1) {
+				oldLocation = site;
+				site.infrastructure.splice(site.infrastructure.indexOf(data.infrastructure.refugeeFamily),1);
+			};
+		};
+		if (oldLocation == undefined) {
+			oldLocation = sites[sites.length * Math.random() << 0];
+		};
+		for (var unit of units) {
+			for (var commodity of unit.commodities) {
+				if (commodity.commodity == 'child') {
+					hasChild = true;
+				};
+			};
+		};
+		if (hasChild) {
+			newLocation = oldLocation.neighbors[Math.random() * oldLocation.neighbors.length << 0];
+			newLocation.infrastructure.push(data.infrastructure.refugeeFamily);
+			if (!quiet && players.p1.knownSites.indexOf(newLocation) !== -1) {
+				gamen.displayPassage(new Passage(data.infrastructure.refugeeFamily.spawn,undefined,true,newLocation.name));
+			};
+			model.clock.logEventIn(Math.random() * 8.64e+7 * 14,'refugeeMoveFamily');
+		};
+	},
+	
+	refugeeReunion: function() {
+		for (var unit of units) {
+			if (unit.location.infrastructure.indexOf(data.infrastructure.refugeeFamily) !== -1) {
+				for (var c in unit.commodities) {
+					if (unit.commodities[c].commodity == 'child') {
+						unit.commodities.splice(c,1);
+					};
+				};
+			};
+		};
+		var string = "You bring out the lost child that has been riding along with you.  The family immediately falls over themselves sobbing, screaming, laughing, cheering.  They sweep the child out of your hands and then surge around you, clapping you on the back and shaking your hand.  They thank you more times than you can count.<p />";
+		string += 'The child climbs into the arms of one of the adults and reaches out to grab ';
+		if (Math.random() < 0.33) {
+			string += 'her cheeks.  "Mama,"';
+		} else if (Math.random() < 0.5) {
+			string += 'his cheeks.  "Daddy,"';
+		} else {
+			string += 'their cheeks.  "Renny,"';
+		};
+		string += ' the child whispers, before falling fast asleep.'
+		gamen.displayPassage(new Passage(string));
+		view.focus.unit.location.infrastructure.splice(view.focus.unit.location.infrastructure.indexOf(data.infrastructure.refugeeFamily),1);
+		var potentials = [];
+		for (var potential of [data.infrastructure.carpenter,data.infrastructure.loom,data.infrastructure.saddler,data.infrastructure.seamstress,data.infrastructure.tannery]) {
+			if (view.focus.unit.location.infrastructure.indexOf(potential) == -1) {
+				potentials.push(potential);
+			};
+		};
+		var newInfrastructure = potentials[potentials.length * Math.random() << 0];
+		string = "The family decides to settle here in "+view.focus.unit.location.name;
+		if (newInfrastructure !== undefined) {
+			string += " and open a "+newInfrastructure.name;
+			view.focus.unit.location.infrastructure.push(newInfrastructure);
+		};
+		string += ".<p />With tears still welling in their eyes, they insist they will always remember your selfless rescue of their beloved child.";
+		view.focus.unit.location.reputation.p1 += (view.focus.unit.location.commodities.food + view.focus.unit.location.commodities.water) * 110;
+		view.focus.unit.location.population += 4 + Math.ceil(Math.random() * 6);
+		gamen.displayPassage(new Passage(string));
+		view.displayUnit(view.focus.unit);
+		view.displaySiteDetails(view.focus.unit.location);
 	},
 
 };
